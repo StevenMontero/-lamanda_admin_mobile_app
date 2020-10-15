@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 
-class List_Products extends StatelessWidget {
-  const List_Products({Key key}) : super(key: key);
+class ListProducts extends StatelessWidget {
+  const ListProducts({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +33,19 @@ class List_Products extends StatelessWidget {
 
   Widget _titlePage(BuildContext context) {
     return AppBar(
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-        onPressed: () => Navigator.of(context).pop(),
+      leading: SafeArea(
+        child: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       centerTitle: true,
-      title: Expanded(
+      title: SafeArea(
         child: Container(
-          color: Colors.white,
-          width: AppBar().preferredSize.height + 40,
-          height: AppBar().preferredSize.height,
+          height: 70,
+          width: 70,
           child: SvgPicture.asset(
-            'assets/images/Logo_COLOR.svg',
+            'assets/img/Logo_COLOR.svg',
             fit: BoxFit.scaleDown,
           ),
         ),
