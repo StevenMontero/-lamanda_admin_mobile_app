@@ -3,11 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+<<<<<<< HEAD
 import 'package:lamanda_admin/src/blocs/AuthenticationBloc/authentication_bloc.dart';
 import 'package:lamanda_admin/src/pages/home.dart';
 import 'package:lamanda_admin/src/routes/routes.dart';
 import 'package:lamanda_admin/src/theme/theme.dart';
  
+=======
+import 'package:lamanda_admin/src/pages/Products/list_products_page.dart';
+import 'package:lamanda_admin/src/pages/home.dart';
+import 'package:lamanda_admin/src/routes/routes.dart';
+import 'package:lamanda_admin/src/theme/theme.dart';
+
+import 'src/AuthenticationBloc/authentication_bloc.dart';
+
+>>>>>>> master
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -15,7 +25,7 @@ void main() async {
     authenticationRepository: AuthenticationRepository(),
   ));
 }
- 
+
 class MyApp extends StatelessWidget {
   final AuthenticationRepository authenticationRepository;
   const MyApp({
@@ -35,13 +45,16 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
       statusBarColor: Colors.transparent, //or set color with: Color(0xFF0000FF)
     ));
-    return RepositoryProvider(
-      create: (context) => AuthenticationBloc(
-        authenticationRepository: authenticationRepository),
-      child: AppView(),
+    return RepositoryProvider.value(
+      value: authenticationRepository,
+      child: BlocProvider(
+        create: (_) => AuthenticationBloc(
+          authenticationRepository: authenticationRepository,
+        ),
+        child: AppView(),
+      ),
     );
-    
-    
+
     //EasyLocalizationProvider(
     //  data: data,
     //  child: RepositoryProvider.value(
@@ -55,7 +68,6 @@ class MyApp extends StatelessWidget {
     //);
   }
 }
-
 
 class AppView extends StatefulWidget {
   const AppView({
@@ -76,30 +88,40 @@ class _AppViewState extends State<AppView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: theme(),
-      debugShowCheckedModeBanner: false,
-      navigatorKey: _navigatorKey,
-      title: 'La Manada petShop',
-      routes: getRoutesApp(),
-      builder: (context, child) {
-        return BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) {
-            switch (state.status) {
-              case AuthenticationStatus.authenticated:
-                _navigator.pushReplacementNamed('home');
-                break;
-              case AuthenticationStatus.unauthenticated:
-                _navigator.pushReplacementNamed('choseLogOSig');
-                break;
-              default:
-                break;
-            }
-          },
-          child: child,
-        );
-      },
-      onGenerateRoute: (settings) =>
-          MaterialPageRoute(builder: (context) => HomeScreen())
-    );
+        theme: theme(),
+        debugShowCheckedModeBanner: false,
+        navigatorKey: _navigatorKey,
+        title: 'La Manada petShop',
+        routes: getRoutesApp(),
+        builder: (context, child) {
+          return BlocListener<AuthenticationBloc, AuthenticationState>(
+            listener: (context, state) {
+              switch (state.status) {
+                case AuthenticationStatus.authenticated:
+                  _navigator.pushReplacementNamed('home');
+                  break;
+                case AuthenticationStatus.unauthenticated:
+                  _navigator.pushReplacementNamed('listProducts');
+                  break;
+                default:
+                  break;
+              }
+            },
+            child: child,
+          );
+        },
+        onGenerateRoute: (settings) =>
+            MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 }
+
+//Debug Main
+
+// void main() => runApp(MyApp());
+
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(title: 'Material App', home: ListProducts());
+//   }
+// }
