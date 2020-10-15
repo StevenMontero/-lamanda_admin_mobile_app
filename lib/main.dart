@@ -37,10 +37,14 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
       statusBarColor: Colors.transparent, //or set color with: Color(0xFF0000FF)
     ));
-    return RepositoryProvider(
-      create: (context) => AuthenticationBloc(
-          authenticationRepository: authenticationRepository),
-      child: AppView(),
+    return RepositoryProvider.value(
+      value: authenticationRepository,
+      child: BlocProvider(
+        create: (_) => AuthenticationBloc(
+          authenticationRepository: authenticationRepository,
+        ),
+        child: AppView(),
+      ),
     );
 
     //EasyLocalizationProvider(
