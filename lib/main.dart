@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lamanda_admin/src/blocs/AuthenticationBloc/authentication_bloc.dart';
 import 'package:lamanda_admin/src/pages/home.dart';
 import 'package:lamanda_admin/src/routes/routes.dart';
 import 'package:lamanda_admin/src/theme/theme.dart';
-
-import 'src/AuthenticationBloc/authentication_bloc.dart';
  
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
