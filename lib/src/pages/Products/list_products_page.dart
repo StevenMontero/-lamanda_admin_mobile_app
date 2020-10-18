@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lamanda_admin/models/product.dart';
+import 'package:lamanda_admin/providers/provider.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
+import 'package:lamanda_admin/src/widgets/appBar.dart';
 
 class ListProducts extends StatelessWidget {
-  const ListProducts({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    final productsBloc = Provider.productBloc(context);
+
     return Scaffold(
-      appBar: _titlePage(context),
+      appBar: titlePage(context),
       body: Container(
         child: Column(
           children: [
-            _optionsBar(),
+            _optionsBar(context),
             Divider(),
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                children: _products(),
-              ),
+              child: _showProducts(productsBloc),
             ),
           ],
         ),
@@ -31,35 +30,13 @@ class ListProducts extends StatelessWidget {
     );
   }
 
-  Widget _titlePage(BuildContext context) {
-    return AppBar(
-      leading: SafeArea(
-        child: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      centerTitle: true,
-      title: SafeArea(
-        child: Container(
-          height: 70,
-          width: 70,
-          child: SvgPicture.asset(
-            'assets/img/Logo_COLOR.svg',
-            fit: BoxFit.scaleDown,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _optionsBar() {
+  Widget _optionsBar(BuildContext context) {
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           FlatButton.icon(
-            onPressed: () {},
+            onPressed: () => Navigator.pushNamed(context, 'showProduct'),
             icon: Icon(
               Icons.tune,
               color: ColorsApp.primaryColorBlue,
@@ -86,13 +63,16 @@ class ListProducts extends StatelessWidget {
     );
   }
 
-  Widget _cardProduct() {
-    int _quantity = 21;
-    String _messageQuantity = _quantity.toString() + " en stock";
-    String _price = "\$6000";
-    String _title = "Césped Sintético\nWeeWee Patch";
+  Widget _cardProduct(
+      BuildContext context, Product product, ProductBloc productsBloc) {
+    double _quantity = double.parse('${product.quantity}');
+    String _messageQuantity = '${product.quantity}' + " en stock";
+    String _price = "\$" + '${product.price}';
+    String _title = '${product.name}';
+    String _image = '${product.photoUrl}';
 
-    return Card(
+    final productCard = Card(
+      margin: EdgeInsets.only(bottom: 10.0),
       elevation: 3.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: Row(
@@ -101,9 +81,7 @@ class ListProducts extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(20.0),
             child: Image(
-              image: NetworkImage(
-                  'https://www.todomascotascr.com/84-4814-large/cesped-sintetico-weewee-patch.jpg',
-                  scale: 2.5),
+              image: NetworkImage(_image, scale: 2.5),
             ),
           ),
           Container(
@@ -145,9 +123,26 @@ class ListProducts extends StatelessWidget {
         ],
       ),
     );
+
+    return Dismissible(
+      key: UniqueKey(),
+      background: Container(
+        child: Icon(Icons.delete, size: 20.0),
+        alignment: Alignment.centerLeft,
+        color: Colors.red,
+      ),
+      onDismissed: (direction) {
+        productsBloc.deleteProduct(product.code);
+      },
+      child: GestureDetector(
+        child: productCard,
+        onTap: () =>
+            Navigator.pushNamed(context, 'showProduct', arguments: product),
+      ),
+    );
   }
 
-  Color _colorStatus(int quantity) {
+  Color _colorStatus(double quantity) {
     Color color;
     if (quantity < 10) {
       color = Colors.red;
@@ -159,14 +154,24 @@ class ListProducts extends StatelessWidget {
     return color;
   }
 
-  List<Widget> _products() {
-    List<Widget> listProducts = new List<Widget>();
+  Widget _showProducts(ProductBloc productBloc) {
+    return StreamBuilder(
+      stream: productBloc.productStream,
+      builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
+        if (snapshot.hasData) {
+          final _product = snapshot.data;
 
-    for (int i = 0; i < 15; i++) {
-      listProducts.add(_cardProduct());
-      listProducts.add(SizedBox(height: 10.0));
-    }
-
-    return listProducts;
+          return ListView.builder(
+            itemCount: _product.length,
+            itemBuilder: (context, i) =>
+                _cardProduct(context, _product[i], productBloc),
+          );
+        } else {
+          return Center(
+            child: Text('Presione el boton \'+\' para agregar un producto'),
+          );
+        }
+      },
+    );
   }
 }
