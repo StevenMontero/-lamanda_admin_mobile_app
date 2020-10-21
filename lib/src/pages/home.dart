@@ -3,27 +3,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 
-<<<<<<< HEAD
-import '../theme/colors.dart';
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key key}) : super(key: key);
-=======
 class AdminHome extends StatelessWidget {
   const AdminHome({Key key}) : super(key: key);
->>>>>>> ca8538b5786b6c1e50c721cd3229d88a9e9c8bf4
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-<<<<<<< HEAD
-      backgroundColor: Colors.white,
-      body: GridView(
-        gridDelegate: null,
-      ),
-=======
       appBar: _titlePage(context),
-      body: _body(),
+      body: _body(context),
     );
   }
 
@@ -32,10 +19,10 @@ class AdminHome extends StatelessWidget {
       centerTitle: true,
       title: SafeArea(
         child: Container(
-          height: 70,
-          width: 70,
           child: SvgPicture.asset(
             'assets/img/Logo_COLOR.svg',
+            height: 60,
+            width: 60,
             fit: BoxFit.scaleDown,
           ),
         ),
@@ -43,88 +30,102 @@ class AdminHome extends StatelessWidget {
     );
   }
 
-  Widget _body() {
+  Widget _body(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 80),
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Column(
-              children: [
-                _optionCard(1),
-                _optionCard(3),
-              ],
-            ),
-            Column(
-              children: [
-                _optionCard(2),
-                _optionCard(4),
-              ],
-            )
-          ],
-        ),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              _optionCard(context, 1),
+              _optionCard(context, 3),
+            ],
+          ),
+          Column(
+            children: [
+              _optionCard(context, 2),
+              _optionCard(context, 4),
+            ],
+          )
+        ],
+      ),
     );
   }
 
-  Widget _optionCard(int option) {
+  Widget _optionCard(BuildContext context, int option) {
     double size = 160;
-    String indicationText="";
+    String indicationText = "";
     Icon icon;
+    String route;
 
     switch (option) {
       case 1:
         indicationText = "Gestión de productos";
-        icon = new Icon(FontAwesomeIcons.solidClipboard, 
-              color: Colors.white,
-              size: 45,);
+        icon = new Icon(
+          FontAwesomeIcons.solidClipboard,
+          color: Colors.white,
+          size: 45,
+        );
+        route = 'listProducts';
         break;
       case 2:
         indicationText = "Gestión de usuarios";
-        icon = new Icon(FontAwesomeIcons.userEdit, 
-              color: Colors.white,
-              size: 45,);
+        icon = new Icon(
+          FontAwesomeIcons.userEdit,
+          color: Colors.white,
+          size: 45,
+        );
+        //TODO: agregar rutas de menu home
+        route = '';
         break;
       case 3:
         indicationText = "Gestión de citas";
-        icon = new Icon(FontAwesomeIcons.solidCalendarCheck, 
-              color: Colors.white,
-              size: 45,);
+        icon = new Icon(
+          FontAwesomeIcons.solidCalendarCheck,
+          color: Colors.white,
+          size: 45,
+        );
+        route = '';
         break;
       case 4:
         indicationText = "Gestión de ordenes";
-        icon = new Icon(FontAwesomeIcons.fileInvoiceDollar, 
-              color: Colors.white,
-              size: 45,);
+        icon = new Icon(
+          FontAwesomeIcons.fileInvoiceDollar,
+          color: Colors.white,
+          size: 45,
+        );
+        route = '';
         break;
       default:
     }
 
-    return Container(
-      height: size,
-      width: size,
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: Card(
-        elevation: 3.0,
-        color: ColorsApp.primaryColorBlue,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        child: Column(
-          children: [
-            SizedBox(height: 20.0),
-            icon,
-            SizedBox(height: 10.0),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                  text: indicationText,
-                  style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20),
-                 ),
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, route),
+      child: Container(
+          height: size,
+          width: size,
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: Card(
+            elevation: 3.0,
+            color: ColorsApp.primaryColorBlue,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0)),
+            child: Column(
+              children: [
+                SizedBox(height: 20.0),
+                icon,
+                SizedBox(height: 10.0),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    text: indicationText,
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      )
->>>>>>> ca8538b5786b6c1e50c721cd3229d88a9e9c8bf4
+          )),
     );
   }
 }

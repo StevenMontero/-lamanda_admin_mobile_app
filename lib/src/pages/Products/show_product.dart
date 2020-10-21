@@ -19,7 +19,7 @@ class _ShowProductState extends State<ShowProduct> {
   final picker = ImagePicker();
   Product product = new Product();
 
-  File photo;
+  File _photo;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,6 @@ class _ShowProductState extends State<ShowProduct> {
             child: Column(
               children: <Widget>[
                 _viewPhoto(),
-                _selectImageButton(),
                 _nameProduct(),
                 _descriptionProduct(),
                 _priceProduct(),
@@ -49,6 +48,12 @@ class _ShowProductState extends State<ShowProduct> {
             ),
           ),
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: ColorsApp.primaryColorBlue,
+        child: Icon(Icons.add_a_photo),
+        onPressed: _selectPhotoFromGalery,
       ),
     );
   }
@@ -126,33 +131,28 @@ class _ShowProductState extends State<ShowProduct> {
     );
   }
 
-  Widget _selectImageButton() {
-    return RaisedButton.icon(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      color: ColorsApp.primaryColorBlue,
-      textColor: Colors.white,
-      onPressed: () async => await _selectPhotoFromGalery(),
-      icon: Icon(Icons.add_a_photo),
-      label: Text('Seleccionar Foto'),
-    );
-  }
-
   Widget _viewPhoto() {
     if (product.photoUrl != null) {
       return Container();
     } else {
       return Center(
-        child: photo == null ? Text('No se ha selecciona') : Image.file(photo),
+        child: _photo == null
+            ? AssetImage('assets/img/no-image.png')
+            : Image.file(_photo),
       );
     }
   }
 
-  Future<Null> _selectPhotoFromGalery() async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-    );
+  Future _selectPhotoFromGalery() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
-    setState(() => photo = File(pickedFile.path));
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   _saveProduct(BuildContext context) {

@@ -14,8 +14,8 @@ Widget titlePage(BuildContext context) {
       child: Container(
         child: SvgPicture.asset(
           'assets/img/Logo_COLOR.svg',
-          height: 70,
-          width: 70,
+          height: 60,
+          width: 60,
           fit: BoxFit.scaleDown,
         ),
       ),
