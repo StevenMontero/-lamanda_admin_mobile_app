@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lamanda_admin/models/product.dart';
-import 'package:lamanda_admin/providers/provider.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
+import '../../../providers/product_provider.dart';
+import '../../theme/colors.dart';
 
 class ListProducts extends StatelessWidget {
+  final products = new ProductProvider();
+
   @override
   Widget build(BuildContext context) {
-    final productsBloc = Provider.productBloc(context);
-
     return Scaffold(
       appBar: titlePage(context),
       body: Container(
@@ -17,7 +18,7 @@ class ListProducts extends StatelessWidget {
             _optionsBar(context),
             Divider(),
             Expanded(
-              child: _showProducts(productsBloc),
+              child: _showProducts(),
             ),
           ],
         ),
@@ -25,7 +26,7 @@ class ListProducts extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add, size: 40.0),
         backgroundColor: ColorsApp.primaryColorBlue,
-        onPressed: () {},
+        onPressed: () => Navigator.pushNamed(context, 'showProduct'),
       ),
     );
   }
@@ -36,7 +37,7 @@ class ListProducts extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           FlatButton.icon(
-            onPressed: () => Navigator.pushNamed(context, 'showProduct'),
+            onPressed: () {},
             icon: Icon(
               Icons.tune,
               color: ColorsApp.primaryColorBlue,
@@ -63,8 +64,7 @@ class ListProducts extends StatelessWidget {
     );
   }
 
-  Widget _cardProduct(
-      BuildContext context, Product product, ProductBloc productsBloc) {
+  Widget _cardProduct(BuildContext context, Product product) {
     double _quantity = double.parse('${product.quantity}');
     String _messageQuantity = '${product.quantity}' + " en stock";
     String _price = "\$" + '${product.price}';
@@ -132,7 +132,7 @@ class ListProducts extends StatelessWidget {
         color: Colors.red,
       ),
       onDismissed: (direction) {
-        productsBloc.deleteProduct(product.code);
+        products.deleteProduct(product.code);
       },
       child: GestureDetector(
         child: productCard,
@@ -154,21 +154,23 @@ class ListProducts extends StatelessWidget {
     return color;
   }
 
-  Widget _showProducts(ProductBloc productBloc) {
-    return StreamBuilder(
-      stream: productBloc.productStream,
+  Widget _showProducts() {
+    return FutureBuilder(
+      future: products.showProducts(),
       builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
         if (snapshot.hasData) {
           final _product = snapshot.data;
 
           return ListView.builder(
             itemCount: _product.length,
-            itemBuilder: (context, i) =>
-                _cardProduct(context, _product[i], productBloc),
+            itemBuilder: (context, i) => _cardProduct(context, _product[i]),
           );
         } else {
           return Center(
-            child: Text('Presione el boton \'+\' para agregar un producto'),
+            child: Text(
+              'Presione el boton \'+\' para agregar un producto',
+              style: TextStyle(color: ColorsApp.textPrimaryColor),
+            ),
           );
         }
       },

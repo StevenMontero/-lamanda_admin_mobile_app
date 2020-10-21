@@ -28,24 +28,24 @@ class _LoginScreenState extends State<LoginScreen>
     return Container(
         //data: data,
         child: BlocProvider(
-          create: (context) =>
-              LoginCubit(context.repository<AuthenticationRepository>()),
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            body: BlocListener<LoginCubit, LoginState>(
-              listener: (context, state) {
-                if (state.status.isSubmissionFailure) {
-                  Scaffold.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                      const SnackBar(content: Text('Error al iniciar sesión')),
-                    );
-                }
-              },
-              child: BodyWidget(mediaQueryData: mediaQueryData),
-            ),
-          ),
-        ));
+      create: (context) =>
+          LoginCubit(context.repository<AuthenticationRepository>()),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: BlocListener<LoginCubit, LoginState>(
+          listener: (context, state) {
+            if (state.status.isSubmissionFailure) {
+              Scaffold.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(content: Text('Error al iniciar sesión')),
+                );
+            }
+          },
+          child: BodyWidget(mediaQueryData: mediaQueryData),
+        ),
+      ),
+    ));
   }
 }
 

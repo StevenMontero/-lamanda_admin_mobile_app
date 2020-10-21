@@ -12,10 +12,10 @@ Widget titlePage(BuildContext context) {
     centerTitle: true,
     title: SafeArea(
       child: Container(
-        height: 70,
-        width: 70,
         child: SvgPicture.asset(
           'assets/img/Logo_COLOR.svg',
+          height: 70,
+          width: 70,
           fit: BoxFit.scaleDown,
         ),
       ),

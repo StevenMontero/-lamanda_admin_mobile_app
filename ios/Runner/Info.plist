@@ -6,6 +6,8 @@
 	<string>Conceder permiso a galería</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Conceder permiso a la cámara</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Conceder permiso al micrófono</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

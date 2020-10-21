@@ -41,7 +41,7 @@ class Product {
         "price": price,
         "quantity": quantity,
         "photoUrl": photoUrl,
-        //"code": code,
+        "code": code,
         "categories": categories,
       };
 }

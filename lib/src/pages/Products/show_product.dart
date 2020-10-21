@@ -1,13 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lamanda_admin/models/product.dart';
-import 'package:lamanda_admin/providers/provider.dart';
-import 'package:lamanda_admin/src/blocs/productBloc/product_bloc.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/utils/utils.dart' as utils;
 import 'package:lamanda_admin/src/widgets/appBar.dart';
+import '../../../providers/product_provider.dart';
 
 class ShowProduct extends StatefulWidget {
   @override
@@ -17,16 +15,14 @@ class ShowProduct extends StatefulWidget {
 class _ShowProductState extends State<ShowProduct> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
-  ProductBloc productsBloc;
+  final products = new ProductProvider();
+  final picker = ImagePicker();
   Product product = new Product();
-  bool _saving = false;
+
   File photo;
 
   @override
   Widget build(BuildContext context) {
-    productsBloc = Provider.productBloc(context);
-
     Product productData = ModalRoute.of(context).settings.arguments;
     if (productData != null) {
       product = productData;
@@ -34,12 +30,10 @@ class _ShowProductState extends State<ShowProduct> {
 
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-        title: titlePage(context),
-      ),
+      appBar: titlePage(context),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(10.0),
+          padding: EdgeInsets.all(25.0),
           child: Form(
             key: formKey,
             child: Column(
@@ -50,7 +44,7 @@ class _ShowProductState extends State<ShowProduct> {
                 _descriptionProduct(),
                 _priceProduct(),
                 _quantityProduct(),
-                _submitButton(),
+                _submitButton(context),
               ],
             ),
           ),
@@ -65,7 +59,7 @@ class _ShowProductState extends State<ShowProduct> {
       decoration: InputDecoration(labelText: 'Nombre del producto'),
       onSaved: (value) => product.name = value,
       validator: (value) {
-        if (value.length < 1) {
+        if (value.length < 3) {
           return 'Ingrese el nombre del producto';
         } else {
           return null;
@@ -121,12 +115,12 @@ class _ShowProductState extends State<ShowProduct> {
     );
   }
 
-  Widget _submitButton() {
+  Widget _submitButton(BuildContext context) {
     return RaisedButton.icon(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       color: ColorsApp.primaryColorBlue,
       textColor: Colors.white,
-      onPressed: (_saving) ? null : _saveProduct(context),
+      onPressed: () => _saveProduct(context),
       icon: Icon(Icons.save),
       label: Text('Guardar'),
     );
@@ -134,10 +128,10 @@ class _ShowProductState extends State<ShowProduct> {
 
   Widget _selectImageButton() {
     return RaisedButton.icon(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       color: ColorsApp.primaryColorBlue,
       textColor: Colors.white,
-      onPressed: _selectPhotoFromGalery(),
+      onPressed: () async => await _selectPhotoFromGalery(),
       icon: Icon(Icons.add_a_photo),
       label: Text('Seleccionar Foto'),
     );
@@ -147,47 +141,31 @@ class _ShowProductState extends State<ShowProduct> {
     if (product.photoUrl != null) {
       return Container();
     } else {
-      if (photo != null) {
-        return Image.file(
-          photo,
-          fit: BoxFit.cover,
-          height: 300.0,
-        );
-      }
-      return Image.asset('assets/no-image.png');
+      return Center(
+        child: photo == null ? Text('No se ha selecciona') : Image.file(photo),
+      );
     }
   }
 
-  _selectPhotoFromGalery() async {
-    final imagePicker = new ImagePicker();
-    final picked = await imagePicker.getImage(
+  Future<Null> _selectPhotoFromGalery() async {
+    final pickedFile = await picker.getImage(
       source: ImageSource.gallery,
     );
 
-    photo = File(picked.path);
-
-    if (photo != null) {}
-
-    setState(() {});
+    setState(() => photo = File(pickedFile.path));
   }
 
   _saveProduct(BuildContext context) {
+    //TODO: falta guardar foto a db
     if (!formKey.currentState.validate()) return;
     formKey.currentState.save();
 
-    setState(() {
-      _saving = true;
-    });
-
     if (product.code == null) {
-      productsBloc.addProduct(product);
+      products.addProduct(product);
     } else {
-      productsBloc.modifyProduct(product);
+      products.modifyProduct(product);
     }
 
-    setState(() {
-      _saving = false;
-    });
     _messageSnack('Producto Guardado');
     Navigator.pop(context);
   }
