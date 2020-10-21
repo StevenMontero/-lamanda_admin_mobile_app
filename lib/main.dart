@@ -88,10 +88,10 @@ class _AppViewState extends State<AppView> {
             listener: (context, state) {
               switch (state.status) {
                 case AuthenticationStatus.authenticated:
-                  _navigator.pushReplacementNamed('home');
+                  _navigator.pushReplacementNamed('admin_home');
                   break;
                 case AuthenticationStatus.unauthenticated:
-                  _navigator.pushReplacementNamed('listProducts');
+                  _navigator.pushReplacementNamed('admin_home');
                   break;
                 default:
                   break;
@@ -101,7 +101,7 @@ class _AppViewState extends State<AppView> {
           );
         },
         onGenerateRoute: (settings) =>
-            MaterialPageRoute(builder: (context) => HomeScreen()));
+            MaterialPageRoute(builder: (context) => AdminHome()));
   }
 }
 
