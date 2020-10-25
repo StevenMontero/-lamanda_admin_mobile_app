@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lamanda_admin/models/product.dart';
+import 'package:lamanda_admin/src/blocs/productBloc/product_bloc.dart';
+import 'package:lamanda_admin/src/models/models.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/utils/utils.dart' as utils;
 import 'package:lamanda_admin/src/widgets/appBar.dart';
-import '../../../providers/product_provider.dart';
 
 class ShowProduct extends StatefulWidget {
   @override
@@ -15,7 +15,7 @@ class ShowProduct extends StatefulWidget {
 class _ShowProductState extends State<ShowProduct> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final products = new ProductProvider();
+  final products = new ProductBloc();
   final picker = ImagePicker();
   Product product = new Product();
 
@@ -43,6 +43,7 @@ class _ShowProductState extends State<ShowProduct> {
                 _descriptionProduct(),
                 _priceProduct(),
                 _quantityProduct(),
+                SizedBox(height: 20.0),
                 _submitButton(context),
               ],
             ),
@@ -53,7 +54,7 @@ class _ShowProductState extends State<ShowProduct> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: ColorsApp.primaryColorBlue,
         child: Icon(Icons.add_a_photo),
-        onPressed: _selectPhotoFromGalery,
+        onPressed: () => _selectImage(context),
       ),
     );
   }
@@ -123,6 +124,7 @@ class _ShowProductState extends State<ShowProduct> {
   Widget _submitButton(BuildContext context) {
     return RaisedButton.icon(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      padding: EdgeInsets.all(15.0),
       color: ColorsApp.primaryColorBlue,
       textColor: Colors.white,
       onPressed: () => _saveProduct(context),
@@ -131,23 +133,89 @@ class _ShowProductState extends State<ShowProduct> {
     );
   }
 
+  Future<void> _selectImage(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Seleccione el medio"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                    child: Text("Galeria"),
+                    onTap: () => _selectPhoto(ImageSource.gallery),
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text("Camara"),
+                    onTap: () => _selectPhoto(ImageSource.camera),
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text("Web"),
+                    onTap: () => _selectPhotoFromWeb(context),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   Widget _viewPhoto() {
     if (product.photoUrl != null) {
-      return Container();
+      return Image(
+        image: NetworkImage(product.photoUrl),
+        height: 300.0,
+        fit: BoxFit.cover,
+      );
     } else {
-      return Center(
-        child: _photo == null
-            ? AssetImage('assets/img/no-image.png')
-            : Image.file(_photo),
+      return Image(
+        image: AssetImage(_photo?.path ?? 'assets/img/no-image.png'),
+        height: 300.0,
+        fit: BoxFit.cover,
       );
     }
   }
 
-  Future _selectPhotoFromGalery() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+  Future<void> _selectPhotoFromWeb(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Ingrese la dirección de la imagen"),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: Text('Aceptar'),
+              ),
+            ],
+            content: SingleChildScrollView(
+              child: TextFormField(
+                keyboardType: TextInputType.url,
+                decoration: InputDecoration(
+                    labelText: 'Ejemplo: http://www.web.com/image.png'),
+                onChanged: (value) {
+                  setState(() {
+                    product.photoUrl = value.trim();
+                  });
+                },
+              ),
+            ),
+          );
+        });
+  }
+
+  _selectPhoto(ImageSource source) async {
+    final pickedFile = await picker.getImage(source: source, imageQuality: 70);
 
     setState(() {
       if (pickedFile != null) {
+        product.photoUrl = null;
         _photo = File(pickedFile.path);
       } else {
         print('No image selected.');
@@ -155,16 +223,23 @@ class _ShowProductState extends State<ShowProduct> {
     });
   }
 
-  _saveProduct(BuildContext context) {
+  _saveProduct(BuildContext context) async {
     //TODO: falta guardar foto a db
     if (!formKey.currentState.validate()) return;
     formKey.currentState.save();
+    setState(() {});
+
+    if (_photo != null) {
+      product.photoUrl = await products.loadPhoto(_photo);
+    }
 
     if (product.code == null) {
       products.addProduct(product);
     } else {
-      products.modifyProduct(product);
+      products.changeProduct(product);
     }
+
+    setState(() {});
 
     _messageSnack('Producto Guardado');
     Navigator.pop(context);

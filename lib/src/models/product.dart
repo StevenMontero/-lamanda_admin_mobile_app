@@ -1,6 +1,6 @@
 import 'dart:convert';
-
-import 'package:lamanda_admin/models/category.dart';
+import 'package:meta/meta.dart';
+import 'models.dart';
 
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
@@ -16,12 +16,12 @@ class Product {
   List<Category> categories;
 
   Product({
-    this.name = '',
-    this.description = '',
+    this.name,
+    this.description,
     this.price = 0.0,
     this.quantity = 0,
-    this.photoUrl = '',
-    this.code = '',
+    this.photoUrl,
+    this.code,
     this.categories,
   });
 

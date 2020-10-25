@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:lamanda_admin/models/product.dart';
+import 'package:lamanda_admin/src/blocs/productBloc/product_bloc.dart';
+import 'package:lamanda_admin/src/models/models.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
-import '../../../providers/product_provider.dart';
 import '../../theme/colors.dart';
 
 class ListProducts extends StatelessWidget {
-  final products = new ProductProvider();
+  final products = new ProductBloc();
 
   @override
   Widget build(BuildContext context) {
+    products.getProducts();
+
     return Scaffold(
       appBar: titlePage(context),
       body: Container(
@@ -80,9 +82,13 @@ class ListProducts extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.all(20.0),
-            child: Image(
-              image: NetworkImage(_image, scale: 2.5),
-            ),
+            child: (product.photoUrl == null)
+                ? Image(
+                    image: AssetImage('assets/no-image.png'),
+                  )
+                : Image(
+                    image: NetworkImage(_image, scale: 2.5),
+                  ),
           ),
           Container(
             padding: EdgeInsets.only(top: 10.0),
@@ -155,11 +161,11 @@ class ListProducts extends StatelessWidget {
   }
 
   Widget _showProducts() {
-    return FutureBuilder(
-      future: products.showProducts(),
+    return StreamBuilder(
+      stream: products.getProductsStream,
       builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
         if (snapshot.hasData) {
-          final _product = snapshot.data;
+          final _product = snapshot.data ?? [];
 
           return ListView.builder(
             itemCount: _product.length,
