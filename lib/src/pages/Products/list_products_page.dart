@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lamanda_admin/models/product.dart';
+import 'package:lamanda_admin/repository/product_provider.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
-import '../../../providers/product_provider.dart';
 import '../../theme/colors.dart';
 
 class ListProducts extends StatelessWidget {

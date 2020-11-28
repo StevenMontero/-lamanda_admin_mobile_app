@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lamanda_admin/models/product.dart';
+import 'package:lamanda_admin/repository/product_provider.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/utils/utils.dart' as utils;
 import 'package:lamanda_admin/src/widgets/appBar.dart';
-import '../../../providers/product_provider.dart';
 
 class ShowProduct extends StatefulWidget {
   @override

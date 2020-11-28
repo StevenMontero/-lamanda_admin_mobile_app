@@ -14,4 +14,5 @@ class ColorsApp {
 
   static const textSecondaryColor = Color(0xFF979797);
   static const textPrimaryColor = Color(0xFF757575);
+  static const textColorWhite = Color(0xFFFFFFFF);
 }
