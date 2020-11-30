@@ -48,7 +48,7 @@ class AppointmentsRepository {
     });
 
     if (snapshot.exists) {
-      return DaycareAppt.fromJson(
+      return new DaycareAppt.fromJson(
           id, departureUser, entryUser, petList, snapshot.data());
     } else {
       return null;
@@ -186,46 +186,96 @@ class AppointmentsRepository {
   //GET THE LIST OF EACH APPOINTMENT
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  Future<List<DaycareAppt>> getDaycareApptList() async {
+  Future<List<DaycareAppt>> getDaycareApptList(int day) async {
     final List<DaycareAppt> daycareList = new List();
-    _refDaycare.get().then((QuerySnapshot querySnapshot) => {
-          querySnapshot.docs.forEach((doc) async {
-            DaycareAppt temp = await getDaycare(doc.id);
-            daycareList.add(temp);
-          })
-        });
+    /*await _refDaycare.get().then((QuerySnapshot querySnapshot) {
+      return querySnapshot.docs.forEach((doc) async {
+        DaycareAppt temp = await getDaycare(doc.id);
+        print("antes de if en getlist");
+        if (temp.entryDate.toDate().day == day) {
+          print("entra al if en getlists");
+          return daycareList.add(temp);
+        }
+      });
+    });*/
+/*
+    await _refDaycare.get().then((QuerySnapshot querySnapshot) {
+      return querySnapshot.docs.forEach((doc) async {
+        DocumentSnapshot snapshot;
+        snapshot = await _refDaycare.doc(id).get();
+
+        if (temp.entryDate.toDate().day == day) {
+          print("entra al if en getlists");
+          return daycareList.add(temp);
+        }
+      });
+    });
+
+    DocumentSnapshot snapshot;
+    snapshot = await _refDaycare.doc(id).get();
+
+    DocumentReference departureUserReference = snapshot.get('departureUser');
+    UserProfile departureUser =
+        await UserRepository().getUserProfile(departureUserReference.id);
+
+    DocumentReference entryUserReference = snapshot.get('entryUser');
+    UserProfile entryUser =
+        await UserRepository().getUserProfile(entryUserReference.id);
+
+    Map petListReference = snapshot.get('petList');
+
+    List<Pet> petList = new List();
+
+    petListReference.forEach((key, value) async {
+      DocumentReference petReference = value;
+      Pet pet = await PetRepository().getPet(petReference.id);
+      petList.add(pet);
+    });
+
+    if (snapshot.exists) {
+      return new DaycareAppt.fromJson(
+          id, departureUser, entryUser, petList, snapshot.data());
+    } else {
+      return null;
+    }
+*/
     return daycareList;
   }
 
-  Future<List<EstheticAppt>> getStheticApptList() async {
+  Future<List<EstheticAppt>> getStheticApptList(int day) async {
     final List<EstheticAppt> stheticList = new List();
     _refSthetic.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) async {
             EstheticAppt temp = await getSthetic(doc.id);
-            stheticList.add(temp);
+            if (temp.dateTime.toDate().day == day) {
+              stheticList.add(temp);
+            }
           })
         });
     return stheticList;
   }
 
-  Future<List<HotelAppt>> getHotelApptList() async {
+  Future<List<HotelAppt>> getHotelApptList(int day) async {
     final List<HotelAppt> hotelList = new List();
     _refHotel.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) async {
             HotelAppt temp = await getHotel(doc.id);
-            hotelList.add(temp);
+            if (temp.entryDate.toDate().day == day) {
+              hotelList.add(temp);
+            }
           })
         });
     return hotelList;
   }
 
-  Future<List<VeterinaryAppt>> getVeterinaryApptList() async {
+  Future<List<VeterinaryAppt>> getVeterinaryApptList(int day) async {
     final List<VeterinaryAppt> veterinaryList = new List();
     _refVeterinary.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) async {
             VeterinaryAppt temp = await getVeterinary(doc.id);
-            veterinaryList.add(temp);
-            print(temp.user.userName);
+            if (temp.dateTime.toDate().day == day) {
+              veterinaryList.add(temp);
+            }
           })
         });
     return veterinaryList;

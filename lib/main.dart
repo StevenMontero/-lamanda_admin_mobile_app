@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lamanda_admin/src/blocs/AuthenticationBloc/authentication_bloc.dart';
 import 'package:lamanda_admin/src/pages/home.dart';
 import 'package:lamanda_admin/src/routes/routes.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
       statusBarColor: Colors.transparent, //or set color with: Color(0xFF0000FF)
     ));
+
     return RepositoryProvider.value(
       value: authenticationRepository,
       child: BlocProvider(
@@ -78,30 +80,40 @@ class _AppViewState extends State<AppView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: theme(),
-        debugShowCheckedModeBanner: false,
-        navigatorKey: _navigatorKey,
-        title: 'La Manada petShop',
-        routes: getRoutesApp(),
-        builder: (context, child) {
-          return BlocListener<AuthenticationBloc, AuthenticationState>(
-            listener: (context, state) {
-              switch (state.status) {
-                case AuthenticationStatus.authenticated:
-                  _navigator.pushReplacementNamed('admin_home');
-                  break;
-                case AuthenticationStatus.unauthenticated:
-                  _navigator.pushReplacementNamed('listAppointments');
-                  break;
-                default:
-                  break;
-              }
-            },
-            child: child,
-          );
-        },
-        onGenerateRoute: (settings) =>
-            MaterialPageRoute(builder: (context) => AdminHome()));
+      theme: theme(),
+      debugShowCheckedModeBanner: false,
+      navigatorKey: _navigatorKey,
+      title: 'La Manada petShop',
+      routes: getRoutesApp(),
+      builder: (context, child) {
+        return BlocListener<AuthenticationBloc, AuthenticationState>(
+          listener: (context, state) {
+            switch (state.status) {
+              case AuthenticationStatus.authenticated:
+                _navigator.pushReplacementNamed('admin_home');
+                break;
+              case AuthenticationStatus.unauthenticated:
+                _navigator.pushReplacementNamed('listAppointments');
+                break;
+              default:
+                break;
+            }
+          },
+          child: child,
+        );
+      },
+      onGenerateRoute: (settings) =>
+          MaterialPageRoute(builder: (context) => AdminHome()),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        const Locale('es'),
+        const Locale('en'),
+      ],
+    );
   }
 }
 

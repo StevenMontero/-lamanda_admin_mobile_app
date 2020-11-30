@@ -10,6 +10,7 @@ class HotelAppt {
   UserProfile entryUser;
   List<Pet> petList;
   bool transfer;
+  bool isConfirmed;
 
   HotelAppt(
       {this.id,
@@ -18,7 +19,8 @@ class HotelAppt {
       this.entryDate,
       this.entryUser,
       this.petList,
-      this.transfer});
+      this.transfer,
+      this.isConfirmed});
 
   HotelAppt.fromJson(String id, UserProfile departureUser,
       UserProfile entryUser, List<Pet> petList, Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class HotelAppt {
     this.departureDate = json['departureDate'];
     this.entryDate = json['entryDate'];
     this.transfer = json['transfer'];
+    this.isConfirmed = json['isConfirmed'];
 
     this.departureUser = departureUser;
     this.entryUser = entryUser;
@@ -39,7 +42,8 @@ class HotelAppt {
       'entryDate': this.entryDate,
       'entryUser': this.entryUser,
       'petList': this.petList,
-      'transfer': this.transfer
+      'transfer': this.transfer,
+      'isConfirmed': this.isConfirmed
     };
   }
 }

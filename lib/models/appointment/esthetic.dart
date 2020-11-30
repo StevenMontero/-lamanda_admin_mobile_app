@@ -7,22 +7,26 @@ class EstheticAppt {
   Timestamp dateTime;
   List<Pet> petList;
   UserProfile user;
+  bool isConfirmed;
 
-  EstheticAppt({this.id, this.dateTime, this.petList, this.user});
+  EstheticAppt(
+      {this.id, this.dateTime, this.petList, this.user, this.isConfirmed});
 
   EstheticAppt.fromJson(String id, UserProfile user, List<Pet> petList,
       Map<String, dynamic> json) {
     this.id = id;
-    this.dateTime = json['dateTime'];
+    this.dateTime = json['date'];
     this.petList = petList;
     this.user = user;
+    this.isConfirmed = json['isConfirmed'];
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'dateTime': this.dateTime,
+      'date': this.dateTime,
       'petList': this.petList,
-      'user': this.user
+      'user': this.user,
+      'isConfirmed': this.isConfirmed
     };
   }
 }

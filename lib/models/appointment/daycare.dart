@@ -11,6 +11,7 @@ class DaycareAppt {
   UserProfile entryUser;
   List<Pet> petList;
   bool transfer;
+  bool isConfirmed;
 
   DaycareAppt(
       {this.id,
@@ -19,7 +20,8 @@ class DaycareAppt {
       this.entryDate,
       this.entryUser,
       this.petList,
-      this.transfer});
+      this.transfer,
+      this.isConfirmed});
 
   DaycareAppt.fromJson(String id, UserProfile departureUser,
       UserProfile entryUser, List<Pet> petList, Map<String, dynamic> json) {
@@ -30,6 +32,7 @@ class DaycareAppt {
     this.departureUser = departureUser;
     this.entryUser = entryUser;
     this.petList = petList;
+    this.isConfirmed = json['isConfirmed'];
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +43,7 @@ class DaycareAppt {
       'entryUser': this.entryUser,
       'petList': this.petList,
       'transfer': this.transfer,
+      'isConfirmed': this.isConfirmed
     };
   }
 }
