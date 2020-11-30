@@ -5,10 +5,10 @@ import 'package:lamanda_admin/models/userProfile.dart';
 class HotelAppt {
   String id;
   Timestamp departureDate;
-  UserProfile departureUser;
+  DocumentReference departureUser;
   Timestamp entryDate;
-  UserProfile entryUser;
-  List<Pet> petList;
+  DocumentReference entryUser;
+  Map petList;
   bool transfer;
   bool isConfirmed;
 
@@ -22,17 +22,16 @@ class HotelAppt {
       this.transfer,
       this.isConfirmed});
 
-  HotelAppt.fromJson(String id, UserProfile departureUser,
-      UserProfile entryUser, List<Pet> petList, Map<String, dynamic> json) {
+  HotelAppt.fromJson(String id, Map<String, dynamic> json) {
     this.id = id;
     this.departureDate = json['departureDate'];
     this.entryDate = json['entryDate'];
     this.transfer = json['transfer'];
     this.isConfirmed = json['isConfirmed'];
 
-    this.departureUser = departureUser;
-    this.entryUser = entryUser;
-    this.petList = petList;
+    this.departureUser = json['departureUser'];
+    this.entryUser = json['entryUser'];
+    this.petList = json['petList'];
   }
 
   Map<String, dynamic> toJson() {

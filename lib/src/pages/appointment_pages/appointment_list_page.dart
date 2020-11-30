@@ -1,10 +1,14 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lamanda_admin/models/appointment/daycare.dart';
 import 'package:lamanda_admin/models/appointment/esthetic.dart';
 import 'package:lamanda_admin/models/appointment/hotel.dart';
 import 'package:lamanda_admin/models/appointment/veterinary.dart';
+import 'package:lamanda_admin/models/userProfile.dart';
 import 'package:lamanda_admin/repository/appointments_repository.dart';
+import 'package:lamanda_admin/repository/user_repository.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
 import 'package:lamanda_admin/src/widgets/calendarWidgetLibrary.dart';
@@ -22,16 +26,21 @@ class _AppointmentListState extends State<AppointmentList> {
   DateTime _selectedDate;
 
   FilterAppts stheticFilter = new FilterAppts('Estét.',
-      ColorsApp.primaryColorBlue, ColorsApp.primaryColorBlueDegraded, true);
+      ColorsApp.primaryColorBlue, ColorsApp.primaryColorBlueDegraded, true, 2);
   FilterAppts veterinaryFilter = new FilterAppts(
       'Veter.',
       ColorsApp.primaryColorTurquoise,
       ColorsApp.primaryColorTurquoiseDegraded,
-      true);
+      true,
+      4);
   FilterAppts daycareFilter = new FilterAppts('Guard.',
-      ColorsApp.primaryColorPink, ColorsApp.primaryColorPinkDegraded, true);
-  FilterAppts hotelFilter = new FilterAppts('Hotel',
-      ColorsApp.primaryColorOrange, ColorsApp.primaryColorOrangeDegraded, true);
+      ColorsApp.primaryColorPink, ColorsApp.primaryColorPinkDegraded, true, 1);
+  FilterAppts hotelFilter = new FilterAppts(
+      'Hotel',
+      ColorsApp.primaryColorOrange,
+      ColorsApp.primaryColorOrangeDegraded,
+      true,
+      3);
 
   List<FilterAppts> _cast;
   List<String> _filters = <String>[];
@@ -105,6 +114,21 @@ class _AppointmentListState extends State<AppointmentList> {
               if (!value) {
                 _filters.add(filter.name);
                 filter.selected = false;
+                switch (filter.type) {
+                  case 1:
+                    daycareApptList = null;
+                    break;
+                  case 2:
+                    stheticApptList = null;
+                    break;
+                  case 3:
+                    hotelApptList = null;
+                    break;
+                  case 4:
+                    veterinaryApptList = null;
+                    break;
+                  default:
+                }
               } else {
                 _filters.removeWhere((String name) {
                   return name == filter.name;
@@ -141,6 +165,10 @@ class _AppointmentListState extends State<AppointmentList> {
             lastDate: DateTime.now().add(Duration(days: 60)),
             onDateSelected: (date) {
               setState(() {
+                daycareApptList = null;
+                hotelApptList = null;
+                veterinaryApptList = null;
+                stheticApptList = null;
                 _selectedDate = date;
               });
             },
@@ -196,15 +224,11 @@ class _AppointmentListState extends State<AppointmentList> {
           ),
           Expanded(
               child: FutureBuilder(
-            future:
-                appointmentsRepository.getDaycareApptList(_selectedDate.day),
-            builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-              print("antes de comprobación");
+            future: _getAppoitments(),
+            builder: (BuildContext context, AsyncSnapshot<List<int>> snapshot) {
               if (snapshot.hasData) {
-                print("snap has data");
                 return _createList(snapshot.data);
               } else {
-                print("snap NOT has data");
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -216,97 +240,264 @@ class _AppointmentListState extends State<AppointmentList> {
     );
   }
 
-  Future<List<List<dynamic>>> _getAppoitments() async {
-    List<List<dynamic>> list = new List();
+  Future<List<int>> _getAppoitments() async {
+    List<int> list = new List();
     if (daycareFilter.selected) {
       daycareApptList =
           await appointmentsRepository.getDaycareApptList(_selectedDate.day);
-      daycareApptList.sort((a, b) => a.entryDate.compareTo(b.entryDate));
-      list.add(daycareApptList);
-    } else {
-      daycareApptList.clear();
+      if (daycareApptList != null) {
+        daycareApptList.sort((a, b) =>
+            a.entryDate.toDate().hour.compareTo(b.entryDate.toDate().hour));
+        list.add(1);
+      }
     }
 
     if (stheticFilter.selected) {
       stheticApptList =
           await appointmentsRepository.getStheticApptList(_selectedDate.day);
-      list.add(stheticApptList);
-    } else {
-      stheticApptList.clear();
+      if (stheticApptList != null) {
+        stheticApptList.sort((a, b) =>
+            a.dateTime.toDate().hour.compareTo(b.dateTime.toDate().hour));
+        list.add(1);
+      }
     }
 
     if (hotelFilter.selected) {
       hotelApptList =
           await appointmentsRepository.getHotelApptList(_selectedDate.day);
-      list.add(hotelApptList);
-    } else {
-      hotelApptList.clear();
+      if (hotelApptList != null) {
+        hotelApptList.sort((a, b) =>
+            a.entryDate.toDate().hour.compareTo(b.entryDate.toDate().hour));
+        list.add(1);
+      }
     }
 
     if (veterinaryFilter.selected) {
       veterinaryApptList =
           await appointmentsRepository.getVeterinaryApptList(_selectedDate.day);
-      list.add(veterinaryApptList);
-    } else {
-      veterinaryApptList.clear();
+      if (veterinaryApptList != null) {
+        veterinaryApptList.sort((a, b) =>
+            a.dateTime.toDate().hour.compareTo(b.dateTime.toDate().hour));
+        list.add(1);
+      }
     }
-    return list;
+
+    if (!daycareFilter.selected &&
+        !stheticFilter.selected &&
+        !hotelFilter.selected &&
+        !veterinaryFilter.selected) {
+      list.add(1);
+    }
+    /*if (daycareApptList == null &&
+        stheticApptList == null &&
+        hotelApptList == null &&
+        veterinaryApptList == null) {
+      list.add(1);
+    }*/
+    if (list.isNotEmpty) {
+      return list;
+    } else {
+      return null;
+    }
   }
 
-  Widget _createList(List<DaycareAppt> listReceived) {
+  Widget _createList(List<int> listReceived) {
+    listReceived = null;
+
     List<Widget> list = new List();
-    if (daycareApptList.isNotEmpty) {
-      list.add(_createHour("AAAAAA"));
-      print("aaaaa");
+    if (daycareApptList != null) {
+      if (daycareApptList.isNotEmpty) {
+        list.add(_createAppts(1));
+      }
     }
-    if (listReceived.isNotEmpty) {
-      list.add(_createHour("PUTA"));
-      print("ppppp");
+
+    if (stheticApptList != null) {
+      if (stheticApptList.isNotEmpty) {
+        list.add(_createAppts(2));
+      }
     }
-    print("BBBBBBBBBBB");
-    /*for (int i = 8; i < 18; i++) {
-      list.add(_createHour("$i:00 AM"));
+
+    if (hotelApptList != null) {
+      if (hotelApptList.isNotEmpty) {
+        list.add(_createAppts(3));
+      }
+    }
+    if (veterinaryApptList != null) {
+      if (veterinaryApptList.isNotEmpty) {
+        list.add(_createAppts(4));
+      }
+    }
+    /*if (daycareApptList == null &&
+        stheticApptList == null &&
+        hotelApptList == null &&
+        veterinaryApptList == null) {
+      return _showMessage(
+          "Aún no hay citas para el día de hoy");
     }*/
+    if (!daycareFilter.selected &&
+        !stheticFilter.selected &&
+        !hotelFilter.selected &&
+        !veterinaryFilter.selected) {
+      return _showMessage(
+          "Presiona uno de los filtros para poder ver información");
+    }
     return SingleChildScrollView(
       child: Column(children: list),
     );
   }
 
-  Widget _createHour(String hour) {
-    List<Widget> appointments = new List();
-    for (int i = 0; i < 3; i++) {
-      appointments.add(_createAppoitment(
-          "Este es un nombre de prueba $i", ColorsApp.primaryColorBlue));
+  Widget _showMessage(String message) {
+    return Container(
+      margin: EdgeInsets.all(30),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            FontAwesomeIcons.exclamationTriangle,
+            size: 50,
+            color: Colors.grey,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 18,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _createAppts(int type) {
+    List<Widget> appointmentsConfirmed = new List();
+    List<Widget> appointmentsNonConfirmed = new List();
+    Widget appointmentTemp;
+    Color backgroundColor;
+    String title;
+    Container titleConfirmed = new Container();
+    Container titleNonConfirmed = new Container();
+
+    switch (type) {
+      case 1:
+        daycareApptList.forEach((element) {
+          appointmentTemp = _createAppoitment(
+              element.entryUser.id,
+              element.entryDate.toDate(),
+              ColorsApp.primaryColorPink,
+              element.isConfirmed);
+          if (element.isConfirmed) {
+            appointmentsConfirmed.add(appointmentTemp);
+          } else {
+            appointmentsNonConfirmed.add(appointmentTemp);
+          }
+        });
+        backgroundColor = ColorsApp.primaryColorPinkDegraded;
+        title = "Guardería";
+        break;
+      case 2:
+        stheticApptList.forEach((element) {
+          appointmentTemp = _createAppoitment(
+              element.user.id,
+              element.dateTime.toDate(),
+              ColorsApp.primaryColorPink,
+              element.isConfirmed);
+          if (element.isConfirmed) {
+            appointmentsConfirmed.add(appointmentTemp);
+          } else {
+            appointmentsNonConfirmed.add(appointmentTemp);
+          }
+        });
+        backgroundColor = ColorsApp.primaryColorBlueDegraded;
+        title = "Estética";
+        break;
+      case 3:
+        hotelApptList.forEach((element) {
+          appointmentTemp = _createAppoitment(
+              element.entryUser.id,
+              element.entryDate.toDate(),
+              ColorsApp.primaryColorPink,
+              element.isConfirmed);
+          if (element.isConfirmed) {
+            appointmentsConfirmed.add(appointmentTemp);
+          } else {
+            appointmentsNonConfirmed.add(appointmentTemp);
+          }
+        });
+        backgroundColor = ColorsApp.primaryColorOrangeDegraded;
+        title = "Hotel";
+        break;
+      case 4:
+        veterinaryApptList.forEach((element) {
+          appointmentTemp = _createAppoitment(
+              element.user.id,
+              element.dateTime.toDate(),
+              ColorsApp.primaryColorPink,
+              element.isConfirmed);
+          if (element.isConfirmed) {
+            appointmentsConfirmed.add(appointmentTemp);
+          } else {
+            appointmentsNonConfirmed.add(appointmentTemp);
+          }
+        });
+        backgroundColor = ColorsApp.primaryColorTurquoiseDegraded;
+        title = "Veterinaria";
+        break;
+    }
+
+    if (appointmentsConfirmed.isNotEmpty) {
+      titleConfirmed = Container(
+        width: _screenSize.width * 0.8,
+        child: Text(
+          "Citas confirmadas",
+          style: TextStyle(fontSize: 13),
+        ),
+      );
+    }
+    if (appointmentsNonConfirmed.isNotEmpty) {
+      titleNonConfirmed = Container(
+        width: _screenSize.width * 0.8,
+        child: Text(
+          "Citas sin confirmar",
+          style: TextStyle(fontSize: 13),
+        ),
+      );
     }
 
     return Card(
-      color: Color(0xFFD0D5FF),
+      color: backgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: Container(
         width: _screenSize.width * 0.87,
         margin: EdgeInsets.only(top: 5, bottom: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Column(
           children: [
-            SizedBox(
-              width: _screenSize.width * 0.003,
+            Text(
+              title,
+              style: TextStyle(fontSize: 16),
             ),
-            Card(
-                child: Container(
-              alignment: Alignment.center,
-              width: _screenSize.width * 0.28,
-              margin: EdgeInsets.symmetric(vertical: 1),
-              child: Text(
-                hour,
-                style: TextStyle(
-                    color: Colors.black, fontSize: _screenSize.width * 0.045),
-              ),
-            )),
             SizedBox(
-              width: _screenSize.width * 0.01,
+              height: 3,
             ),
             Column(
-              children: appointments,
+              children: [
+                titleConfirmed,
+                Column(
+                  children: appointmentsConfirmed,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Column(
+              children: [
+                titleNonConfirmed,
+                Column(children: appointmentsNonConfirmed),
+              ],
             ),
           ],
         ),
@@ -314,46 +505,162 @@ class _AppointmentListState extends State<AppointmentList> {
     );
   }
 
-  Widget _createAppoitment(String userName, Color color) {
-    return Container(
-        margin: EdgeInsets.symmetric(vertical: 2),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: new BorderRadius.circular(8.0),
+  Widget _createAppoitment(
+      String userId, DateTime date, Color color, bool isConfirmed) {
+    Color hourColor;
+    Color apptColor;
+    Icon icon;
+
+    if (isConfirmed) {
+      hourColor = Colors.white;
+      apptColor = color;
+      icon = Icon(
+        FontAwesomeIcons.chevronRight,
+        color: Colors.white,
+        size: 20,
+      );
+    } else {
+      hourColor = ColorsApp.problemPrimaryColorDegraded;
+      apptColor = ColorsApp.problemPrimaryColor;
+      icon = Icon(
+        FontAwesomeIcons.chevronRight,
+        color: Colors.white,
+        size: 20,
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            decoration: BoxDecoration(
+              color: hourColor,
+              borderRadius: new BorderRadius.circular(8.0),
+            ),
+            height: 34,
+            alignment: Alignment.center,
+            width: _screenSize.width * 0.235,
+            margin: EdgeInsets.symmetric(vertical: 1),
+            child: Text(
+              _getTime(date),
+              style: TextStyle(
+                  color: Colors.black, fontSize: _screenSize.width * 0.043),
+            )),
+        SizedBox(
+          width: _screenSize.width * 0.01,
         ),
-        width: _screenSize.width * 0.54,
-        height: 35,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              width: _screenSize.width * 0.45,
-              child: Text(
-                userName,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
+        Container(
+            margin: EdgeInsets.symmetric(vertical: 2),
+            decoration: BoxDecoration(
+              color: apptColor,
+              borderRadius: new BorderRadius.circular(8.0),
             ),
-            SizedBox(
-              width: 2,
-            ),
-            GestureDetector(
-              child: Icon(
-                FontAwesomeIcons.chevronRight,
-                color: Colors.white,
-                size: 20,
-              ),
-            )
-          ],
-        ));
+            width: _screenSize.width * 0.56,
+            height: 35,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                    width: _screenSize.width * 0.47,
+                    child: FutureBuilder(
+                      future: UserRepository().getUserProfile(userId),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<UserProfile> snapshot) {
+                        if (snapshot.hasData) {
+                          return Text(
+                            snapshot.data.userName +
+                                " " +
+                                snapshot.data.lastName,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: Colors.white, fontSize: 13),
+                          );
+                        } else {
+                          return Center(
+                              child: Container(
+                            height: 10,
+                            width: 10,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                            ),
+                          ));
+                        }
+                      },
+                    )),
+                SizedBox(
+                  width: 2,
+                ),
+                GestureDetector(child: icon)
+              ],
+            )),
+      ],
+    );
+  }
+
+  String _getTime(DateTime date) {
+    int hour;
+    String hourString;
+    String minute;
+    String ampm;
+
+    if (date.minute.toString().length == 1) {
+      minute = "0" + date.minute.toString();
+    } else {
+      minute = date.minute.toString();
+    }
+
+    if (date.hour >= 13) {
+      ampm = "PM";
+
+      switch (date.hour) {
+        case 13:
+          hour = 1;
+          break;
+        case 14:
+          hour = 2;
+          break;
+        case 15:
+          hour = 3;
+          break;
+        case 16:
+          hour = 4;
+          break;
+        case 17:
+          hour = 5;
+          break;
+        case 18:
+          hour = 6;
+          break;
+        case 19:
+          hour = 7;
+          break;
+        case 20:
+          hour = 8;
+          break;
+        default:
+      }
+
+      if (hour.toString().length == 1) {
+        hourString = "0" + hour.toString();
+      } else {
+        hourString = hour.toString();
+      }
+    } else {
+      ampm = "AM";
+      if (date.hour.toString().length == 1) {
+        hourString = "0" + date.hour.toString();
+      } else {
+        hourString = date.hour.toString();
+      }
+    }
+    return hourString + ":" + minute + " " + ampm;
   }
 }
 
 class FilterAppts {
-  FilterAppts(
-      this.name, this.selectionColor, this.nonSelectionColor, this.selected);
+  FilterAppts(this.name, this.selectionColor, this.nonSelectionColor,
+      this.selected, this.type);
   final String name;
   final Color selectionColor;
   final Color nonSelectionColor;
   bool selected;
+  final int type;
 }

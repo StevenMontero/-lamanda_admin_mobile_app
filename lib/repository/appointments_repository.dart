@@ -29,27 +29,8 @@ class AppointmentsRepository {
     DocumentSnapshot snapshot;
     snapshot = await _refDaycare.doc(id).get();
 
-    DocumentReference departureUserReference = snapshot.get('departureUser');
-    UserProfile departureUser =
-        await UserRepository().getUserProfile(departureUserReference.id);
-
-    DocumentReference entryUserReference = snapshot.get('entryUser');
-    UserProfile entryUser =
-        await UserRepository().getUserProfile(entryUserReference.id);
-
-    Map petListReference = snapshot.get('petList');
-
-    List<Pet> petList = new List();
-
-    petListReference.forEach((key, value) async {
-      DocumentReference petReference = value;
-      Pet pet = await PetRepository().getPet(petReference.id);
-      petList.add(pet);
-    });
-
     if (snapshot.exists) {
-      return new DaycareAppt.fromJson(
-          id, departureUser, entryUser, petList, snapshot.data());
+      return new DaycareAppt.fromJson(id, snapshot.data());
     } else {
       return null;
     }
@@ -76,26 +57,8 @@ class AppointmentsRepository {
     DocumentSnapshot snapshot;
     snapshot = await _refHotel.doc(id).get();
 
-    DocumentReference departureUserReference = snapshot.get('departureUser');
-    UserProfile departureUser =
-        await UserRepository().getUserProfile(departureUserReference.id);
-
-    DocumentReference entryUserReference = snapshot.get('entryUser');
-    UserProfile entryUser =
-        await UserRepository().getUserProfile(entryUserReference.id);
-
-    Map petListReference = snapshot.get('petList');
-
-    List<Pet> petList = new List();
-
-    petListReference.forEach((key, value) async {
-      DocumentReference petReference = value;
-      Pet pet = await PetRepository().getPet(petReference.id);
-      petList.add(pet);
-    });
     if (snapshot.exists) {
-      return HotelAppt.fromJson(
-          id, departureUser, entryUser, petList, snapshot.data());
+      return HotelAppt.fromJson(id, snapshot.data());
     } else {
       return null;
     }
@@ -122,21 +85,8 @@ class AppointmentsRepository {
     DocumentSnapshot snapshot;
     snapshot = await _refSthetic.doc(id).get();
 
-    DocumentReference userReference = snapshot.get('user');
-    UserProfile user = await UserRepository().getUserProfile(userReference.id);
-
-    Map petListReference = snapshot.get('petList');
-
-    List<Pet> petList = new List();
-
-    petListReference.forEach((key, value) async {
-      DocumentReference petReference = value;
-      Pet pet = await PetRepository().getPet(petReference.id);
-      petList.add(pet);
-    });
-
     if (snapshot.exists) {
-      return EstheticAppt.fromJson(id, user, petList, snapshot.data());
+      return EstheticAppt.fromJson(id, snapshot.data());
     } else {
       return null;
     }
@@ -163,11 +113,8 @@ class AppointmentsRepository {
     DocumentSnapshot snapshot;
     snapshot = await _refVeterinary.doc(id).get();
 
-    DocumentReference userReference = snapshot.get('user');
-    UserProfile user = await UserRepository().getUserProfile(userReference.id);
-
     if (snapshot.exists) {
-      return VeterinaryAppt.fromJson(id, user, snapshot.data());
+      return VeterinaryAppt.fromJson(id, snapshot.data());
     } else {
       return null;
     }
@@ -188,96 +135,106 @@ class AppointmentsRepository {
 
   Future<List<DaycareAppt>> getDaycareApptList(int day) async {
     final List<DaycareAppt> daycareList = new List();
-    /*await _refDaycare.get().then((QuerySnapshot querySnapshot) {
-      return querySnapshot.docs.forEach((doc) async {
-        DaycareAppt temp = await getDaycare(doc.id);
-        print("antes de if en getlist");
-        if (temp.entryDate.toDate().day == day) {
-          print("entra al if en getlists");
-          return daycareList.add(temp);
-        }
-      });
-    });*/
-/*
+
     await _refDaycare.get().then((QuerySnapshot querySnapshot) {
-      return querySnapshot.docs.forEach((doc) async {
-        DocumentSnapshot snapshot;
-        snapshot = await _refDaycare.doc(id).get();
+      querySnapshot.docs.forEach((doc) async {
+        if (doc.exists) {
+          Timestamp entryDate = doc['entryDate'];
+          if (entryDate.toDate().day == day) {
+            /* DocumentReference departureUserReference = doc['departureUser'];*/
+            /*UserProfile departureUser = await UserRepository()
+                .getUserProfile(departureUserReference.id);*/
 
-        if (temp.entryDate.toDate().day == day) {
-          print("entra al if en getlists");
-          return daycareList.add(temp);
+            /*DocumentReference entryUserReference = doc['entryUser'];
+            UserProfile entryUser =
+                await UserRepository().getUserProfile(entryUserReference.id);
+                
+            Map petListReference = doc['petList'];
+  
+            List<Pet> petList = new List();
+
+            petListReference.forEach((key, value) async {
+              DocumentReference petReference = value;
+              Pet pet = await PetRepository().getPet(petReference.id);
+              petList.add(pet);
+            });*/
+
+            DaycareAppt temp = new DaycareAppt.fromJson(doc.id, doc.data());
+            daycareList.add(temp);
+          }
         }
       });
     });
 
-    DocumentSnapshot snapshot;
-    snapshot = await _refDaycare.doc(id).get();
-
-    DocumentReference departureUserReference = snapshot.get('departureUser');
-    UserProfile departureUser =
-        await UserRepository().getUserProfile(departureUserReference.id);
-
-    DocumentReference entryUserReference = snapshot.get('entryUser');
-    UserProfile entryUser =
-        await UserRepository().getUserProfile(entryUserReference.id);
-
-    Map petListReference = snapshot.get('petList');
-
-    List<Pet> petList = new List();
-
-    petListReference.forEach((key, value) async {
-      DocumentReference petReference = value;
-      Pet pet = await PetRepository().getPet(petReference.id);
-      petList.add(pet);
-    });
-
-    if (snapshot.exists) {
-      return new DaycareAppt.fromJson(
-          id, departureUser, entryUser, petList, snapshot.data());
+    if (daycareList.isNotEmpty) {
+      return daycareList;
     } else {
       return null;
     }
-*/
-    return daycareList;
   }
 
   Future<List<EstheticAppt>> getStheticApptList(int day) async {
     final List<EstheticAppt> stheticList = new List();
-    _refSthetic.get().then((QuerySnapshot querySnapshot) => {
-          querySnapshot.docs.forEach((doc) async {
-            EstheticAppt temp = await getSthetic(doc.id);
-            if (temp.dateTime.toDate().day == day) {
-              stheticList.add(temp);
-            }
-          })
-        });
-    return stheticList;
+
+    await _refSthetic.get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) async {
+        if (doc.exists) {
+          Timestamp entryDate = doc['date'];
+          if (entryDate.toDate().day == day) {
+            EstheticAppt temp = new EstheticAppt.fromJson(doc.id, doc.data());
+            stheticList.add(temp);
+          }
+        }
+      });
+    });
+
+    if (stheticList.isNotEmpty) {
+      return stheticList;
+    } else {
+      return null;
+    }
   }
 
   Future<List<HotelAppt>> getHotelApptList(int day) async {
     final List<HotelAppt> hotelList = new List();
-    _refHotel.get().then((QuerySnapshot querySnapshot) => {
-          querySnapshot.docs.forEach((doc) async {
-            HotelAppt temp = await getHotel(doc.id);
-            if (temp.entryDate.toDate().day == day) {
-              hotelList.add(temp);
-            }
-          })
-        });
-    return hotelList;
+    await _refHotel.get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) async {
+        if (doc.exists) {
+          Timestamp entryDate = doc['entryDate'];
+          if (entryDate.toDate().day == day) {
+            HotelAppt temp = new HotelAppt.fromJson(doc.id, doc.data());
+            hotelList.add(temp);
+          }
+        }
+      });
+    });
+
+    if (hotelList.isNotEmpty) {
+      return hotelList;
+    } else {
+      return null;
+    }
   }
 
   Future<List<VeterinaryAppt>> getVeterinaryApptList(int day) async {
     final List<VeterinaryAppt> veterinaryList = new List();
-    _refVeterinary.get().then((QuerySnapshot querySnapshot) => {
-          querySnapshot.docs.forEach((doc) async {
-            VeterinaryAppt temp = await getVeterinary(doc.id);
-            if (temp.dateTime.toDate().day == day) {
-              veterinaryList.add(temp);
-            }
-          })
-        });
-    return veterinaryList;
+    await _refVeterinary.get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) async {
+        if (doc.exists) {
+          Timestamp entryDate = doc['date'];
+          if (entryDate.toDate().day == day) {
+            VeterinaryAppt temp =
+                new VeterinaryAppt.fromJson(doc.id, doc.data());
+            veterinaryList.add(temp);
+          }
+        }
+      });
+    });
+
+    if (veterinaryList.isNotEmpty) {
+      return veterinaryList;
+    } else {
+      return null;
+    }
   }
 }
