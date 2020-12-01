@@ -193,7 +193,6 @@ class _AppointmentListState extends State<AppointmentList> {
 
   Widget _createApptContainer() {
     double titlesSize = _screenSize.width * 0.045;
-    Widget list;
     return Container(
       margin: EdgeInsets.only(top: 4.0),
       decoration: BoxDecoration(
@@ -229,9 +228,19 @@ class _AppointmentListState extends State<AppointmentList> {
               if (snapshot.hasData) {
                 return _createList(snapshot.data);
               } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (_selectedDate.day == DateTime.now().day) {
+                    return _showMessage(
+                        "Aún no hay citas para el día de hoy", false);
+                  } else {
+                    return _showMessage(
+                        "Aún no hay citas para este día", false);
+                  }
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
               }
             },
           ))
@@ -288,12 +297,6 @@ class _AppointmentListState extends State<AppointmentList> {
         !veterinaryFilter.selected) {
       list.add(1);
     }
-    /*if (daycareApptList == null &&
-        stheticApptList == null &&
-        hotelApptList == null &&
-        veterinaryApptList == null) {
-      list.add(1);
-    }*/
     if (list.isNotEmpty) {
       return list;
     } else {
@@ -327,36 +330,39 @@ class _AppointmentListState extends State<AppointmentList> {
         list.add(_createAppts(4));
       }
     }
-    /*if (daycareApptList == null &&
-        stheticApptList == null &&
-        hotelApptList == null &&
-        veterinaryApptList == null) {
-      return _showMessage(
-          "Aún no hay citas para el día de hoy");
-    }*/
     if (!daycareFilter.selected &&
         !stheticFilter.selected &&
         !hotelFilter.selected &&
         !veterinaryFilter.selected) {
       return _showMessage(
-          "Presiona uno de los filtros para poder ver información");
+          "Presiona uno de los filtros para poder ver información", true);
     }
     return SingleChildScrollView(
       child: Column(children: list),
     );
   }
 
-  Widget _showMessage(String message) {
+  Widget _showMessage(String message, bool isFilters) {
+    Icon icon;
+    if (isFilters) {
+      icon = Icon(
+        FontAwesomeIcons.exclamationTriangle,
+        size: 60,
+        color: Colors.grey,
+      );
+    } else {
+      icon = Icon(
+        FontAwesomeIcons.mugHot,
+        size: 70,
+        color: Colors.grey,
+      );
+    }
     return Container(
       margin: EdgeInsets.all(30),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            FontAwesomeIcons.exclamationTriangle,
-            size: 50,
-            color: Colors.grey,
-          ),
+          icon,
           SizedBox(
             height: 20,
           ),
@@ -509,9 +515,11 @@ class _AppointmentListState extends State<AppointmentList> {
       String userId, DateTime date, Color color, bool isConfirmed) {
     Color hourColor;
     Color apptColor;
+    Color textColor;
     Icon icon;
 
     if (isConfirmed) {
+      textColor = Colors.white;
       hourColor = Colors.white;
       apptColor = color;
       icon = Icon(
@@ -520,80 +528,92 @@ class _AppointmentListState extends State<AppointmentList> {
         size: 20,
       );
     } else {
-      hourColor = ColorsApp.problemPrimaryColorDegraded;
-      apptColor = ColorsApp.problemPrimaryColor;
+      textColor = Colors.black;
+      hourColor = Colors.white;
+      apptColor = Colors.white;
       icon = Icon(
         FontAwesomeIcons.chevronRight,
-        color: Colors.white,
+        color: Colors.black,
         size: 20,
       );
     }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-            decoration: BoxDecoration(
-              color: hourColor,
-              borderRadius: new BorderRadius.circular(8.0),
-            ),
-            height: 34,
-            alignment: Alignment.center,
-            width: _screenSize.width * 0.235,
-            margin: EdgeInsets.symmetric(vertical: 1),
-            child: Text(
-              _getTime(date),
-              style: TextStyle(
-                  color: Colors.black, fontSize: _screenSize.width * 0.043),
-            )),
-        SizedBox(
-          width: _screenSize.width * 0.01,
-        ),
-        Container(
-            margin: EdgeInsets.symmetric(vertical: 2),
-            decoration: BoxDecoration(
-              color: apptColor,
-              borderRadius: new BorderRadius.circular(8.0),
-            ),
-            width: _screenSize.width * 0.56,
-            height: 35,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                    width: _screenSize.width * 0.47,
-                    child: FutureBuilder(
-                      future: UserRepository().getUserProfile(userId),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<UserProfile> snapshot) {
-                        if (snapshot.hasData) {
-                          return Text(
-                            snapshot.data.userName +
+    return GestureDetector(
+      onTap: _goToApptDetails(isConfirmed),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+              decoration: BoxDecoration(
+                color: hourColor,
+                borderRadius: new BorderRadius.circular(8.0),
+              ),
+              height: 34,
+              alignment: Alignment.center,
+              width: _screenSize.width * 0.235,
+              margin: EdgeInsets.symmetric(vertical: 1),
+              child: Text(
+                _getTime(date),
+                style: TextStyle(
+                    color: Colors.black, fontSize: _screenSize.width * 0.043),
+              )),
+          SizedBox(
+            width: _screenSize.width * 0.01,
+          ),
+          Container(
+              margin: EdgeInsets.symmetric(vertical: 2),
+              decoration: BoxDecoration(
+                color: apptColor,
+                borderRadius: new BorderRadius.circular(8.0),
+              ),
+              width: _screenSize.width * 0.56,
+              height: 35,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                      width: _screenSize.width * 0.47,
+                      child: FutureBuilder(
+                        future: UserRepository().getUserProfile(userId),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<UserProfile> snapshot) {
+                          String name;
+                          if (snapshot.data.lastName != null) {
+                            name = snapshot.data.userName +
                                 " " +
-                                snapshot.data.lastName,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: Colors.white, fontSize: 13),
-                          );
-                        } else {
-                          return Center(
-                              child: Container(
-                            height: 10,
-                            width: 10,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 3,
-                            ),
-                          ));
-                        }
-                      },
-                    )),
-                SizedBox(
-                  width: 2,
-                ),
-                GestureDetector(child: icon)
-              ],
-            )),
-      ],
+                                snapshot.data.lastName;
+                          } else {
+                            name = snapshot.data.userName;
+                          }
+                          if (snapshot.hasData) {
+                            return Text(
+                              name,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: textColor, fontSize: 13),
+                            );
+                          } else {
+                            return Center(
+                                child: Container(
+                              height: 10,
+                              width: 10,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 3,
+                              ),
+                            ));
+                          }
+                        },
+                      )),
+                  SizedBox(
+                    width: 2,
+                  ),
+                  icon
+                ],
+              )),
+        ],
+      ),
     );
   }
+
+  Function _goToApptDetails(bool isConfirmed) {}
 
   String _getTime(DateTime date) {
     int hour;

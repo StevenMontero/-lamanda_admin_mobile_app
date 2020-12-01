@@ -5,7 +5,7 @@ import 'package:lamanda_admin/models/userProfile.dart';
 class HotelAppt {
   String id;
   Timestamp departureDate;
-  DocumentReference departureUser;
+  String departureUser;
   Timestamp entryDate;
   DocumentReference entryUser;
   Map petList;

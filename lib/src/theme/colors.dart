@@ -21,6 +21,5 @@ class ColorsApp {
   static const textPrimaryColor = Color(0xFF757575);
   static const textColorWhite = Color(0xFFFFFFFF);
 
-  static const problemPrimaryColor = Color(0xFFD73939);
-  static const problemPrimaryColorDegraded = Color(0xFFE97171);
+  static const problemPrimaryColor = Color(0xFF9AFF89);
 }

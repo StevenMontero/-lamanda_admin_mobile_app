@@ -141,10 +141,10 @@ class AppointmentsRepository {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
           if (entryDate.toDate().day == day) {
-            /* DocumentReference departureUserReference = doc['departureUser'];*/
-            /*UserProfile departureUser = await UserRepository()
-                .getUserProfile(departureUserReference.id);*/
-
+            /* DocumentReference departureUserReference = doc['departureUser'];
+            UserProfile departureUser = await UserRepository()
+                .getUserProfile(departureUserReference.id);
+*/
             /*DocumentReference entryUserReference = doc['entryUser'];
             UserProfile entryUser =
                 await UserRepository().getUserProfile(entryUserReference.id);
@@ -175,19 +175,16 @@ class AppointmentsRepository {
 
   Future<List<EstheticAppt>> getStheticApptList(int day) async {
     final List<EstheticAppt> stheticList = new List();
-
-    await _refSthetic.get().then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) async {
-        if (doc.exists) {
-          Timestamp entryDate = doc['date'];
-          if (entryDate.toDate().day == day) {
-            EstheticAppt temp = new EstheticAppt.fromJson(doc.id, doc.data());
-            stheticList.add(temp);
-          }
+    QuerySnapshot snap = await _refSthetic.get();
+    snap.docs.forEach((doc) {
+      if (doc.exists) {
+        Timestamp entryDate = doc['date'];
+        if (entryDate.toDate().day == day) {
+          EstheticAppt temp = new EstheticAppt.fromJson(doc.id, doc.data());
+          stheticList.add(temp);
         }
-      });
+      }
     });
-
     if (stheticList.isNotEmpty) {
       return stheticList;
     } else {

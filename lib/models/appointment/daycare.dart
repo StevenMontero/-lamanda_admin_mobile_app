@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DaycareAppt {
   String id;
   Timestamp departureDate;
-  DocumentReference departureUser;
+  String departureUser;
   Timestamp entryDate;
   DocumentReference entryUser;
   Map petList;
