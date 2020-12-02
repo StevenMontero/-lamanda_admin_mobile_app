@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:meta/meta.dart';
 import 'models.dart';
 
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
@@ -13,11 +12,11 @@ class Product {
   int quantity;
   String photoUrl;
   String code;
-  List<Category> categories;
+  Categories categories;
 
   Product({
-    this.name,
-    this.description,
+    this.name = '',
+    this.description = '',
     this.price = 0.0,
     this.quantity = 0,
     this.photoUrl,

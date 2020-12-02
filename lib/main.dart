@@ -4,6 +4,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lamanda_admin/src/blocs/AuthenticationBloc/authentication_bloc.dart';
+import 'package:lamanda_admin/src/blocs/productCubit/products_cubit.dart';
 import 'package:lamanda_admin/src/pages/home.dart';
 import 'package:lamanda_admin/src/routes/routes.dart';
 import 'package:lamanda_admin/src/theme/theme.dart';
@@ -37,10 +38,17 @@ class MyApp extends StatelessWidget {
     ));
     return RepositoryProvider.value(
       value: authenticationRepository,
-      child: BlocProvider(
-        create: (_) => AuthenticationBloc(
-          authenticationRepository: authenticationRepository,
-        ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => AuthenticationBloc(
+              authenticationRepository: authenticationRepository,
+            ),
+          ),
+          BlocProvider(
+            create: (_) => new ProductsCubit(),
+          ),
+        ],
         child: AppView(),
       ),
     );

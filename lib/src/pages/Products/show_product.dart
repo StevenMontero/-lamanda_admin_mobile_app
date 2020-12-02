@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lamanda_admin/src/blocs/productBloc/product_bloc.dart';
+import 'package:lamanda_admin/src/blocs/productCubit/products_cubit.dart';
 import 'package:lamanda_admin/src/models/models.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/utils/utils.dart' as utils;
@@ -15,14 +16,14 @@ class ShowProduct extends StatefulWidget {
 class _ShowProductState extends State<ShowProduct> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final products = new ProductBloc();
   final picker = ImagePicker();
   Product product = new Product();
-
+  var productCubit;
   File _photo;
 
   @override
   Widget build(BuildContext context) {
+    productCubit = context.bloc<ProductsCubit>();
     Product productData = ModalRoute.of(context).settings.arguments;
     if (productData != null) {
       product = productData;
@@ -39,12 +40,25 @@ class _ShowProductState extends State<ShowProduct> {
             child: Column(
               children: <Widget>[
                 _viewPhoto(),
+                SizedBox(height: 20.0),
                 _nameProduct(),
+                SizedBox(height: 20.0),
                 _descriptionProduct(),
+                SizedBox(height: 20.0),
                 _priceProduct(),
+                SizedBox(height: 20.0),
                 _quantityProduct(),
                 SizedBox(height: 20.0),
-                _submitButton(context),
+                _categoryProduct(),
+                SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    _deleteButton(context),
+                    SizedBox(width: 20.0),
+                    _submitButton(context),
+                  ],
+                ),
               ],
             ),
           ),
@@ -62,7 +76,12 @@ class _ShowProductState extends State<ShowProduct> {
   Widget _nameProduct() {
     return TextFormField(
       initialValue: product.name,
-      decoration: InputDecoration(labelText: 'Nombre del producto'),
+      decoration: InputDecoration(
+        labelText: 'Nombre del producto',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+      ),
       onSaved: (value) => product.name = value,
       validator: (value) {
         if (value.length < 3) {
@@ -77,7 +96,12 @@ class _ShowProductState extends State<ShowProduct> {
   Widget _descriptionProduct() {
     return TextFormField(
       initialValue: product.description,
-      decoration: InputDecoration(labelText: 'Descripción del producto'),
+      decoration: InputDecoration(
+        labelText: 'Descripción del producto',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+      ),
       onSaved: (value) => product.description = value,
       validator: (value) {
         if (value.length < 1) {
@@ -93,7 +117,12 @@ class _ShowProductState extends State<ShowProduct> {
     return TextFormField(
       initialValue: product.price.toString(),
       keyboardType: TextInputType.numberWithOptions(decimal: true),
-      decoration: InputDecoration(labelText: 'Precio del producto'),
+      decoration: InputDecoration(
+        labelText: 'Precio del producto',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+      ),
       onSaved: (value) => product.price = double.parse(value),
       validator: (value) {
         if (utils.isNumeric(value)) {
@@ -109,7 +138,12 @@ class _ShowProductState extends State<ShowProduct> {
     return TextFormField(
       initialValue: product.quantity.toString(),
       keyboardType: TextInputType.number,
-      decoration: InputDecoration(labelText: 'Cantidad del producto'),
+      decoration: InputDecoration(
+        labelText: 'Cantidad del producto',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+      ),
       onSaved: (value) => product.quantity = int.parse(value),
       validator: (value) {
         if (utils.isNumeric(value)) {
@@ -119,6 +153,47 @@ class _ShowProductState extends State<ShowProduct> {
         }
       },
     );
+  }
+
+  Widget _categoryProduct() {
+    String selected;
+    List<Categories> categories = productCubit.getCategories();
+    List<DropdownMenuItem<Categories>> options = new List();
+    for (Categories c in categories) {
+      options.add(new DropdownMenuItem(
+        value: c,
+        child: new Text(c.toString()),
+      ));
+    }
+
+    return DropdownButton(
+      value: selected,
+      items: options,
+      onChanged: (value) {
+        setState(() {
+          selected = value;
+          product.categories = value;
+        });
+      },
+    );
+  }
+
+  Widget _deleteButton(BuildContext context) {
+    if (product.code != null) {
+      return RaisedButton.icon(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        padding: EdgeInsets.all(15.0),
+        color: ColorsApp.primaryColorOrange,
+        textColor: Colors.white,
+        onPressed: () {
+          productCubit.deleteProduct(product);
+        },
+        icon: Icon(Icons.delete_forever),
+        label: Text('Eliminar'),
+      );
+    }
+    return Container();
   }
 
   Widget _submitButton(BuildContext context) {
@@ -211,6 +286,7 @@ class _ShowProductState extends State<ShowProduct> {
   }
 
   _selectPhoto(ImageSource source) async {
+    //TODO: Genera problemas el Image Picker (No implementation found for method pickImage on channel plugins.flutter.io/image_picker)
     final pickedFile = await picker.getImage(source: source, imageQuality: 70);
 
     setState(() {
@@ -227,30 +303,29 @@ class _ShowProductState extends State<ShowProduct> {
     //TODO: falta guardar foto a db
     if (!formKey.currentState.validate()) return;
     formKey.currentState.save();
-    setState(() {});
 
     if (_photo != null) {
-      product.photoUrl = await products.loadPhoto(_photo);
+      product.photoUrl = await productCubit.loadPhoto(_photo);
     }
 
-    if (product.code == null) {
-      products.addProduct(product);
-    } else {
-      products.changeProduct(product);
-    }
-
-    setState(() {});
+    setState(() {
+      if (product.code == null) {
+        productCubit.createProduct(product);
+      } else {
+        productCubit.modifyProduct(product);
+      }
+    });
 
     _messageSnack('Producto Guardado');
-    Navigator.pop(context);
+    Navigator.pop(context, () {
+      setState(() {});
+    });
   }
 
   Widget _messageSnack(String message) {
-    final snack = SnackBar(
+    return SnackBar(
       content: Text(message),
-      duration: Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 3000),
     );
-
-    return snack;
   }
 }
