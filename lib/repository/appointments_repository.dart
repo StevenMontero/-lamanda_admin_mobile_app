@@ -3,10 +3,6 @@ import 'package:lamanda_admin/models/appointment/daycare.dart';
 import 'package:lamanda_admin/models/appointment/esthetic.dart';
 import 'package:lamanda_admin/models/appointment/hotel.dart';
 import 'package:lamanda_admin/models/appointment/veterinary.dart';
-import 'package:lamanda_admin/models/pet.dart';
-import 'package:lamanda_admin/models/userProfile.dart';
-import 'package:lamanda_admin/repository/pet_repository.dart';
-import 'package:lamanda_admin/repository/user_repository.dart';
 
 class AppointmentsRepository {
   final CollectionReference _refDaycare =
@@ -30,7 +26,7 @@ class AppointmentsRepository {
     snapshot = await _refDaycare.doc(id).get();
 
     if (snapshot.exists) {
-      return new DaycareAppt.fromJson(id, snapshot.data());
+      return new DaycareAppt.fromJson(snapshot.data());
     } else {
       return null;
     }
@@ -58,7 +54,7 @@ class AppointmentsRepository {
     snapshot = await _refHotel.doc(id).get();
 
     if (snapshot.exists) {
-      return HotelAppt.fromJson(id, snapshot.data());
+      return HotelAppt.fromJson(snapshot.data());
     } else {
       return null;
     }
@@ -86,7 +82,7 @@ class AppointmentsRepository {
     snapshot = await _refSthetic.doc(id).get();
 
     if (snapshot.exists) {
-      return EstheticAppt.fromJson(id, snapshot.data());
+      return EstheticAppt.fromJson(snapshot.data());
     } else {
       return null;
     }
@@ -114,7 +110,7 @@ class AppointmentsRepository {
     snapshot = await _refVeterinary.doc(id).get();
 
     if (snapshot.exists) {
-      return VeterinaryAppt.fromJson(id, snapshot.data());
+      return VeterinaryAppt.fromJson(snapshot.data());
     } else {
       return null;
     }
@@ -141,25 +137,7 @@ class AppointmentsRepository {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
           if (entryDate.toDate().day == day) {
-            /* DocumentReference departureUserReference = doc['departureUser'];
-            UserProfile departureUser = await UserRepository()
-                .getUserProfile(departureUserReference.id);
-*/
-            /*DocumentReference entryUserReference = doc['entryUser'];
-            UserProfile entryUser =
-                await UserRepository().getUserProfile(entryUserReference.id);
-                
-            Map petListReference = doc['petList'];
-  
-            List<Pet> petList = new List();
-
-            petListReference.forEach((key, value) async {
-              DocumentReference petReference = value;
-              Pet pet = await PetRepository().getPet(petReference.id);
-              petList.add(pet);
-            });*/
-
-            DaycareAppt temp = new DaycareAppt.fromJson(doc.id, doc.data());
+            DaycareAppt temp = new DaycareAppt.fromJson(doc.data());
             daycareList.add(temp);
           }
         }
@@ -178,9 +156,9 @@ class AppointmentsRepository {
     QuerySnapshot snap = await _refSthetic.get();
     snap.docs.forEach((doc) {
       if (doc.exists) {
-        Timestamp entryDate = doc['date'];
+        Timestamp entryDate = doc['entryDate'];
         if (entryDate.toDate().day == day) {
-          EstheticAppt temp = new EstheticAppt.fromJson(doc.id, doc.data());
+          EstheticAppt temp = new EstheticAppt.fromJson(doc.data());
           stheticList.add(temp);
         }
       }
@@ -199,7 +177,7 @@ class AppointmentsRepository {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
           if (entryDate.toDate().day == day) {
-            HotelAppt temp = new HotelAppt.fromJson(doc.id, doc.data());
+            HotelAppt temp = new HotelAppt.fromJson(doc.data());
             hotelList.add(temp);
           }
         }
@@ -218,10 +196,9 @@ class AppointmentsRepository {
     await _refVeterinary.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
-          Timestamp entryDate = doc['date'];
+          Timestamp entryDate = doc['entryDate'];
           if (entryDate.toDate().day == day) {
-            VeterinaryAppt temp =
-                new VeterinaryAppt.fromJson(doc.id, doc.data());
+            VeterinaryAppt temp = new VeterinaryAppt.fromJson(doc.data());
             veterinaryList.add(temp);
           }
         }

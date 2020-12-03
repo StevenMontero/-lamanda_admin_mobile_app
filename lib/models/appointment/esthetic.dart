@@ -1,29 +1,47 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lamanda_admin/models/appointment/appointment.dart';
 
-class EstheticAppt {
-  String id;
-  Timestamp dateTime;
-  Map petList;
-  DocumentReference user;
-  bool isConfirmed;
-
+class EstheticAppt extends Appointment {
   EstheticAppt(
-      {this.id, this.dateTime, this.petList, this.user, this.isConfirmed});
-
-  EstheticAppt.fromJson(String id, Map<String, dynamic> json) {
+      String id,
+      Timestamp entryDate,
+      Map petList,
+      DocumentReference entryUser,
+      bool isConfirmed,
+      bool transfer,
+      bool declined,
+      String direction) {
     this.id = id;
-    this.dateTime = json['date'];
+    this.entryDate = entryDate;
+    this.petList = petList;
+    this.entryUser = entryUser;
+    this.isConfirmed = isConfirmed;
+    this.transfer = transfer;
+    this.declined = declined;
+    this.direction = direction;
+  }
+
+  EstheticAppt.fromJson(Map<String, dynamic> json) {
+    this.id = json['id'];
+    this.entryDate = json['entryDate'];
     this.petList = json['petList'];
-    this.user = json['user'];
+    this.entryUser = json['entryUser'];
     this.isConfirmed = json['isConfirmed'];
+    this.transfer = json['transfer'];
+    this.declined = json["declined"];
+    this.direction = json["direction"];
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'date': this.dateTime,
+      'id': this.id,
+      'entryDate': this.entryDate,
       'petList': this.petList,
-      'user': this.user,
-      'isConfirmed': this.isConfirmed
+      'entryUser': this.entryUser,
+      'isConfirmed': this.isConfirmed,
+      'transfer': this.transfer,
+      'declined': this.declined,
+      'direction': this.direction
     };
   }
 }

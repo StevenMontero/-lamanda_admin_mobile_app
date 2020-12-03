@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lamanda_admin/models/appointment/appointment.dart';
 import 'package:lamanda_admin/models/appointment/daycare.dart';
 import 'package:lamanda_admin/models/appointment/esthetic.dart';
 import 'package:lamanda_admin/models/appointment/hotel.dart';
@@ -238,7 +239,7 @@ class _AppointmentListState extends State<AppointmentList> {
                   }
                 } else {
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: Image.asset('assets/gif/loading.gif'),
                   );
                 }
               }
@@ -266,7 +267,7 @@ class _AppointmentListState extends State<AppointmentList> {
           await appointmentsRepository.getStheticApptList(_selectedDate.day);
       if (stheticApptList != null) {
         stheticApptList.sort((a, b) =>
-            a.dateTime.toDate().hour.compareTo(b.dateTime.toDate().hour));
+            a.entryDate.toDate().hour.compareTo(b.entryDate.toDate().hour));
         list.add(1);
       }
     }
@@ -286,7 +287,7 @@ class _AppointmentListState extends State<AppointmentList> {
           await appointmentsRepository.getVeterinaryApptList(_selectedDate.day);
       if (veterinaryApptList != null) {
         veterinaryApptList.sort((a, b) =>
-            a.dateTime.toDate().hour.compareTo(b.dateTime.toDate().hour));
+            a.entryDate.toDate().hour.compareTo(b.entryDate.toDate().hour));
         list.add(1);
       }
     }
@@ -310,24 +311,24 @@ class _AppointmentListState extends State<AppointmentList> {
     List<Widget> list = new List();
     if (daycareApptList != null) {
       if (daycareApptList.isNotEmpty) {
-        list.add(_createAppts(1));
+        list.add(_createApptsCategories(1));
       }
     }
 
     if (stheticApptList != null) {
       if (stheticApptList.isNotEmpty) {
-        list.add(_createAppts(2));
+        list.add(_createApptsCategories(2));
       }
     }
 
     if (hotelApptList != null) {
       if (hotelApptList.isNotEmpty) {
-        list.add(_createAppts(3));
+        list.add(_createApptsCategories(3));
       }
     }
     if (veterinaryApptList != null) {
       if (veterinaryApptList.isNotEmpty) {
-        list.add(_createAppts(4));
+        list.add(_createApptsCategories(4));
       }
     }
     if (!daycareFilter.selected &&
@@ -378,242 +379,215 @@ class _AppointmentListState extends State<AppointmentList> {
     );
   }
 
-  Widget _createAppts(int type) {
-    List<Widget> appointmentsConfirmed = new List();
-    List<Widget> appointmentsNonConfirmed = new List();
-    Widget appointmentTemp;
-    Color backgroundColor;
+  Widget _createApptsCategories(int type) {
     String title;
-    Container titleConfirmed = new Container();
-    Container titleNonConfirmed = new Container();
+    Color backgroundColor;
+    Color apptsColor;
+    List<Appointment> appointmentsConfirmed = new List();
+    List<Appointment> appointmentsNonConfirmed = new List();
+    Appointment appointmentTemp;
 
     switch (type) {
       case 1:
         daycareApptList.forEach((element) {
-          appointmentTemp = _createAppoitment(
-              element.entryUser.id,
-              element.entryDate.toDate(),
-              ColorsApp.primaryColorPink,
-              element.isConfirmed);
+          appointmentTemp = element;
           if (element.isConfirmed) {
             appointmentsConfirmed.add(appointmentTemp);
           } else {
             appointmentsNonConfirmed.add(appointmentTemp);
           }
         });
-        backgroundColor = ColorsApp.primaryColorPinkDegraded;
         title = "Guardería";
+        backgroundColor = ColorsApp.primaryColorPinkDegraded;
+        apptsColor = ColorsApp.primaryColorPink;
         break;
       case 2:
         stheticApptList.forEach((element) {
-          appointmentTemp = _createAppoitment(
-              element.user.id,
-              element.dateTime.toDate(),
-              ColorsApp.primaryColorPink,
-              element.isConfirmed);
+          appointmentTemp = element;
           if (element.isConfirmed) {
             appointmentsConfirmed.add(appointmentTemp);
           } else {
             appointmentsNonConfirmed.add(appointmentTemp);
           }
         });
-        backgroundColor = ColorsApp.primaryColorBlueDegraded;
         title = "Estética";
+        backgroundColor = ColorsApp.primaryColorBlueDegraded;
+        apptsColor = ColorsApp.primaryColorBlue;
         break;
       case 3:
         hotelApptList.forEach((element) {
-          appointmentTemp = _createAppoitment(
-              element.entryUser.id,
-              element.entryDate.toDate(),
-              ColorsApp.primaryColorPink,
-              element.isConfirmed);
+          appointmentTemp = element;
           if (element.isConfirmed) {
             appointmentsConfirmed.add(appointmentTemp);
           } else {
             appointmentsNonConfirmed.add(appointmentTemp);
           }
         });
-        backgroundColor = ColorsApp.primaryColorOrangeDegraded;
         title = "Hotel";
+        backgroundColor = ColorsApp.primaryColorOrangeDegraded;
+        apptsColor = ColorsApp.primaryColorOrange;
         break;
       case 4:
         veterinaryApptList.forEach((element) {
-          appointmentTemp = _createAppoitment(
-              element.user.id,
-              element.dateTime.toDate(),
-              ColorsApp.primaryColorPink,
-              element.isConfirmed);
+          appointmentTemp = element;
           if (element.isConfirmed) {
             appointmentsConfirmed.add(appointmentTemp);
           } else {
             appointmentsNonConfirmed.add(appointmentTemp);
           }
         });
-        backgroundColor = ColorsApp.primaryColorTurquoiseDegraded;
         title = "Veterinaria";
+        backgroundColor = ColorsApp.primaryColorTurquoiseDegraded;
+        apptsColor = ColorsApp.primaryColorTurquoise;
         break;
     }
+    return createIndividualCategory(title, backgroundColor, apptsColor,
+        appointmentsConfirmed, appointmentsNonConfirmed, type);
+  }
 
-    if (appointmentsConfirmed.isNotEmpty) {
-      titleConfirmed = Container(
-        width: _screenSize.width * 0.8,
-        child: Text(
-          "Citas confirmadas",
-          style: TextStyle(fontSize: 13),
-        ),
-      );
+  Widget createIndividualCategory(
+      String title,
+      Color backgroundColor,
+      Color apptColor,
+      List<Appointment> confirmed,
+      List<Appointment> nonConfirmed,
+      int type) {
+    Column confirmedWidget = new Column();
+    Column nonConfirmedWidget = new Column();
+    if (confirmed.isNotEmpty) {
+      confirmedWidget = createApptsAccordingStatus(
+          "Citas confirmadas", confirmed, apptColor, Colors.white, type);
     }
-    if (appointmentsNonConfirmed.isNotEmpty) {
-      titleNonConfirmed = Container(
-        width: _screenSize.width * 0.8,
-        child: Text(
-          "Citas sin confirmar",
-          style: TextStyle(fontSize: 13),
-        ),
-      );
+    if (nonConfirmed.isNotEmpty) {
+      nonConfirmedWidget = createApptsAccordingStatus("Citas sin confirmar",
+          nonConfirmed, Colors.white, Colors.black, type);
     }
-
     return Card(
-      color: backgroundColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      child: Container(
-        width: _screenSize.width * 0.87,
-        margin: EdgeInsets.only(top: 5, bottom: 5),
+        color: backgroundColor,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Column(
           children: [
-            Text(
-              title,
-              style: TextStyle(fontSize: 16),
+            Container(
+              child: Text(title, style: TextStyle(fontSize: 18)),
             ),
-            SizedBox(
-              height: 3,
-            ),
-            Column(
-              children: [
-                titleConfirmed,
-                Column(
-                  children: appointmentsConfirmed,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Column(
-              children: [
-                titleNonConfirmed,
-                Column(children: appointmentsNonConfirmed),
-              ],
-            ),
+            confirmedWidget,
+            nonConfirmedWidget,
           ],
-        ),
-      ),
-    );
+        ));
   }
 
-  Widget _createAppoitment(
-      String userId, DateTime date, Color color, bool isConfirmed) {
-    Color hourColor;
-    Color apptColor;
-    Color textColor;
-    Icon icon;
-
-    if (isConfirmed) {
-      textColor = Colors.white;
-      hourColor = Colors.white;
-      apptColor = color;
-      icon = Icon(
-        FontAwesomeIcons.chevronRight,
-        color: Colors.white,
-        size: 20,
-      );
-    } else {
-      textColor = Colors.black;
-      hourColor = Colors.white;
-      apptColor = Colors.white;
-      icon = Icon(
-        FontAwesomeIcons.chevronRight,
-        color: Colors.black,
-        size: 20,
-      );
-    }
-    return GestureDetector(
-      onTap: _goToApptDetails(isConfirmed),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-              decoration: BoxDecoration(
-                color: hourColor,
-                borderRadius: new BorderRadius.circular(8.0),
-              ),
-              height: 34,
-              alignment: Alignment.center,
-              width: _screenSize.width * 0.235,
-              margin: EdgeInsets.symmetric(vertical: 1),
-              child: Text(
-                _getTime(date),
-                style: TextStyle(
-                    color: Colors.black, fontSize: _screenSize.width * 0.043),
-              )),
-          SizedBox(
-            width: _screenSize.width * 0.01,
+  Widget createApptsAccordingStatus(String status, List<Appointment> list,
+      Color apptColorReceived, Color textColor, int type) {
+    return Column(
+      children: [
+        Container(
+          width: _screenSize.width * 0.8,
+          child: Text(
+            status,
+            style: TextStyle(fontSize: 13),
           ),
-          Container(
-              margin: EdgeInsets.symmetric(vertical: 2),
-              decoration: BoxDecoration(
-                color: apptColor,
-                borderRadius: new BorderRadius.circular(8.0),
-              ),
-              width: _screenSize.width * 0.56,
-              height: 35,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                      width: _screenSize.width * 0.47,
-                      child: FutureBuilder(
-                        future: UserRepository().getUserProfile(userId),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<UserProfile> snapshot) {
-                          String name;
-                          if (snapshot.data.lastName != null) {
-                            name = snapshot.data.userName +
-                                " " +
-                                snapshot.data.lastName;
-                          } else {
-                            name = snapshot.data.userName;
-                          }
-                          if (snapshot.hasData) {
-                            return Text(
-                              name,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: textColor, fontSize: 13),
-                            );
-                          } else {
-                            return Center(
-                                child: Container(
-                              height: 10,
-                              width: 10,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 3,
+        ),
+        Container(
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            controller: null,
+            itemCount: list.length,
+            itemBuilder: (BuildContext context, int index) {
+              Appointment temp = list[index];
+
+              return GestureDetector(
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  'apptDetails',
+                  arguments: list[index],
+                ),
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: new BorderRadius.circular(8.0),
+                          ),
+                          height: 34,
+                          alignment: Alignment.center,
+                          width: _screenSize.width * 0.235,
+                          margin: EdgeInsets.symmetric(vertical: 1),
+                          child: Text(
+                            _getTime(temp.entryDate.toDate()),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: _screenSize.width * 0.043),
+                          )),
+                      SizedBox(
+                        width: _screenSize.width * 0.01,
+                      ),
+                      Container(
+                          margin: EdgeInsets.symmetric(vertical: 2),
+                          decoration: BoxDecoration(
+                            color: apptColorReceived,
+                            borderRadius: new BorderRadius.circular(8.0),
+                          ),
+                          width: _screenSize.width * 0.56,
+                          height: 35,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                  width: _screenSize.width * 0.47,
+                                  child: FutureBuilder(
+                                    future: UserRepository()
+                                        .getUserProfile(temp.entryUser.id),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<UserProfile> snapshot) {
+                                      if (snapshot.hasData) {
+                                        String name;
+                                        if (snapshot.data.lastName != null) {
+                                          name = snapshot.data.userName +
+                                              " " +
+                                              snapshot.data.lastName;
+                                        } else {
+                                          name = snapshot.data.userName;
+                                        }
+                                        return Text(
+                                          name,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: textColor, fontSize: 13),
+                                        );
+                                      } else {
+                                        return Center(
+                                            child: Container(
+                                          height: 10,
+                                          width: 10,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 3,
+                                          ),
+                                        ));
+                                      }
+                                    },
+                                  )),
+                              SizedBox(
+                                width: 2,
                               ),
-                            ));
-                          }
-                        },
-                      )),
-                  SizedBox(
-                    width: 2,
+                              Icon(FontAwesomeIcons.chevronRight,
+                                  color: textColor, size: 20)
+                            ],
+                          )),
+                    ],
                   ),
-                  icon
-                ],
-              )),
-        ],
-      ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
-
-  Function _goToApptDetails(bool isConfirmed) {}
 
   String _getTime(DateTime date) {
     int hour;
