@@ -264,7 +264,7 @@ class _ApptDetailsState extends State<ApptDetails> {
         borderRadius: new BorderRadius.circular(8.0),
       ),
       margin: EdgeInsets.symmetric(vertical: _screenSize.height * 0.01),
-      width: _screenSize.width * 0.855,
+      width: _screenSize.width * 0.89,
       height: principalContainerHeight,
       child: Column(
         children: [
@@ -278,7 +278,7 @@ class _ApptDetailsState extends State<ApptDetails> {
             ),
           ),
           Container(
-            width: _screenSize.width * 0.8,
+            width: _screenSize.width * 0.85,
             height: petInformationHeight,
             child: SingleChildScrollView(
               child: ListView.builder(
@@ -312,9 +312,9 @@ class _ApptDetailsState extends State<ApptDetails> {
 
   Widget _createIndividualPetInformation(Pet pet) {
     return Container(
-      margin: EdgeInsets.all(4),
+      margin: EdgeInsets.symmetric(vertical: 4),
       width: _screenSize.width * 0.2,
-      height: _screenSize.height * 0.2,
+      height: 160,
       decoration: BoxDecoration(
         color: degradedColor,
         borderRadius: new BorderRadius.circular(8.0),
@@ -323,23 +323,117 @@ class _ApptDetailsState extends State<ApptDetails> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Icon(
-                FontAwesomeIcons.paw,
-                color: Colors.grey[600],
-                size: _screenSize.width * 0.1,
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0, left: 5.0),
+                child: Icon(
+                  FontAwesomeIcons.paw,
+                  color: Colors.grey[600],
+                  size: _screenSize.width * 0.08,
+                ),
+              ),
+              SizedBox(
+                width: 10,
               ),
               _createInformation(
-                  pet.petName, 0.02, Colors.black, FontWeight.bold)
+                  pet.petName, 0.025, Colors.black, FontWeight.bold)
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [],
+            children: [
+              Column(
+                children: [
+                  _createPetTextAtribute("Edad", pet.age.toString()),
+                  _createPetTextAtribute("Raza", pet.breed),
+                  _createPetTextAtribute("Pelaje", pet.fur),
+                  _createPetTextAtribute("Tamaño", pet.size.toString())
+                ],
+              ),
+              Column(
+                children: [
+                  _createPetConditionAtribute("Castrado", pet.castrated),
+                  _createPetConditionAtribute("Desparacitado", pet.deworming),
+                  _createPetConditionAtribute(
+                      "Protección pestes", pet.pestProtection),
+                  _createPetConditionAtribute("Sociable", pet.sociable),
+                  _createPetConditionAtribute("Vacunado", pet.vaccine),
+                ],
+              ),
+            ],
           )
         ],
         //INSERTAR SINTOMAS PARA VETERINARIA
+      ),
+    );
+  }
+
+  Widget _createPetTextAtribute(String atribute, String value) {
+    return Container(
+      width: _screenSize.width * 0.42,
+      child: Row(
+        children: [
+          Text(
+            atribute + ": ",
+            style: TextStyle(
+                fontSize: _screenSize.height * 0.02,
+                fontWeight: FontWeight.bold),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: _screenSize.height * 0.02,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _createPetConditionAtribute(String atribute, bool condition) {
+    Color backColor;
+    Color textColor;
+    Icon icon;
+    if (condition) {
+      backColor = apptColor;
+      textColor = Colors.white;
+      icon = Icon(
+        FontAwesomeIcons.check,
+        color: Colors.grey[600],
+        size: 12,
+      );
+    } else {
+      backColor = Colors.white;
+      textColor = Colors.grey;
+      icon = Icon(
+        FontAwesomeIcons.times,
+        color: Colors.grey,
+        size: 14,
+      );
+    }
+    return Container(
+      width: _screenSize.width * 0.38,
+      margin: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: backColor,
+        borderRadius: new BorderRadius.circular(8.0),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              child: icon),
+          Container(
+            margin: EdgeInsets.only(right: 5),
+            child: Text(
+              atribute,
+              style: TextStyle(
+                  fontSize: _screenSize.width * 0.036, color: textColor),
+            ),
+          ),
+        ],
       ),
     );
   }
