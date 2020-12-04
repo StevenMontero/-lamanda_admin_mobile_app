@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lamanda_admin/models/appointment/appointment.dart';
+import 'package:lamanda_admin/models/appointment/apptStay.dart';
 
-class DaycareAppt extends Appointment {
-  Timestamp departureDate;
-  String departureUser;
+class DaycareAppt extends ApptStay {
+  
 
   DaycareAppt(
       String id,

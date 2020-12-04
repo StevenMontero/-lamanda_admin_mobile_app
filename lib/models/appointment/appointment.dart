@@ -4,7 +4,7 @@ class Appointment {
   String id;
   Timestamp entryDate;
   DocumentReference entryUser;
-  Map petList;
+  Map<String, DocumentReference> petList;
   bool transfer;
   bool isConfirmed;
   bool declined;

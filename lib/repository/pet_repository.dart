@@ -12,11 +12,10 @@ class PetRepository {
   }
 
   Future<Pet> getPet(String id) async {
-    Pet pet;
     DocumentSnapshot snapshot;
     snapshot = await _ref.doc(id).get();
     if (snapshot.exists) {
-      return pet = Pet.fromJson(id, snapshot.data());
+      return Pet.fromJson(snapshot.data());
     } else {
       return null;
     }

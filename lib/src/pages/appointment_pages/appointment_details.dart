@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lamanda_admin/models/appointment/appointment.dart';
+import 'package:lamanda_admin/models/appointment/apptStay.dart';
 import 'package:lamanda_admin/models/appointment/daycare.dart';
 import 'package:lamanda_admin/models/appointment/esthetic.dart';
 import 'package:lamanda_admin/models/appointment/hotel.dart';
 import 'package:lamanda_admin/models/appointment/veterinary.dart';
+import 'package:lamanda_admin/models/pet.dart';
 import 'package:lamanda_admin/models/userProfile.dart';
+import 'package:lamanda_admin/repository/pet_repository.dart';
 import 'package:lamanda_admin/repository/user_repository.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
@@ -161,13 +165,36 @@ class _ApptDetailsState extends State<ApptDetails> {
           ),
           width: _screenSize.width * 0.23,
           height: _screenSize.height * 0.12,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _createInformation(appt.entryDate.toDate().day.toString(), 0.043,
+                  Colors.white, FontWeight.bold),
+              _createInformation(
+                  _getDayText(), 0.017, Colors.grey[200], FontWeight.bold),
+              _createInformation(_getTime(appt.entryDate.toDate()), 0.018,
+                  Colors.grey[200], FontWeight.bold),
+            ],
+          ),
         )
       ],
     );
   }
 
+  Widget _createInformation(
+      String inf, double size, Color textColor, FontWeight fontWeight) {
+    return Text(
+      inf,
+      style: TextStyle(
+          fontSize: _screenSize.height * size,
+          fontWeight: fontWeight,
+          color: textColor),
+    );
+  }
+
   Widget _createDepartureInformation() {
     if (type == 1 || type == 3) {
+      ApptStay apptStay = appt;
       return Container(
         margin: EdgeInsets.only(top: _screenSize.height * 0.01),
         child: Row(
@@ -187,6 +214,23 @@ class _ApptDetailsState extends State<ApptDetails> {
               ),
               width: _screenSize.width * 0.66,
               height: _screenSize.height * 0.06,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: _screenSize.width * 0.01,
+                  ),
+                  _createInformation(_getTime(apptStay.departureDate.toDate()),
+                      0.022, Colors.white, FontWeight.normal),
+                  SizedBox(
+                    width: _screenSize.width * 0.02,
+                  ),
+                  Container(
+                    width: _screenSize.width * 0.4,
+                    child: _createInformation(apptStay.departureUser, 0.018,
+                        Colors.white, FontWeight.normal),
+                  ),
+                ],
+              ),
             )
           ],
         ),
@@ -234,14 +278,68 @@ class _ApptDetailsState extends State<ApptDetails> {
             ),
           ),
           Container(
-            width: _screenSize.width * 0.83,
+            width: _screenSize.width * 0.8,
             height: petInformationHeight,
             child: SingleChildScrollView(
-                //informacion mascotas
-                ),
+              child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  controller: ScrollController(),
+                  itemCount: appt.petList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    int i = index + 1;
+                    return FutureBuilder(
+                      future: PetRepository().getPet(appt.petList['pet$i'].id),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<Pet> snapshot) {
+                        if (snapshot.hasData) {
+                          return _createIndividualPetInformation(snapshot.data);
+                        } else {
+                          return Center(
+                            child: Image.asset('assets/gif/loading.gif'),
+                          );
+                        }
+                      },
+                    );
+                  }),
+            ),
           ),
           _createDirectionInformation()
         ],
+      ),
+    );
+  }
+
+  Widget _createIndividualPetInformation(Pet pet) {
+    return Container(
+      margin: EdgeInsets.all(4),
+      width: _screenSize.width * 0.2,
+      height: _screenSize.height * 0.2,
+      decoration: BoxDecoration(
+        color: degradedColor,
+        borderRadius: new BorderRadius.circular(8.0),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                FontAwesomeIcons.paw,
+                color: Colors.grey[600],
+                size: _screenSize.width * 0.1,
+              ),
+              _createInformation(
+                  pet.petName, 0.02, Colors.black, FontWeight.bold)
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [],
+          )
+        ],
+        //INSERTAR SINTOMAS PARA VETERINARIA
       ),
     );
   }
@@ -304,6 +402,7 @@ class _ApptDetailsState extends State<ApptDetails> {
       color = degradedColor;
       confirmedCondition = "Sin confirmar";
       actionMessage = "Confirmar";
+      icon = Icon(FontAwesomeIcons.paw);
     }
 
     return Container(
@@ -314,5 +413,91 @@ class _ApptDetailsState extends State<ApptDetails> {
       width: _screenSize.width * 0.855,
       height: _screenSize.height * 0.06,
     );
+  }
+
+  String _getDayText() {
+    switch (appt.entryDate.toDate().weekday) {
+      case 1:
+        return "Lunes";
+        break;
+      case 2:
+        return "Mártes";
+        break;
+      case 3:
+        return "Miércoles";
+        break;
+      case 4:
+        return "Jueves";
+        break;
+      case 5:
+        return "Viernes";
+        break;
+      case 6:
+        return "Sábado";
+        break;
+      case 7:
+        return "Domingo";
+        break;
+      default:
+    }
+  }
+
+  String _getTime(DateTime date) {
+    int hour;
+    String hourString;
+    String minute;
+    String ampm;
+
+    if (date.minute.toString().length == 1) {
+      minute = "0" + date.minute.toString();
+    } else {
+      minute = date.minute.toString();
+    }
+
+    if (date.hour >= 13) {
+      ampm = "PM";
+
+      switch (date.hour) {
+        case 13:
+          hour = 1;
+          break;
+        case 14:
+          hour = 2;
+          break;
+        case 15:
+          hour = 3;
+          break;
+        case 16:
+          hour = 4;
+          break;
+        case 17:
+          hour = 5;
+          break;
+        case 18:
+          hour = 6;
+          break;
+        case 19:
+          hour = 7;
+          break;
+        case 20:
+          hour = 8;
+          break;
+        default:
+      }
+
+      if (hour.toString().length == 1) {
+        hourString = "0" + hour.toString();
+      } else {
+        hourString = hour.toString();
+      }
+    } else {
+      ampm = "AM";
+      if (date.hour.toString().length == 1) {
+        hourString = "0" + date.hour.toString();
+      } else {
+        hourString = date.hour.toString();
+      }
+    }
+    return hourString + ":" + minute + " " + ampm;
   }
 }

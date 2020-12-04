@@ -24,8 +24,8 @@ class Pet {
       this.sociable,
       this.castrated});
 
-  Pet.fromJson(String id, Map<String, dynamic> json) {
-    this.id = id;
+  Pet.fromJson(Map<String, dynamic> json) {
+    this.id = json['id'];
     this.petName = json['name'];
     this.size = json['size'];
     this.breed = json['breed'];
