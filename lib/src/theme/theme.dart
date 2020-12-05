@@ -4,6 +4,7 @@ import 'colors.dart';
 
 ThemeData theme() {
   return ThemeData(
+    accentColor: Colors.white,
     scaffoldBackgroundColor: Colors.white,
     fontFamily: "Muli",
     appBarTheme: appBarTheme(),

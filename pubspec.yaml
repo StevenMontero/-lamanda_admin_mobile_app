@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations: # Add this line
+    sdk: flutter # Add this line
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -39,11 +41,12 @@ dependencies:
   pedantic: ^1.9.0
   flutter_svg: ^0.19.0
   formz: ^0.3.2
-  firebase_core: ^0.5.0+1
+  firebase_core: ^0.5.2+1
+  cloud_firestore: ^0.14.3+1
   meta: ^1.1.8
-  cloud_firestore:
   authentication_repository:
     path: packages/authentication_repository
+  scrollable_positioned_list: ^0.1.8
     
 dev_dependencies:
   flutter_test:
@@ -65,6 +68,7 @@ flutter:
     - assets/img/
     - assets/icons/
     - assets/images/
+    - assets/gif/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

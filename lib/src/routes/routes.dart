@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:lamanda_admin/src/pages/Products/list_products_page.dart';
 import 'package:lamanda_admin/src/pages/Products/show_product.dart';
+import 'package:lamanda_admin/src/pages/appointment_pages/appointment_details.dart';
+import 'package:lamanda_admin/src/pages/appointment_pages/appointment_list_page.dart';
 import 'package:lamanda_admin/src/pages/home.dart';
 import 'package:lamanda_admin/src/pages/login_pages/login_page.dart';
 
@@ -10,5 +12,7 @@ Map<String, WidgetBuilder> getRoutesApp() {
     'listProducts': (BuildContext context) => ListProducts(),
     'login': (BuildContext context) => LoginScreen(),
     'showProduct': (BuildContext context) => ShowProduct(),
+    'listAppointments': (BuildContext context) => AppointmentList(),
+    'apptDetails': (BuildContext context) => ApptDetails(),
   };
 }

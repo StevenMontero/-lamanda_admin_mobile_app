@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lamanda_admin/providers/product_service.dart';
+import 'package:lamanda_admin/repository/product_repository.dart';
 import 'package:lamanda_admin/src/models/models.dart';
 import 'package:rxdart/rxdart.dart';
 
