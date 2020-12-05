@@ -156,22 +156,30 @@ class _ShowProductState extends State<ShowProduct> {
   }
 
   Widget _categoryProduct() {
-    String selected;
     List<Categories> categories = productCubit.getCategories();
-    List<DropdownMenuItem<Categories>> options = new List();
-    for (Categories c in categories) {
+    List<DropdownMenuItem<String>> options = new List();
+    categories.forEach((c) {
       options.add(new DropdownMenuItem(
-        value: c,
-        child: new Text(c.toString()),
+        value: c.toString().substring(c.toString().indexOf('.') + 1),
+        child: new Text(c.toString().substring(c.toString().indexOf('.') + 1)),
       ));
-    }
+    });
 
-    return DropdownButton(
-      value: selected,
+    String _selected;
+    return DropdownButtonFormField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(
+            const Radius.circular(20.0),
+          ),
+        ),
+      ),
+      hint: Text("Selecciona una categoria"),
+      value: _selected,
       items: options,
-      onChanged: (value) {
+      onChanged: (String value) {
         setState(() {
-          selected = value;
+          _selected = value;
           product.categories = value;
         });
       },
@@ -188,6 +196,7 @@ class _ShowProductState extends State<ShowProduct> {
         textColor: Colors.white,
         onPressed: () {
           productCubit.deleteProduct(product);
+          Navigator.pop(context);
         },
         icon: Icon(Icons.delete_forever),
         label: Text('Eliminar'),

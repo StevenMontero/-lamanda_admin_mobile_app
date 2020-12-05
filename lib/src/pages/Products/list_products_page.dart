@@ -16,7 +16,8 @@ class ListProducts extends StatelessWidget {
     return Scaffold(
       appBar: titlePage(context),
       body: BlocBuilder<ProductsCubit, ProductsState>(builder: (_, state) {
-        if (state is ProductsInitial) {
+        /*if (state is ProductsInitial) {
+          //TODO: verificar estados
           return Center(
             child: Text(
               'Presione el boton \'+\' para agregar un producto',
@@ -25,7 +26,8 @@ class ListProducts extends StatelessWidget {
           );
         } else {
           return _body(context);
-        }
+        }*/
+        return _body(context);
       }),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add, size: 40.0),
@@ -88,20 +90,19 @@ class ListProducts extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
         if (snapshot.hasData) {
           final _product = snapshot.data ?? [];
-
           if (_product == []) {
-            Center(
+            return Center(
               child: Text(
                 'Presione el boton \'+\' para agregar un producto',
                 style: TextStyle(color: ColorsApp.textPrimaryColor),
               ),
             );
+          } else {
+            return ListView.builder(
+              itemCount: _product.length,
+              itemBuilder: (context, i) => _cardProduct(context, _product[i]),
+            );
           }
-
-          return ListView.builder(
-            itemCount: _product.length,
-            itemBuilder: (context, i) => _cardProduct(context, _product[i]),
-          );
         } else {
           return Center(
             child: CircularProgressIndicator(),
@@ -179,22 +180,10 @@ class ListProducts extends StatelessWidget {
       ),
     );
 
-    return Dismissible(
-      key: UniqueKey(),
-      background: Container(
-        child: Icon(Icons.delete, size: 20.0),
-        alignment: Alignment.centerLeft,
-        color: Colors.red,
-      ),
-      onDismissed: (direction) {
-        direction = DismissDirection.startToEnd;
-        products.deleteProduct(product);
-      },
-      child: GestureDetector(
-        child: productCard,
-        onTap: () =>
-            Navigator.pushNamed(context, 'showProduct', arguments: product),
-      ),
+    return GestureDetector(
+      child: productCard,
+      onTap: () =>
+          Navigator.pushNamed(context, 'showProduct', arguments: product),
     );
   }
 

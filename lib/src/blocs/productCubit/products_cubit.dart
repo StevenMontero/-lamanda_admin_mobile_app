@@ -15,12 +15,8 @@ class ProductsCubit extends Cubit<ProductsState> {
   get getProductsStream => _productsController.stream;
 
   void createProduct(Product product) {
-    final currentState = state;
-    if (currentState is ProductsModified) {
-      currentState.product = product;
-      products.addProduct(product);
-      emit(new ProductsModified(product));
-    }
+    products.addProduct(product);
+    emit(new ProductsModified(product));
   }
 
   void modifyProduct(Product product) {
@@ -42,7 +38,10 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   Future<List<Product>> getProducts() async {
-    final list = await products.getProducts();
+    List<Product> list = await products.getProducts();
+    if (list.isEmpty != true) {
+      emit(new ProductsModified(new Product()));
+    }
     _productsController.sink.add(list);
     return list;
   }
@@ -52,7 +51,9 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   //TODO: Agregar endpoint donde se guardara la imagen
-  Future<String> loadPhoto(File photo) async {}
+  Future<String> loadPhoto(File photo) async {
+    return "";
+  }
 
   List<Categories> getCategories() {
     return Categories.values;

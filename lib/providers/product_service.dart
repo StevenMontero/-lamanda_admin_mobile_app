@@ -3,8 +3,6 @@ import 'package:lamanda_admin/src/models/models.dart';
 
 class ProductService {
   final products = FirebaseFirestore.instance.collection('products');
-  Stream collectionStream =
-      FirebaseFirestore.instance.collection('products').snapshots();
 
   Future<void> addProduct(Product product) async {
     products
@@ -36,15 +34,12 @@ class ProductService {
   }
 
   Future<List<Product>> getProducts() async {
-    final List<Product> listProducts = new List();
-    dynamic temp = Product();
-    final snap = products.snapshots();
-    snap.forEach((value) {
-      value.docs.forEach((p) {
-        temp = Product.fromJson(p.data());
-        temp.code = p.id;
-      });
-
+    final listProducts = new List<Product>();
+    Product temp = Product();
+    QuerySnapshot snap = await products.get();
+    snap.docs.forEach((p) {
+      temp = Product.fromJson(p.data());
+      temp.code = p.id;
       listProducts.add(temp);
     });
     return listProducts;

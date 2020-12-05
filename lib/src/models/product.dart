@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'models.dart';
 
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
@@ -12,7 +11,7 @@ class Product {
   int quantity;
   String photoUrl;
   String code;
-  Categories categories;
+  String categories;
 
   Product({
     this.name = '',
@@ -21,7 +20,7 @@ class Product {
     this.quantity = 0,
     this.photoUrl,
     this.code,
-    this.categories,
+    this.categories = '',
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
