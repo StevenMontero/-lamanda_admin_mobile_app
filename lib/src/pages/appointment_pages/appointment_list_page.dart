@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lamanda_admin/models/appointment/appointment.dart';
@@ -135,11 +133,6 @@ class _AppointmentListState extends State<AppointmentList> {
                   return name == filter.name;
                 });
                 filter.selected = true;
-              }
-              if (filter.selected) {
-                print("Se activa");
-              } else {
-                print("se desactiva");
               }
             });
           },
@@ -363,7 +356,10 @@ class _AppointmentListState extends State<AppointmentList> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon,
+          Container(
+            width: _screenSize.width * 0.35,
+            child: Image.asset('assets/gif/coffee3.gif'),
+          ),
           SizedBox(
             height: 20,
           ),
@@ -498,11 +494,15 @@ class _AppointmentListState extends State<AppointmentList> {
               Appointment temp = list[index];
 
               return GestureDetector(
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  'apptDetails',
-                  arguments: list[index],
-                ),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    'apptDetails',
+                    arguments: temp,
+                  ).then((value) {
+                    setState(() {});
+                  });
+                },
                 child: Container(
                   margin: EdgeInsets.only(bottom: 3),
                   child: Row(
@@ -545,6 +545,7 @@ class _AppointmentListState extends State<AppointmentList> {
                                     builder: (BuildContext context,
                                         AsyncSnapshot<UserProfile> snapshot) {
                                       if (snapshot.hasData) {
+                                        temp.entryUserProfile = snapshot.data;
                                         String name;
                                         if (snapshot.data.lastName != null) {
                                           name = snapshot.data.userName +
@@ -553,12 +554,23 @@ class _AppointmentListState extends State<AppointmentList> {
                                         } else {
                                           name = snapshot.data.userName;
                                         }
-                                        return Text(
-                                          name,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: textColor, fontSize: 13),
-                                        );
+                                        if (temp.declined) {
+                                          return Center(
+                                              child: Container(
+                                            height: 10,
+                                            width: 10,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 3,
+                                            ),
+                                          ));
+                                        } else {
+                                          return Text(
+                                            name,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: textColor, fontSize: 13),
+                                          );
+                                        }
                                       } else {
                                         return Center(
                                             child: Container(

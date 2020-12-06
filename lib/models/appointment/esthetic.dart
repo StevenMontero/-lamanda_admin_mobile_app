@@ -5,7 +5,6 @@ class EstheticAppt extends Appointment {
   EstheticAppt(
       String id,
       Timestamp entryDate,
-      Map petList,
       DocumentReference entryUser,
       bool isConfirmed,
       bool transfer,
@@ -13,7 +12,6 @@ class EstheticAppt extends Appointment {
       String direction) {
     this.id = id;
     this.entryDate = entryDate;
-    this.petList = petList;
     this.entryUser = entryUser;
     this.isConfirmed = isConfirmed;
     this.transfer = transfer;
@@ -24,7 +22,6 @@ class EstheticAppt extends Appointment {
   EstheticAppt.fromJson(Map<String, dynamic> json) {
     this.id = json['id'];
     this.entryDate = json['entryDate'];
-    this.petList = json['petList'];
     this.entryUser = json['entryUser'];
     this.isConfirmed = json['isConfirmed'];
     this.transfer = json['transfer'];
@@ -36,7 +33,6 @@ class EstheticAppt extends Appointment {
     return {
       'id': this.id,
       'entryDate': this.entryDate,
-      'petList': this.petList,
       'entryUser': this.entryUser,
       'isConfirmed': this.isConfirmed,
       'transfer': this.transfer,

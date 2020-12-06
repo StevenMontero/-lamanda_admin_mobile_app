@@ -136,7 +136,8 @@ class AppointmentsRepository {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
-          if (entryDate.toDate().day == day) {
+          bool isDeclined = doc['declined'];
+          if (entryDate.toDate().day == day && !isDeclined) {
             DaycareAppt temp = new DaycareAppt.fromJson(doc.data());
             daycareList.add(temp);
           }
@@ -157,7 +158,8 @@ class AppointmentsRepository {
     snap.docs.forEach((doc) {
       if (doc.exists) {
         Timestamp entryDate = doc['entryDate'];
-        if (entryDate.toDate().day == day) {
+        bool isDeclined = doc['declined'];
+        if (entryDate.toDate().day == day && !isDeclined) {
           EstheticAppt temp = new EstheticAppt.fromJson(doc.data());
           stheticList.add(temp);
         }
@@ -176,7 +178,8 @@ class AppointmentsRepository {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
-          if (entryDate.toDate().day == day) {
+          bool isDeclined = doc['declined'];
+          if (entryDate.toDate().day == day && !isDeclined) {
             HotelAppt temp = new HotelAppt.fromJson(doc.data());
             hotelList.add(temp);
           }
@@ -197,7 +200,8 @@ class AppointmentsRepository {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
-          if (entryDate.toDate().day == day) {
+          bool isDeclined = doc['declined'];
+          if (entryDate.toDate().day == day && !isDeclined) {
             VeterinaryAppt temp = new VeterinaryAppt.fromJson(doc.data());
             veterinaryList.add(temp);
           }

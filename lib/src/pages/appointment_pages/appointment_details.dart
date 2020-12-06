@@ -9,6 +9,7 @@ import 'package:lamanda_admin/models/appointment/hotel.dart';
 import 'package:lamanda_admin/models/appointment/veterinary.dart';
 import 'package:lamanda_admin/models/pet.dart';
 import 'package:lamanda_admin/models/userProfile.dart';
+import 'package:lamanda_admin/repository/appointments_repository.dart';
 import 'package:lamanda_admin/repository/pet_repository.dart';
 import 'package:lamanda_admin/repository/user_repository.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
@@ -21,36 +22,43 @@ class ApptDetails extends StatefulWidget {
 
 class _ApptDetailsState extends State<ApptDetails> {
   Appointment appt;
+  UserProfile user;
   Color backgroundColor;
   Color apptColor;
   Color degradedColor;
   int type;
   Size _screenSize;
+  String loadingGif;
   @override
   Widget build(BuildContext context) {
     appt = ModalRoute.of(context).settings.arguments;
+    user = appt.entryUserProfile;
     _screenSize = MediaQuery.of(context).size;
 
     switch (appt.runtimeType) {
       case DaycareAppt:
+        loadingGif = 'assets/gif/pinkCat.gif';
         type = 1;
         backgroundColor = ColorsApp.primaryColorPinkDegraded;
         apptColor = ColorsApp.primaryColorPink;
         degradedColor = ColorsApp.primaryColorPinkDegraded2;
         break;
       case EstheticAppt:
+        loadingGif = 'assets/gif/blueCat.gif';
         type = 2;
         backgroundColor = ColorsApp.primaryColorBlueDegraded;
         apptColor = ColorsApp.primaryColorBlue;
         degradedColor = ColorsApp.primaryColorBlueDegraded2;
         break;
       case HotelAppt:
+        loadingGif = 'assets/gif/orangeCat.gif';
         type = 3;
         backgroundColor = ColorsApp.primaryColorOrangeDegraded;
         apptColor = ColorsApp.primaryColorOrange;
         degradedColor = ColorsApp.primaryColorOrangeDegraded2;
         break;
       case VeterinaryAppt:
+        loadingGif = 'assets/gif/turCat.gif';
         type = 4;
         backgroundColor = ColorsApp.primaryColorTurquoiseDegraded;
         apptColor = ColorsApp.primaryColorTurquoise;
@@ -74,7 +82,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                 _createHeader(),
                 _createDepartureInformation(),
                 _createBody(),
-                _createInformationCondition()
+                _createApptCondition(context)
               ],
             ),
           ),
@@ -82,6 +90,12 @@ class _ApptDetailsState extends State<ApptDetails> {
   }
 
   Widget _createHeader() {
+    String name;
+    if (user.lastName != null) {
+      name = user.userName + " " + user.lastName;
+    } else {
+      name = user.userName;
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -106,52 +120,26 @@ class _ApptDetailsState extends State<ApptDetails> {
                 width: _screenSize.width * 0.02,
               ),
               Container(
-                  width: _screenSize.width * 0.4,
-                  child: FutureBuilder(
-                    future: UserRepository().getUserProfile(appt.entryUser.id),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<UserProfile> snapshot) {
-                      if (snapshot.hasData) {
-                        String name;
-                        if (snapshot.data.lastName != null) {
-                          name = snapshot.data.userName +
-                              " " +
-                              snapshot.data.lastName;
-                        } else {
-                          name = snapshot.data.userName;
-                        }
-                        return Column(
-                          children: [
-                            Container(
-                              height: _screenSize.height * 0.052,
-                              child: Text(
-                                name,
-                                style: TextStyle(
-                                    fontSize: _screenSize.height * 0.018),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                snapshot.data.phone,
-                                style: TextStyle(
-                                    fontSize: _screenSize.height * 0.025),
-                              ),
-                            )
-                          ],
-                        );
-                      } else {
-                        return Center(
-                            child: Container(
-                          height: 10,
-                          width: 10,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                          ),
-                        ));
-                      }
-                    },
-                  )),
+                width: _screenSize.width * 0.4,
+                child: Column(
+                  children: [
+                    Container(
+                      height: _screenSize.height * 0.052,
+                      child: Text(
+                        name,
+                        style: TextStyle(fontSize: _screenSize.height * 0.018),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        user.phone,
+                        style: TextStyle(fontSize: _screenSize.height * 0.025),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -285,18 +273,19 @@ class _ApptDetailsState extends State<ApptDetails> {
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   controller: ScrollController(),
-                  itemCount: appt.petList.length,
+                  itemCount: user.petList.length,
                   itemBuilder: (BuildContext context, int index) {
                     int i = index + 1;
                     return FutureBuilder(
-                      future: PetRepository().getPet(appt.petList['pet$i'].id),
+                      future: PetRepository().getPet(user.petList['pet$i'].id),
                       builder:
                           (BuildContext context, AsyncSnapshot<Pet> snapshot) {
                         if (snapshot.hasData) {
                           return _createIndividualPetInformation(snapshot.data);
                         } else {
-                          return Center(
-                            child: Image.asset('assets/gif/loading.gif'),
+                          return Container(
+                            height: 100,
+                            child: Image.asset(loadingGif),
                           );
                         }
                       },
@@ -479,24 +468,95 @@ class _ApptDetailsState extends State<ApptDetails> {
     );
   }
 
-  Widget _createInformationCondition() {
+  Widget _createApptCondition(BuildContext contextPage) {
     Color color;
+    Color textColor;
     String confirmedCondition;
-    String actionMessage;
     Icon icon;
+    double divider;
 
-    FlatButton(onPressed: null, child: Text("Rechazar"));
+    Widget actionArea;
 
     if (appt.isConfirmed) {
+      divider = _screenSize.width * 0.29;
       color = apptColor;
       confirmedCondition = "Confirmada";
-      actionMessage = "Modificar";
-      icon = Icon(FontAwesomeIcons.check);
+      textColor = Colors.white;
+      icon = Icon(
+        FontAwesomeIcons.check,
+        color: Colors.white,
+      );
+      actionArea = GestureDetector(
+        onTap: () => _showAlert(context, contextPage, "¿Cancelar cita?", false),
+        child: new Container(
+          width: _screenSize.width * 0.12,
+          height: _screenSize.height * 0.05,
+          child: Icon(
+            FontAwesomeIcons.edit,
+            color: Colors.white,
+          ),
+        ),
+      );
     } else {
+      divider = _screenSize.width * 0.06;
       color = degradedColor;
       confirmedCondition = "Sin confirmar";
-      actionMessage = "Confirmar";
-      icon = Icon(FontAwesomeIcons.paw);
+      textColor = Colors.grey[700];
+      icon = Icon(
+        FontAwesomeIcons.ellipsisH,
+        color: Colors.grey[700],
+      );
+      actionArea = new Container(
+        width: _screenSize.width * 0.32,
+        height: _screenSize.height * 0.05,
+        decoration: BoxDecoration(
+          borderRadius: new BorderRadius.circular(8.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () =>
+                  _showAlert(context, contextPage, "¿Confirmar cita?", true),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: apptColor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    bottomLeft: Radius.circular(15),
+                  ),
+                ),
+                width: _screenSize.width * 0.16,
+                height: _screenSize.height * 0.05,
+                child: Icon(
+                  FontAwesomeIcons.check,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () =>
+                  _showAlert(context, contextPage, "¿Rechazar cita?", false),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    bottomRight: Radius.circular(15),
+                  ),
+                ),
+                height: _screenSize.height * 0.05,
+                width: _screenSize.width * 0.16,
+                child: Icon(
+                  FontAwesomeIcons.times,
+                  color: Colors.grey[800],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return Container(
@@ -506,7 +566,98 @@ class _ApptDetailsState extends State<ApptDetails> {
       ),
       width: _screenSize.width * 0.855,
       height: _screenSize.height * 0.06,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          children: [
+            icon,
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              confirmedCondition,
+              style: TextStyle(
+                  color: textColor,
+                  fontSize: _screenSize.width * 0.05,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: divider,
+            ),
+            actionArea
+          ],
+        ),
+      ),
     );
+  }
+
+  void _showAlert(BuildContext context, BuildContext contextPage,
+      String message, bool isConfirm) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: degradedColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            title: null,
+            content: Text(
+              message,
+              style: TextStyle(fontSize: 22),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text(
+                    'Sí',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _updateAppt(isConfirm, contextPage);
+                  }),
+              FlatButton(
+                child: Text(
+                  'No',
+                  style: TextStyle(color: Colors.black),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  void _left(BuildContext context) {
+    Navigator.of(context).pop(true);
+  }
+
+  void _updateAppt(bool isConfirm, BuildContext contextPage) {
+    setState(() {
+      if (isConfirm) {
+        appt.isConfirmed = true;
+      } else {
+        appt.declined = true;
+        _left(contextPage);
+      }
+      switch (appt.runtimeType) {
+        case DaycareAppt:
+          AppointmentsRepository().updateDaycare(appt);
+          break;
+        case EstheticAppt:
+          AppointmentsRepository().updateSthetic(appt);
+          break;
+        case HotelAppt:
+          AppointmentsRepository().updateHotel(appt);
+          break;
+        case VeterinaryAppt:
+          AppointmentsRepository().updateVeterinary(appt);
+          break;
+        default:
+      }
+    });
   }
 
   String _getDayText() {
@@ -534,6 +685,7 @@ class _ApptDetailsState extends State<ApptDetails> {
         break;
       default:
     }
+    return "";
   }
 
   String _getTime(DateTime date) {

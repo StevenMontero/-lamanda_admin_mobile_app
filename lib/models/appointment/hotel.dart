@@ -9,7 +9,6 @@ class HotelAppt extends ApptStay {
       String departureUser,
       Timestamp entryDate,
       DocumentReference entryUser,
-      Map petList,
       bool transfer,
       bool isConfirmed,
       bool declined,
@@ -19,7 +18,6 @@ class HotelAppt extends ApptStay {
     this.departureUser = departureUser;
     this.entryDate = entryDate;
     this.entryUser = entryUser;
-    this.petList = petList;
     this.transfer = transfer;
     this.isConfirmed = isConfirmed;
     this.declined = declined;
@@ -35,7 +33,6 @@ class HotelAppt extends ApptStay {
 
     this.departureUser = json['departureUser'];
     this.entryUser = json['entryUser'];
-    this.petList = json['petList'];
     this.declined = json["declined"];
     this.direction = json["direction"];
   }
@@ -47,7 +44,6 @@ class HotelAppt extends ApptStay {
       'departureUser': this.departureUser,
       'entryDate': this.entryDate,
       'entryUser': this.entryUser,
-      'petList': this.petList,
       'transfer': this.transfer,
       'isConfirmed': this.isConfirmed,
       'declined': this.declined,

@@ -15,7 +15,6 @@ class VeterinaryAppt extends Appointment {
       String direction) {
     this.id = id;
     this.entryDate = entryDate;
-    this.petList = petList;
     this.entryUser = entryUser;
     this.isConfirmed = isConfirmed;
     this.transfer = transfer;
@@ -32,7 +31,6 @@ class VeterinaryAppt extends Appointment {
     this.transfer = json['transfer'];
     this.declined = json["declined"];
     this.direction = json["direction"];
-    this.petList = json['petList'];
   }
 
   Map<String, dynamic> toJson() {

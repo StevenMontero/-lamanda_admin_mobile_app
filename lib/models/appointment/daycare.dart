@@ -1,17 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lamanda_admin/models/appointment/appointment.dart';
 import 'package:lamanda_admin/models/appointment/apptStay.dart';
 
 class DaycareAppt extends ApptStay {
-  
-
   DaycareAppt(
       String id,
       Timestamp departureDate,
       String departureUser,
       Timestamp entryDate,
       DocumentReference entryUser,
-      Map petList,
       bool transfer,
       bool isConfirmed,
       bool declined,
@@ -21,7 +17,6 @@ class DaycareAppt extends ApptStay {
     this.departureUser = departureUser;
     this.entryDate = entryDate;
     this.entryUser = entryUser;
-    this.petList = petList;
     this.transfer = transfer;
     this.isConfirmed = isConfirmed;
     this.declined = declined;
@@ -35,7 +30,6 @@ class DaycareAppt extends ApptStay {
     this.transfer = json['transfer'];
     this.departureUser = json['departureUser'];
     this.entryUser = json['entryUser'];
-    this.petList = json['petList'];
     this.isConfirmed = json['isConfirmed'];
     this.declined = json["declined"];
     this.direction = json["direction"];
@@ -48,7 +42,6 @@ class DaycareAppt extends ApptStay {
       'departureUser': this.departureUser,
       'entryDate': this.entryDate,
       'entryUser': this.entryUser,
-      'petList': this.petList,
       'transfer': this.transfer,
       'isConfirmed': this.isConfirmed,
       'declined': this.declined,

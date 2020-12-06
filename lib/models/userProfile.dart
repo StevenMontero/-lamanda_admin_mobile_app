@@ -1,8 +1,6 @@
 
-//import 'pet.dart';
 
 class UserProfile {
-
   String id;
   String userName;
   String email;
@@ -10,35 +8,33 @@ class UserProfile {
   String photoUri;
   String lastName;
   String address;
-  //List<Pet> petList;
-  String phone; 
+  Map petList;
+  String phone;
 
-  UserProfile({
-    this.id,
-    this.userName,
-    this.email,
-    this.password,
-    this.photoUri,
-    this.lastName,
-    this.address,
-    //this.petList,
-    this.phone
-  });
+  UserProfile(
+      {this.id,
+      this.userName,
+      this.email,
+      this.password,
+      this.photoUri,
+      this.lastName,
+      this.address,
+      this.petList,
+      this.phone});
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) =>
-    UserProfile (
-      id: json['id'],
-      userName: json['userName'],
-      email: json['email'],
-      password: json['password'],
-      photoUri: json['photoUri'],
-      lastName: json['lastName'],
-      address: json['address'],
-      //petList: json['id'];
-      phone: json['phone']
-      );
-  
-  Map<String, dynamic> toJson(){
+  UserProfile.fromJson(Map<String, dynamic> json) {
+    this.id = json['id'];
+    this.userName = json['userName'];
+    this.email = json['email'];
+    this.password = json['password'];
+    this.photoUri = json['photoUri'];
+    this.lastName = json['lastName'];
+    this.address = json['address'];
+    this.petList = json['petList'];
+    this.phone = json['phone'];
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'id': this.id,
       'userName': this.userName,
@@ -47,9 +43,8 @@ class UserProfile {
       'photoUri': this.photoUri,
       'lastName': this.lastName,
       'address': this.address,
-      //'petList' : this.petList,
+      'petList': this.petList,
       'phone': this.phone
     };
   }
-
 }
