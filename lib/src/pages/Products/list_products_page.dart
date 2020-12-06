@@ -1,32 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:lamanda_admin/models/product.dart';
-import 'package:lamanda_admin/repository/product_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lamanda_admin/src/blocs/productCubit/products_cubit.dart';
+import 'package:lamanda_admin/src/models/models.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
 import '../../theme/colors.dart';
 
 class ListProducts extends StatelessWidget {
-  final products = new ProductProvider();
+  final products = new ProductsCubit();
 
   @override
   Widget build(BuildContext context) {
+    products.getProducts();
+
     return Scaffold(
       appBar: titlePage(context),
-      body: Container(
-        child: Column(
-          children: [
-            _optionsBar(context),
-            Divider(),
-            Expanded(
-              child: _showProducts(),
+      body: BlocBuilder<ProductsCubit, ProductsState>(builder: (_, state) {
+        /*if (state is ProductsInitial) {
+          //TODO: verificar estados
+          return Center(
+            child: Text(
+              'Presione el boton \'+\' para agregar un producto',
+              style: TextStyle(color: ColorsApp.textPrimaryColor),
             ),
-          ],
-        ),
-      ),
+          );
+        } else {
+          return _body(context);
+        }*/
+        return _body(context);
+      }),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add, size: 40.0),
         backgroundColor: ColorsApp.primaryColorBlue,
         onPressed: () => Navigator.pushNamed(context, 'showProduct'),
+      ),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          _optionsBar(context),
+          Divider(),
+          Expanded(
+            child: _showProducts(),
+          ),
+        ],
       ),
     );
   }
@@ -64,6 +84,34 @@ class ListProducts extends StatelessWidget {
     );
   }
 
+  Widget _showProducts() {
+    return StreamBuilder(
+      stream: products.getProductsStream,
+      builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
+        if (snapshot.hasData) {
+          final _product = snapshot.data ?? [];
+          if (_product == []) {
+            return Center(
+              child: Text(
+                'Presione el boton \'+\' para agregar un producto',
+                style: TextStyle(color: ColorsApp.textPrimaryColor),
+              ),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: _product.length,
+              itemBuilder: (context, i) => _cardProduct(context, _product[i]),
+            );
+          }
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+
   Widget _cardProduct(BuildContext context, Product product) {
     double _quantity = double.parse('${product.quantity}');
     String _messageQuantity = '${product.quantity}' + " en stock";
@@ -72,7 +120,7 @@ class ListProducts extends StatelessWidget {
     String _image = '${product.photoUrl}';
 
     final productCard = Card(
-      margin: EdgeInsets.only(bottom: 10.0),
+      margin: EdgeInsets.only(left: 30.0, right: 30.0, bottom: 10.0),
       elevation: 3.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: Row(
@@ -80,9 +128,17 @@ class ListProducts extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.all(20.0),
-            child: Image(
-              image: NetworkImage(_image, scale: 2.5),
-            ),
+            child: (product.photoUrl == null)
+                ? Image(
+                    image: AssetImage('assets/img/no-image.png'),
+                    height: 100,
+                    width: 100,
+                  )
+                : Image(
+                    image: NetworkImage(_image),
+                    height: 100,
+                    width: 100,
+                  ),
           ),
           Container(
             padding: EdgeInsets.only(top: 10.0),
@@ -124,21 +180,10 @@ class ListProducts extends StatelessWidget {
       ),
     );
 
-    return Dismissible(
-      key: UniqueKey(),
-      background: Container(
-        child: Icon(Icons.delete, size: 20.0),
-        alignment: Alignment.centerLeft,
-        color: Colors.red,
-      ),
-      onDismissed: (direction) {
-        products.deleteProduct(product.code);
-      },
-      child: GestureDetector(
-        child: productCard,
-        onTap: () =>
-            Navigator.pushNamed(context, 'showProduct', arguments: product),
-      ),
+    return GestureDetector(
+      child: productCard,
+      onTap: () =>
+          Navigator.pushNamed(context, 'showProduct', arguments: product),
     );
   }
 
@@ -152,28 +197,5 @@ class ListProducts extends StatelessWidget {
       color = Colors.green;
     }
     return color;
-  }
-
-  Widget _showProducts() {
-    return FutureBuilder(
-      future: products.showProducts(),
-      builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
-        if (snapshot.hasData) {
-          final _product = snapshot.data;
-
-          return ListView.builder(
-            itemCount: _product.length,
-            itemBuilder: (context, i) => _cardProduct(context, _product[i]),
-          );
-        } else {
-          return Center(
-            child: Text(
-              'Presione el boton \'+\' para agregar un producto',
-              style: TextStyle(color: ColorsApp.textPrimaryColor),
-            ),
-          );
-        }
-      },
-    );
   }
 }
