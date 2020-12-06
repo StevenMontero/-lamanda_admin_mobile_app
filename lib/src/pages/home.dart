@@ -86,7 +86,7 @@ class AdminHome extends StatelessWidget {
           color: Colors.white,
           size: 45,
         );
-        route = '';
+        route = 'listAppointments';
         break;
       case 4:
         indicationText = "Gestión de ordenes";
