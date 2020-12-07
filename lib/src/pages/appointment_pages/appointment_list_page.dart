@@ -337,19 +337,11 @@ class _AppointmentListState extends State<AppointmentList> {
   }
 
   Widget _showMessage(String message, bool isFilters) {
-    Icon icon;
+    String typeIcon;
     if (isFilters) {
-      icon = Icon(
-        FontAwesomeIcons.exclamationTriangle,
-        size: 60,
-        color: Colors.grey,
-      );
+      typeIcon = 'assets/gif/alert.gif';
     } else {
-      icon = Icon(
-        FontAwesomeIcons.mugHot,
-        size: 70,
-        color: Colors.grey,
-      );
+      typeIcon = 'assets/gif/dog.gif';
     }
     return Container(
       margin: EdgeInsets.all(30),
@@ -357,8 +349,8 @@ class _AppointmentListState extends State<AppointmentList> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: _screenSize.width * 0.35,
-            child: Image.asset('assets/gif/coffee3.gif'),
+            width: _screenSize.width * 0.4,
+            child: Image.asset(typeIcon),
           ),
           SizedBox(
             height: 20,
@@ -492,7 +484,6 @@ class _AppointmentListState extends State<AppointmentList> {
             itemCount: list.length,
             itemBuilder: (BuildContext context, int index) {
               Appointment temp = list[index];
-
               return GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(
@@ -554,23 +545,12 @@ class _AppointmentListState extends State<AppointmentList> {
                                         } else {
                                           name = snapshot.data.userName;
                                         }
-                                        if (temp.declined) {
-                                          return Center(
-                                              child: Container(
-                                            height: 10,
-                                            width: 10,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 3,
-                                            ),
-                                          ));
-                                        } else {
-                                          return Text(
-                                            name,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: textColor, fontSize: 13),
-                                          );
-                                        }
+                                        return Text(
+                                          name,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: textColor, fontSize: 13),
+                                        );
                                       } else {
                                         return Center(
                                             child: Container(

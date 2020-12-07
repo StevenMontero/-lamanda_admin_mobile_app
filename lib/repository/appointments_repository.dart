@@ -32,6 +32,10 @@ class AppointmentsRepository {
     }
   }
 
+  void deleteDaycare(String id) {
+    _refDaycare.doc(id).delete();
+  }
+
   Future<void> updateDaycare(
     DaycareAppt daycare,
   ) {
@@ -58,6 +62,10 @@ class AppointmentsRepository {
     } else {
       return null;
     }
+  }
+
+  void deleteHotel(String id) {
+    _refHotel.doc(id).delete();
   }
 
   Future<void> updateHotel(
@@ -88,6 +96,10 @@ class AppointmentsRepository {
     }
   }
 
+  void deleteSthetic(String id) {
+    _refSthetic.doc(id).delete();
+  }
+
   Future<void> updateSthetic(
     EstheticAppt sthetic,
   ) {
@@ -116,6 +128,10 @@ class AppointmentsRepository {
     }
   }
 
+  void deleteVeterinary(String id) {
+    _refVeterinary.doc(id).delete();
+  }
+
   Future<void> updateVeterinary(
     VeterinaryAppt veterinary,
   ) {
@@ -136,8 +152,7 @@ class AppointmentsRepository {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
-          bool isDeclined = doc['declined'];
-          if (entryDate.toDate().day == day && !isDeclined) {
+          if (entryDate.toDate().day == day) {
             DaycareAppt temp = new DaycareAppt.fromJson(doc.data());
             daycareList.add(temp);
           }
@@ -158,8 +173,7 @@ class AppointmentsRepository {
     snap.docs.forEach((doc) {
       if (doc.exists) {
         Timestamp entryDate = doc['entryDate'];
-        bool isDeclined = doc['declined'];
-        if (entryDate.toDate().day == day && !isDeclined) {
+        if (entryDate.toDate().day == day) {
           EstheticAppt temp = new EstheticAppt.fromJson(doc.data());
           stheticList.add(temp);
         }
@@ -178,8 +192,7 @@ class AppointmentsRepository {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
-          bool isDeclined = doc['declined'];
-          if (entryDate.toDate().day == day && !isDeclined) {
+          if (entryDate.toDate().day == day) {
             HotelAppt temp = new HotelAppt.fromJson(doc.data());
             hotelList.add(temp);
           }
@@ -200,8 +213,7 @@ class AppointmentsRepository {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
-          bool isDeclined = doc['declined'];
-          if (entryDate.toDate().day == day && !isDeclined) {
+          if (entryDate.toDate().day == day) {
             VeterinaryAppt temp = new VeterinaryAppt.fromJson(doc.data());
             veterinaryList.add(temp);
           }

@@ -7,9 +7,10 @@ class Appointment {
   DocumentReference entryUser;
   bool transfer;
   bool isConfirmed;
-  bool declined;
   String direction;
   UserProfile entryUserProfile;
+
+  bool isDeclined = false;
 
   String uniqueId;
 }

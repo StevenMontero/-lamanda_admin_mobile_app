@@ -3,6 +3,9 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lamanda_admin/src/blocs/loginCubit/login_cubit.dart';
+import 'package:lamanda_admin/src/library/language_library/easy_localization_delegate.dart';
+import 'package:lamanda_admin/src/library/language_library/easy_localization_provider.dart';
+import 'package:lamanda_admin/src/pages/LoginAndSignUp/Signup/signup_page.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/textfield.dart';
 import 'package:formz/formz.dart';
@@ -23,29 +26,29 @@ class _LoginScreenState extends State<LoginScreen>
     mediaQueryData.size.width;
     mediaQueryData.size.height;
 
-    //var data = EasyLocalizationProvider.of(context).data;
+    var data = EasyLocalizationProvider.of(context).data;
 
-    return Container(
-        //data: data,
+    return EasyLocalizationProvider(
+        data: data,
         child: BlocProvider(
-      create: (context) =>
-          LoginCubit(context.repository<AuthenticationRepository>()),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: BlocListener<LoginCubit, LoginState>(
-          listener: (context, state) {
-            if (state.status.isSubmissionFailure) {
-              Scaffold.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  const SnackBar(content: Text('Error al iniciar sesión')),
-                );
-            }
-          },
-          child: BodyWidget(mediaQueryData: mediaQueryData),
-        ),
-      ),
-    ));
+          create: (context) =>
+              LoginCubit(context.repository<AuthenticationRepository>()),
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            body: BlocListener<LoginCubit, LoginState>(
+              listener: (context, state) {
+                if (state.status.isSubmissionFailure) {
+                  Scaffold.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      const SnackBar(content: Text('Login Failure')),
+                    );
+                }
+              },
+              child: BodyWidget(mediaQueryData: mediaQueryData),
+            ),
+          ),
+        ));
   }
 }
 
@@ -101,7 +104,7 @@ class BodyWidget extends StatelessWidget {
                               tag: "Treva",
                               child: Container(
                                 height: mediaQueryData.size.height * 0.2,
-                                width: mediaQueryData.size.width * 0.45,
+                                width: mediaQueryData.size.width * 0.55,
                                 child: SvgPicture.asset(
                                   'assets/images/Logo_COLOR.svg',
                                   fit: BoxFit.cover,
@@ -137,8 +140,7 @@ class BodyWidget extends StatelessWidget {
                           Padding(
                               padding: EdgeInsets.symmetric(vertical: 10.0)),
                           Text(
-                            //AppLocalizations.of(context).tr('or'),
-                            'O',
+                            AppLocalizations.of(context).tr('or'),
                             style: TextStyle(
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white,
@@ -161,42 +163,50 @@ class BodyWidget extends StatelessWidget {
                                     .emailChanged(value),
                                 icon: Icons.email,
                                 password: false,
-                                //lavel: AppLocalizations.of(context).tr('email'),
-                                lavel: 'Email',
+                                lavel: AppLocalizations.of(context).tr('email'),
                                 inputType: TextInputType.emailAddress,
                               );
                             },
                           ),
-
                           /// TextFromField Password
                           Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
-                          TextFromField(
-                            icon: Icons.vpn_key,
-                            password: true,
-                            //lavel: AppLocalizations.of(context).tr('password'),
-                            lavel: 'Password',
-                            inputType: TextInputType.text,
+                          BlocBuilder<LoginCubit, LoginState>(
+                            buildWhen: (previous, current) =>
+                            previous.password != current.password,
+                            builder: (context, state) {
+                              return TextFromField(
+                                erroMessage: 'Contraseña no valida',
+                                errorOccurred: state.password.invalid,
+                                onChanged: (value) => context
+                                .bloc<LoginCubit>()
+                                .passwordChanged(value),
+                                icon: Icons.vpn_key,
+                                password: true,
+                                lavel:
+                                    AppLocalizations.of(context).tr('password'),
+                                inputType: TextInputType.text,
+                              );
+                            },
                           ),
 
                           /// Button Signup
-                          //FlatButton(
-                          //    padding: EdgeInsets.only(top: 20.0),
-                          //    onPressed: () {
-                          //      Navigator.of(context).pushReplacement(
-                          //          MaterialPageRoute(
-                          //              builder: (BuildContext context) =>
-                          //                  new SignupScreen()));
-                          //    },
-                          //    child: Text(
-                          //      //AppLocalizations.of(context).tr('notHave'),
-                          //      'notHave',
-                          //      style: TextStyle(
-                          //        decoration: TextDecoration.underline,
-                          //        color: Colors.white,
-                          //        fontSize: 13.0,
-                          //        fontWeight: FontWeight.w600,
-                          //      ),
-                          //    )),
+                          FlatButton(
+                              padding: EdgeInsets.only(top: 20.0),
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            new SignupScreen()));
+                              },
+                              child: Text(
+                                AppLocalizations.of(context).tr('notHave'),
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Colors.white,
+                                  fontSize: 13.0,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )),
                           Padding(
                             padding: EdgeInsets.only(
                                 top: mediaQueryData.padding.top + 40.0,
@@ -221,8 +231,7 @@ class BodyWidget extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0)),
                     child: Text(
-                      //AppLocalizations.of(context).tr('login'),
-                      'login',
+                      AppLocalizations.of(context).tr('login'),
                       style: TextStyle(
                           color: Colors.white,
                           letterSpacing: 0.2,
@@ -280,8 +289,7 @@ class ButtonCustomSocialLogin extends StatelessWidget {
             ),
             Padding(padding: EdgeInsets.symmetric(horizontal: 7.0)),
             Text(
-              //AppLocalizations.of(context).tr(text), //loginGoogle
-              text,
+              AppLocalizations.of(context).tr(text), //loginGoogle
               style: TextStyle(
                 color: textColor, //Colors.black26,
                 fontSize: 15.0,

@@ -230,6 +230,7 @@ class _ApptDetailsState extends State<ApptDetails> {
   Widget _createBody() {
     double principalContainerHeight;
     double petInformationHeight;
+    Container symptoms = new Container();
     if (type == 1 || type == 3) {
       principalContainerHeight = _screenSize.height * 0.55;
       if (appt.transfer) {
@@ -243,6 +244,36 @@ class _ApptDetailsState extends State<ApptDetails> {
         petInformationHeight = _screenSize.height * 0.415;
       } else {
         petInformationHeight = _screenSize.height * 0.515;
+      }
+      if (type == 4) {
+        VeterinaryAppt vet = appt;
+        symptoms = new Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: new BorderRadius.circular(8.0),
+          ),
+          height: _screenSize.height * 0.14,
+          width: _screenSize.width * 0.83,
+          child: Column(
+            children: [
+              Text("Síntomas"),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    width: _screenSize.width * 0.88,
+                    margin: EdgeInsets.all(2),
+                    child: Text(
+                      vet.symptoms + "asd asd dasdsad asdasd asdasd",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: _screenSize.width * 0.035),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       }
     }
 
@@ -269,28 +300,35 @@ class _ApptDetailsState extends State<ApptDetails> {
             width: _screenSize.width * 0.85,
             height: petInformationHeight,
             child: SingleChildScrollView(
-              child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  controller: ScrollController(),
-                  itemCount: user.petList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    int i = index + 1;
-                    return FutureBuilder(
-                      future: PetRepository().getPet(user.petList['pet$i'].id),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<Pet> snapshot) {
-                        if (snapshot.hasData) {
-                          return _createIndividualPetInformation(snapshot.data);
-                        } else {
-                          return Container(
-                            height: 100,
-                            child: Image.asset(loadingGif),
-                          );
-                        }
-                      },
-                    );
-                  }),
+              child: Column(
+                children: [
+                  ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      controller: ScrollController(),
+                      itemCount: user.petList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        int i = index + 1;
+                        return FutureBuilder(
+                          future:
+                              PetRepository().getPet(user.petList['pet$i'].id),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<Pet> snapshot) {
+                            if (snapshot.hasData) {
+                              return _createIndividualPetInformation(
+                                  snapshot.data);
+                            } else {
+                              return Container(
+                                height: 100,
+                                child: Image.asset(loadingGif),
+                              );
+                            }
+                          },
+                        );
+                      }),
+                  symptoms
+                ],
+              ),
             ),
           ),
           _createDirectionInformation()
@@ -303,7 +341,7 @@ class _ApptDetailsState extends State<ApptDetails> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4),
       width: _screenSize.width * 0.2,
-      height: 160,
+      height: _screenSize.height * 0.21,
       decoration: BoxDecoration(
         color: degradedColor,
         borderRadius: new BorderRadius.circular(8.0),
@@ -478,7 +516,7 @@ class _ApptDetailsState extends State<ApptDetails> {
     Widget actionArea;
 
     if (appt.isConfirmed) {
-      divider = _screenSize.width * 0.29;
+      divider = _screenSize.width * 0.155;
       color = apptColor;
       confirmedCondition = "Confirmada";
       textColor = Colors.white;
@@ -486,16 +524,35 @@ class _ApptDetailsState extends State<ApptDetails> {
         FontAwesomeIcons.check,
         color: Colors.white,
       );
-      actionArea = GestureDetector(
-        onTap: () => _showAlert(context, contextPage, "¿Cancelar cita?", false),
-        child: new Container(
-          width: _screenSize.width * 0.12,
-          height: _screenSize.height * 0.05,
-          child: Icon(
-            FontAwesomeIcons.edit,
-            color: Colors.white,
+      actionArea = Row(
+        children: [
+          GestureDetector(
+            onTap: () => _editAppt(context),
+            child: new Container(
+              width: _screenSize.width * 0.12,
+              height: _screenSize.height * 0.05,
+              child: Icon(
+                FontAwesomeIcons.pen,
+                color: Colors.white,
+              ),
+            ),
           ),
-        ),
+          SizedBox(
+            width: 5,
+          ),
+          GestureDetector(
+            onTap: () =>
+                _showAlert(context, contextPage, "Eliminar cita?", false),
+            child: new Container(
+              width: _screenSize.width * 0.12,
+              height: _screenSize.height * 0.05,
+              child: Icon(
+                FontAwesomeIcons.trash,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       );
     } else {
       divider = _screenSize.width * 0.06;
@@ -630,6 +687,44 @@ class _ApptDetailsState extends State<ApptDetails> {
         });
   }
 
+  void _editAppt(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: degradedColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            title: Text(
+              "Editar cita",
+              style: TextStyle(fontSize: 22),
+            ),
+            content: null,
+            actions: <Widget>[
+              FlatButton(
+                  child: Text(
+                    'Guardar',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _update();
+                  }),
+              FlatButton(
+                child: Text(
+                  'Volver',
+                  style: TextStyle(color: Colors.black),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
   void _left(BuildContext context) {
     Navigator.of(context).pop(true);
   }
@@ -638,26 +733,45 @@ class _ApptDetailsState extends State<ApptDetails> {
     setState(() {
       if (isConfirm) {
         appt.isConfirmed = true;
+        _update();
       } else {
-        appt.declined = true;
+        appt.isDeclined = true;
+        switch (appt.runtimeType) {
+          case DaycareAppt:
+            AppointmentsRepository().deleteDaycare(appt.id);
+            break;
+          case EstheticAppt:
+            AppointmentsRepository().deleteSthetic(appt.id);
+            break;
+          case HotelAppt:
+            AppointmentsRepository().deleteHotel(appt.id);
+            break;
+          case VeterinaryAppt:
+            AppointmentsRepository().deleteVeterinary(appt.id);
+            break;
+          default:
+        }
         _left(contextPage);
       }
-      switch (appt.runtimeType) {
-        case DaycareAppt:
-          AppointmentsRepository().updateDaycare(appt);
-          break;
-        case EstheticAppt:
-          AppointmentsRepository().updateSthetic(appt);
-          break;
-        case HotelAppt:
-          AppointmentsRepository().updateHotel(appt);
-          break;
-        case VeterinaryAppt:
-          AppointmentsRepository().updateVeterinary(appt);
-          break;
-        default:
-      }
     });
+  }
+
+  void _update() {
+    switch (appt.runtimeType) {
+      case DaycareAppt:
+        AppointmentsRepository().updateDaycare(appt);
+        break;
+      case EstheticAppt:
+        AppointmentsRepository().updateSthetic(appt);
+        break;
+      case HotelAppt:
+        AppointmentsRepository().updateHotel(appt);
+        break;
+      case VeterinaryAppt:
+        AppointmentsRepository().updateVeterinary(appt);
+        break;
+      default:
+    }
   }
 
   String _getDayText() {

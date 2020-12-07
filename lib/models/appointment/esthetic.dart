@@ -8,14 +8,12 @@ class EstheticAppt extends Appointment {
       DocumentReference entryUser,
       bool isConfirmed,
       bool transfer,
-      bool declined,
       String direction) {
     this.id = id;
     this.entryDate = entryDate;
     this.entryUser = entryUser;
     this.isConfirmed = isConfirmed;
     this.transfer = transfer;
-    this.declined = declined;
     this.direction = direction;
   }
 
@@ -25,7 +23,6 @@ class EstheticAppt extends Appointment {
     this.entryUser = json['entryUser'];
     this.isConfirmed = json['isConfirmed'];
     this.transfer = json['transfer'];
-    this.declined = json["declined"];
     this.direction = json["direction"];
   }
 
@@ -36,7 +33,6 @@ class EstheticAppt extends Appointment {
       'entryUser': this.entryUser,
       'isConfirmed': this.isConfirmed,
       'transfer': this.transfer,
-      'declined': this.declined,
       'direction': this.direction
     };
   }

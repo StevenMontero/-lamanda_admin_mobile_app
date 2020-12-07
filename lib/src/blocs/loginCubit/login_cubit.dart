@@ -21,13 +21,13 @@ class LoginCubit extends Cubit<LoginState> {
     ));
   }
 
-  // void passwordChanged(String value) {
-  //   final password = Password.dirty(value);
-  //   emit(state.copyWith(
-  //     password: password,
-  //     status: Formz.validate([state.email, password]),
-  //   ));
-  // }
+   void passwordChanged(String value) {
+     final password = Password.dirty(value);
+     emit(state.copyWith(
+       password: password,
+       status: Formz.validate([state.email, password]),
+     ));
+   }
 
   Future<void> logInWithCredentials() async {
     if (!state.status.isValidated) return;

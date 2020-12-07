@@ -10,7 +10,6 @@ class DaycareAppt extends ApptStay {
       DocumentReference entryUser,
       bool transfer,
       bool isConfirmed,
-      bool declined,
       String direction) {
     this.id = id;
     this.departureDate = departureDate;
@@ -19,7 +18,6 @@ class DaycareAppt extends ApptStay {
     this.entryUser = entryUser;
     this.transfer = transfer;
     this.isConfirmed = isConfirmed;
-    this.declined = declined;
     this.direction = direction;
   }
 
@@ -31,7 +29,6 @@ class DaycareAppt extends ApptStay {
     this.departureUser = json['departureUser'];
     this.entryUser = json['entryUser'];
     this.isConfirmed = json['isConfirmed'];
-    this.declined = json["declined"];
     this.direction = json["direction"];
   }
 
@@ -44,7 +41,6 @@ class DaycareAppt extends ApptStay {
       'entryUser': this.entryUser,
       'transfer': this.transfer,
       'isConfirmed': this.isConfirmed,
-      'declined': this.declined,
       'direction': this.direction
     };
   }
