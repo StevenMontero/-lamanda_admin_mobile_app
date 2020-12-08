@@ -11,7 +11,6 @@ import 'package:lamanda_admin/models/pet.dart';
 import 'package:lamanda_admin/models/userProfile.dart';
 import 'package:lamanda_admin/repository/appointments_repository.dart';
 import 'package:lamanda_admin/repository/pet_repository.dart';
-import 'package:lamanda_admin/repository/user_repository.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
 
@@ -32,7 +31,7 @@ class _ApptDetailsState extends State<ApptDetails> {
   @override
   Widget build(BuildContext context) {
     appt = ModalRoute.of(context).settings.arguments;
-    user = appt.entryUserProfile;
+    user = appt.entryUser;
     _screenSize = MediaQuery.of(context).size;
 
     switch (appt.runtimeType) {
@@ -65,6 +64,7 @@ class _ApptDetailsState extends State<ApptDetails> {
         degradedColor = ColorsApp.primaryColorTurquoiseDegraded2;
         break;
     }
+    print(appt.id);
     return Scaffold(
         appBar: titlePage(context),
         body: Center(
@@ -96,6 +96,24 @@ class _ApptDetailsState extends State<ApptDetails> {
     } else {
       name = user.userName;
     }
+    String url;
+    if (user.photoUri != null) {
+      url = user.photoUri;
+    } else {
+      url = 'assets/img/no-image.png';
+    }
+    Widget hourContainer = Container();
+    if (type == 2) {
+      EstheticAppt sthetic = appt;
+      hourContainer = _createInformation(_getTime(sthetic.entryHour.toDate()),
+          0.018, Colors.grey[200], FontWeight.bold);
+    }
+    if (type == 1) {
+      DaycareAppt daycare = appt;
+      hourContainer = _createInformation(_getTime(daycare.entryHour.toDate()),
+          0.018, Colors.grey[200], FontWeight.bold);
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -110,12 +128,18 @@ class _ApptDetailsState extends State<ApptDetails> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: new BorderRadius.circular(30),
-                  )),
+                width: 60,
+                height: 60,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: FadeInImage(
+                    image: NetworkImage(url),
+                    placeholder: AssetImage(loadingGif),
+                    fit: BoxFit.cover,
+                    height: 150.0,
+                  ),
+                ),
+              ),
               SizedBox(
                 width: _screenSize.width * 0.02,
               ),
@@ -133,8 +157,8 @@ class _ApptDetailsState extends State<ApptDetails> {
                     Container(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        user.phone,
-                        style: TextStyle(fontSize: _screenSize.height * 0.025),
+                        user.email,
+                        style: TextStyle(fontSize: _screenSize.height * 0.011),
                       ),
                     )
                   ],
@@ -160,8 +184,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                   Colors.white, FontWeight.bold),
               _createInformation(
                   _getDayText(), 0.017, Colors.grey[200], FontWeight.bold),
-              _createInformation(_getTime(appt.entryDate.toDate()), 0.018,
-                  Colors.grey[200], FontWeight.bold),
+              hourContainer
             ],
           ),
         )
@@ -182,7 +205,18 @@ class _ApptDetailsState extends State<ApptDetails> {
 
   Widget _createDepartureInformation() {
     if (type == 1 || type == 3) {
-      ApptStay apptStay = appt;
+      ApptStay appts = appt;
+
+      Widget hourContainer = Container();
+      if (type == 1) {
+        DaycareAppt daycare = appt;
+        print(daycare.departureDate.toDate().hour);
+        hourContainer = _createInformation(
+            _getTime(daycare.departureDate.toDate()),
+            0.022,
+            Colors.white,
+            FontWeight.normal);
+      }
       return Container(
         margin: EdgeInsets.only(top: _screenSize.height * 0.01),
         child: Row(
@@ -207,14 +241,13 @@ class _ApptDetailsState extends State<ApptDetails> {
                   SizedBox(
                     width: _screenSize.width * 0.01,
                   ),
-                  _createInformation(_getTime(apptStay.departureDate.toDate()),
-                      0.022, Colors.white, FontWeight.normal),
+                  hourContainer,
                   SizedBox(
                     width: _screenSize.width * 0.02,
                   ),
                   Container(
                     width: _screenSize.width * 0.4,
-                    child: _createInformation(apptStay.departureUser, 0.018,
+                    child: _createInformation(appts.departureUser, 0.018,
                         Colors.white, FontWeight.normal),
                   ),
                 ],
@@ -228,6 +261,285 @@ class _ApptDetailsState extends State<ApptDetails> {
   }
 
   Widget _createBody() {
+    double principalContainerHeight;
+    double petInformationHeight;
+    Container symptoms = new Container();
+    if (type == 1 || type == 3) {
+      principalContainerHeight = _screenSize.height * 0.55;
+      if (appt.transfer) {
+        petInformationHeight = _screenSize.height * 0.35;
+      } else {
+        petInformationHeight = _screenSize.height * 0.4;
+      }
+    } else {
+      principalContainerHeight = _screenSize.height * 0.61;
+      if (appt.transfer) {
+        petInformationHeight = _screenSize.height * 0.415;
+      } else {
+        petInformationHeight = _screenSize.height * 0.515;
+      }
+      if (type == 4) {
+        VeterinaryAppt vet = appt;
+        symptoms = new Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: new BorderRadius.circular(8.0),
+          ),
+          height: _screenSize.height * 0.14,
+          width: _screenSize.width * 0.83,
+          child: Column(
+            children: [
+              Text("Síntomas"),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    width: _screenSize.width * 0.88,
+                    margin: EdgeInsets.all(2),
+                    child: Text(
+                      vet.symptoms + "asd asd dasdsad asdasd asdasd",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: _screenSize.width * 0.035),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: new BorderRadius.circular(8.0),
+      ),
+      margin: EdgeInsets.symmetric(vertical: _screenSize.height * 0.01),
+      width: _screenSize.width * 0.89,
+      height: principalContainerHeight,
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: _screenSize.width * 0.01,
+                vertical: _screenSize.height * 0.01),
+            child: Text(
+              "Información de mascota:",
+              style: TextStyle(fontSize: _screenSize.width * 0.04),
+            ),
+          ),
+          Container(
+              width: _screenSize.width * 0.85,
+              height: petInformationHeight,
+              child: _showPetInformation()),
+          _createDirectionInformation()
+        ],
+      ),
+    );
+  }
+
+  Widget _showPetInformation() {
+    switch (type) {
+      case 2:
+        EstheticAppt sthetic = appt;
+        return Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Tipo de pelaje:",
+                style: TextStyle(
+                    fontSize: _screenSize.width * 0.05,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                width: _screenSize.width * 0.05,
+              ),
+              Text(
+                sthetic.fur,
+                style: TextStyle(fontSize: _screenSize.width * 0.05),
+              ),
+            ],
+          ),
+        );
+        break;
+      case 3:
+        HotelAppt hotel = appt;
+        return Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _showSpecificInformationBool("Castrado", hotel.isCastrated),
+              _showSpecificInformationBool("Sociable", hotel.isSociable),
+              _showSpecificInformationBool(
+                  "Vacunado", hotel.isVaccinationUpDate),
+              _showSpecificInformationBool("Castrado", hotel.isCastrated),
+              _showSpecificInformationDate(
+                  "Desparacitado el:", hotel.lastDeworming),
+              _showSpecificInformationDate(
+                  "Protección de plagas el:", hotel.lastProtectionFleas),
+              _showSpecificInformationText("Raza:", hotel.race.toString()),
+              _showSpecificInformationText("Edad:", hotel.age.toString()),
+            ],
+          ),
+        );
+        break;
+      case 1:
+        DaycareAppt daycare = appt;
+        return Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _showSpecificInformationBool("Castrado", daycare.isCastrated),
+              _showSpecificInformationBool("Sociable", daycare.isSociable),
+              _showSpecificInformationBool(
+                  "Vacunado", daycare.isVaccinationUpDate),
+              _showSpecificInformationBool("Castrado", daycare.isCastrated),
+              _showSpecificInformationDate(
+                  "Desparacitado el:", daycare.lastDeworming),
+              _showSpecificInformationDate(
+                  "Protección de plagas el:", daycare.lastProtectionFleas),
+              _showSpecificInformationText("Raza:", daycare.race.toString()),
+              _showSpecificInformationText("Edad:", daycare.age.toString()),
+            ],
+          ),
+        );
+        break;
+      case 4:
+        if (type == 4) {
+          VeterinaryAppt vet = appt;
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.circular(8.0),
+            ),
+            height: _screenSize.height * 0.14,
+            width: _screenSize.width * 0.83,
+            child: Column(
+              children: [
+                _showSpecificInformationText("Raza:", vet.race.toString()),
+                SizedBox(
+                  height: _screenSize.height * 0.05,
+                ),
+                Text("Síntomas"),
+                Container(
+                  width: _screenSize.width * 0.88,
+                  margin: EdgeInsets.all(2),
+                  child: Text(
+                    vet.symptoms + "asd asd dasdsad asdasd asdasd",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: _screenSize.width * 0.035),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        break;
+      default:
+    }
+    return Container();
+  }
+
+  Widget _showSpecificInformationBool(String atribute, bool condition) {
+    if (condition != null) {
+      Icon icon;
+      if (condition) {
+        icon = new Icon(FontAwesomeIcons.check);
+      } else {
+        icon = new Icon(FontAwesomeIcons.times);
+      }
+      return Container(
+        width: _screenSize.width * 0.4,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              atribute,
+              style: TextStyle(
+                  fontSize: _screenSize.width * 0.05,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: _screenSize.width * 0.05,
+            ),
+            Container(
+              child: icon,
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _showSpecificInformationDate(String atribute, Timestamp date) {
+    if (date != null) {
+      return Container(
+        width: _screenSize.width * 0.9,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              atribute,
+              style: TextStyle(
+                  fontSize: _screenSize.width * 0.04,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: _screenSize.width * 0.05,
+            ),
+            Text(
+              date.toDate().day.toString() +
+                  "-" +
+                  date.toDate().month.toString() +
+                  "-" +
+                  date.toDate().year.toString(),
+              style: TextStyle(
+                  fontSize: _screenSize.width * 0.04,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _showSpecificInformationText(String atribute, String value) {
+    if (value != null) {
+      return Container(
+        width: _screenSize.width * 0.95,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              atribute,
+              style: TextStyle(
+                  fontSize: _screenSize.width * 0.04,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: _screenSize.width * 0.05,
+            ),
+            Text(
+              value,
+              style: TextStyle(
+                  fontSize: _screenSize.width * 0.04,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+  /* Widget _createBody() {
     double principalContainerHeight;
     double petInformationHeight;
     Container symptoms = new Container();
@@ -335,67 +647,9 @@ class _ApptDetailsState extends State<ApptDetails> {
         ],
       ),
     );
-  }
+  }*/
 
-  Widget _createIndividualPetInformation(Pet pet) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 4),
-      width: _screenSize.width * 0.2,
-      height: _screenSize.height * 0.21,
-      decoration: BoxDecoration(
-        color: degradedColor,
-        borderRadius: new BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0, left: 5.0),
-                child: Icon(
-                  FontAwesomeIcons.paw,
-                  color: Colors.grey[600],
-                  size: _screenSize.width * 0.08,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              _createInformation(
-                  pet.petName, 0.025, Colors.black, FontWeight.bold)
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  _createPetTextAtribute("Edad", pet.age.toString()),
-                  _createPetTextAtribute("Raza", pet.breed),
-                  _createPetTextAtribute("Pelaje", pet.fur),
-                  _createPetTextAtribute("Tamaño", pet.size.toString())
-                ],
-              ),
-              Column(
-                children: [
-                  _createPetConditionAtribute("Castrado", pet.castrated),
-                  _createPetConditionAtribute("Desparacitado", pet.deworming),
-                  _createPetConditionAtribute(
-                      "Protección pestes", pet.pestProtection),
-                  _createPetConditionAtribute("Sociable", pet.sociable),
-                  _createPetConditionAtribute("Vacunado", pet.vaccine),
-                ],
-              ),
-            ],
-          )
-        ],
-        //INSERTAR SINTOMAS PARA VETERINARIA
-      ),
-    );
-  }
-
+/*
   Widget _createPetTextAtribute(String atribute, String value) {
     return Container(
       width: _screenSize.width * 0.42,
@@ -416,8 +670,8 @@ class _ApptDetailsState extends State<ApptDetails> {
         ],
       ),
     );
-  }
-
+  }*/
+/*
   Widget _createPetConditionAtribute(String atribute, bool condition) {
     Color backColor;
     Color textColor;
@@ -463,7 +717,7 @@ class _ApptDetailsState extends State<ApptDetails> {
         ],
       ),
     );
-  }
+  }*/
 
   Widget _createDirectionInformation() {
     if (appt.transfer) {
@@ -516,7 +770,7 @@ class _ApptDetailsState extends State<ApptDetails> {
     Widget actionArea;
 
     if (appt.isConfirmed) {
-      divider = _screenSize.width * 0.155;
+      divider = _screenSize.width * 0.26;
       color = apptColor;
       confirmedCondition = "Confirmada";
       textColor = Colors.white;
@@ -526,7 +780,7 @@ class _ApptDetailsState extends State<ApptDetails> {
       );
       actionArea = Row(
         children: [
-          GestureDetector(
+          /*GestureDetector(
             onTap: () => _editAppt(context),
             child: new Container(
               width: _screenSize.width * 0.12,
@@ -539,7 +793,7 @@ class _ApptDetailsState extends State<ApptDetails> {
           ),
           SizedBox(
             width: 5,
-          ),
+          ),*/
           GestureDetector(
             onTap: () =>
                 _showAlert(context, contextPage, "Eliminar cita?", false),
@@ -687,7 +941,7 @@ class _ApptDetailsState extends State<ApptDetails> {
         });
   }
 
-  void _editAppt(BuildContext context) {
+  /*void _editAppt(BuildContext context) {
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -723,7 +977,7 @@ class _ApptDetailsState extends State<ApptDetails> {
             ],
           );
         });
-  }
+  }*/
 
   void _left(BuildContext context) {
     Navigator.of(context).pop(true);

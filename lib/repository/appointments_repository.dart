@@ -24,9 +24,10 @@ class AppointmentsRepository {
   Future<DaycareAppt> getDaycare(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refDaycare.doc(id).get();
-
+    DaycareAppt daycare = DaycareAppt.fromJson(snapshot.data());
+    daycare.id = id;
     if (snapshot.exists) {
-      return new DaycareAppt.fromJson(snapshot.data());
+      return daycare;
     } else {
       return null;
     }
@@ -56,9 +57,10 @@ class AppointmentsRepository {
   Future<HotelAppt> getHotel(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refHotel.doc(id).get();
-
+    HotelAppt hotel = HotelAppt.fromJson(snapshot.data());
+    hotel.id = id;
     if (snapshot.exists) {
-      return HotelAppt.fromJson(snapshot.data());
+      return hotel;
     } else {
       return null;
     }
@@ -88,9 +90,10 @@ class AppointmentsRepository {
   Future<EstheticAppt> getSthetic(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refSthetic.doc(id).get();
-
+    EstheticAppt sthetic = EstheticAppt.fromJson(snapshot.data());
+    sthetic.id = id;
     if (snapshot.exists) {
-      return EstheticAppt.fromJson(snapshot.data());
+      return sthetic;
     } else {
       return null;
     }
@@ -120,9 +123,10 @@ class AppointmentsRepository {
   Future<VeterinaryAppt> getVeterinary(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refVeterinary.doc(id).get();
-
+    VeterinaryAppt vet = VeterinaryAppt.fromJson(snapshot.data());
+    vet.id = id;
     if (snapshot.exists) {
-      return VeterinaryAppt.fromJson(snapshot.data());
+      return vet;
     } else {
       return null;
     }
@@ -151,9 +155,10 @@ class AppointmentsRepository {
     await _refDaycare.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
-          Timestamp entryDate = doc['entryDate'];
+          Timestamp entryDate = doc['date'];
           if (entryDate.toDate().day == day) {
             DaycareAppt temp = new DaycareAppt.fromJson(doc.data());
+            temp.id = doc.id;
             daycareList.add(temp);
           }
         }
@@ -175,6 +180,7 @@ class AppointmentsRepository {
         Timestamp entryDate = doc['entryDate'];
         if (entryDate.toDate().day == day) {
           EstheticAppt temp = new EstheticAppt.fromJson(doc.data());
+          temp.id = doc.id;
           stheticList.add(temp);
         }
       }
@@ -194,6 +200,7 @@ class AppointmentsRepository {
           Timestamp entryDate = doc['entryDate'];
           if (entryDate.toDate().day == day) {
             HotelAppt temp = new HotelAppt.fromJson(doc.data());
+            temp.id = doc.id;
             hotelList.add(temp);
           }
         }
@@ -215,6 +222,7 @@ class AppointmentsRepository {
           Timestamp entryDate = doc['entryDate'];
           if (entryDate.toDate().day == day) {
             VeterinaryAppt temp = new VeterinaryAppt.fromJson(doc.data());
+            temp.id = doc.id;
             veterinaryList.add(temp);
           }
         }

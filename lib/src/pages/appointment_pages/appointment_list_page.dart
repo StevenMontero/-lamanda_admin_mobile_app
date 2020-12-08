@@ -484,6 +484,13 @@ class _AppointmentListState extends State<AppointmentList> {
             itemCount: list.length,
             itemBuilder: (BuildContext context, int index) {
               Appointment temp = list[index];
+              String name = temp.entryUser.userName;
+              if (temp.entryUser.lastName != null) {
+                name += " " + temp.entryUser.lastName;
+              }
+              if (type == 4) {
+                VeterinaryAppt vet = temp;
+              }
               return GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(
@@ -499,7 +506,7 @@ class _AppointmentListState extends State<AppointmentList> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
+                      /*Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: new BorderRadius.circular(8.0),
@@ -516,63 +523,25 @@ class _AppointmentListState extends State<AppointmentList> {
                           )),
                       SizedBox(
                         width: _screenSize.width * 0.01,
-                      ),
+                      ),*/
                       Container(
                           margin: EdgeInsets.symmetric(vertical: 2),
                           decoration: BoxDecoration(
                             color: apptColorReceived,
                             borderRadius: new BorderRadius.circular(8.0),
                           ),
-                          width: _screenSize.width * 0.56,
+                          width: _screenSize.width * 0.8,
                           height: 35,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Container(
                                   width: _screenSize.width * 0.47,
-                                  child: FutureBuilder(
-                                    future: UserRepository()
-                                        .getUserProfile(temp.entryUser.id),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot<UserProfile> snapshot) {
-                                      if (snapshot.hasData) {
-                                        if (temp.isDeclined) {
-                                          return Center(
-                                              child: Container(
-                                            height: 10,
-                                            width: 10,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 3,
-                                            ),
-                                          ));
-                                        } else {
-                                          temp.entryUserProfile = snapshot.data;
-                                          String name;
-                                          if (snapshot.data.lastName != null) {
-                                            name = snapshot.data.userName +
-                                                " " +
-                                                snapshot.data.lastName;
-                                          } else {
-                                            name = snapshot.data.userName;
-                                          }
-                                          return Text(
-                                            name,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: textColor, fontSize: 13),
-                                          );
-                                        }
-                                      } else {
-                                        return Center(
-                                            child: Container(
-                                          height: 10,
-                                          width: 10,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 3,
-                                          ),
-                                        ));
-                                      }
-                                    },
+                                  child: Text(
+                                    name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: textColor, fontSize: 13),
                                   )),
                               SizedBox(
                                 width: 2,
@@ -591,7 +560,7 @@ class _AppointmentListState extends State<AppointmentList> {
       ],
     );
   }
-
+  
   String _getTime(DateTime date) {
     int hour;
     String hourString;
