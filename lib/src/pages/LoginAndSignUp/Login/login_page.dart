@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lamanda_admin/src/blocs/loginCubit/login_cubit.dart';
 import 'package:lamanda_admin/src/library/language_library/easy_localization_delegate.dart';
 import 'package:lamanda_admin/src/library/language_library/easy_localization_provider.dart';
-import 'package:lamanda_admin/src/pages/LoginAndSignUp/Signup/signup_page.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/textfield.dart';
 import 'package:formz/formz.dart';
@@ -116,31 +115,8 @@ class BodyWidget extends StatelessWidget {
                           /// ButtonCustomFacebook
                           Padding(
                               padding: EdgeInsets.symmetric(vertical: 30.0)),
-                          ButtonCustomSocialLogin(
-                            colorBackground: Color.fromRGBO(107, 112, 248, 1.0),
-                            textColor: Colors.white,
-                            text: 'loginFacebook',
-                            icon: 'assets/images/icon_facebook.png',
-                            onPressed: () =>
-                                context.bloc<LoginCubit>().logInWithFacebook(),
-                          ),
-
-                          /// ButtonCustomGoogle
-                          Padding(padding: EdgeInsets.symmetric(vertical: 7.0)),
-                          ButtonCustomSocialLogin(
-                            colorBackground: Colors.white,
-                            textColor: Colors.black26,
-                            text: 'loginGoogle',
-                            icon: 'assets/images/google.png',
-                            onPressed: () =>
-                                context.bloc<LoginCubit>().logInWithGoogle(),
-                          ),
-
-                          /// Set Text
-                          Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10.0)),
                           Text(
-                            AppLocalizations.of(context).tr('or'),
+                            AppLocalizations.of(context).tr('Administración'),
                             style: TextStyle(
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white,
@@ -188,28 +164,9 @@ class BodyWidget extends StatelessWidget {
                               );
                             },
                           ),
-
-                          /// Button Signup
-                          FlatButton(
-                              padding: EdgeInsets.only(top: 20.0),
-                              onPressed: () {
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            new SignupScreen()));
-                              },
-                              child: Text(
-                                AppLocalizations.of(context).tr('notHave'),
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.white,
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              )),
                           Padding(
                             padding: EdgeInsets.only(
-                                top: mediaQueryData.padding.top + 40.0,
+                                top: mediaQueryData.padding.top + 70.0,
                                 bottom: 0.0),
                           )
                         ],
@@ -245,57 +202,6 @@ class BodyWidget extends StatelessWidget {
                 )
               ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ButtonCustomSocialLogin extends StatelessWidget {
-  final Color colorBackground;
-  final Color textColor;
-  final String text;
-  final String icon;
-  final Function onPressed;
-
-  const ButtonCustomSocialLogin(
-      {Key key,
-      this.colorBackground,
-      this.textColor,
-      this.text,
-      this.icon,
-      this.onPressed})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: MaterialButton(
-        onPressed: onPressed,
-        height: 49.0,
-        minWidth: 500.0,
-        color: colorBackground,
-        elevation: 1.0,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              icon, //"assets/images/google.png",
-              height: 25.0,
-            ),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 7.0)),
-            Text(
-              AppLocalizations.of(context).tr(text), //loginGoogle
-              style: TextStyle(
-                color: textColor, //Colors.black26,
-                fontSize: 15.0,
-                fontWeight: FontWeight.w500,
-              ),
-            )
           ],
         ),
       ),

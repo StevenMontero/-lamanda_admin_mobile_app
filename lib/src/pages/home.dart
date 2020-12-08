@@ -21,7 +21,7 @@ class AdminHome extends StatelessWidget {
         child: Container(
           child: SvgPicture.asset(
             'assets/img/Logo_COLOR.svg',
-            height: 60,
+            height: 45,
             width: 60,
             fit: BoxFit.scaleDown,
           ),
@@ -76,8 +76,7 @@ class AdminHome extends StatelessWidget {
           color: Colors.white,
           size: 45,
         );
-        //TODO: agregar rutas de menu home
-        route = '';
+        route = 'user_list';
         break;
       case 3:
         indicationText = "Gestión de citas";
@@ -95,7 +94,7 @@ class AdminHome extends StatelessWidget {
           color: Colors.white,
           size: 45,
         );
-        route = '';
+        route = 'orders_list';
         break;
       default:
     }

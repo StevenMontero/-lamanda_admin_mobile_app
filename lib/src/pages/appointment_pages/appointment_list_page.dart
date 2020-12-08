@@ -536,21 +536,32 @@ class _AppointmentListState extends State<AppointmentList> {
                                     builder: (BuildContext context,
                                         AsyncSnapshot<UserProfile> snapshot) {
                                       if (snapshot.hasData) {
-                                        temp.entryUserProfile = snapshot.data;
-                                        String name;
-                                        if (snapshot.data.lastName != null) {
-                                          name = snapshot.data.userName +
-                                              " " +
-                                              snapshot.data.lastName;
+                                        if (temp.isDeclined) {
+                                          return Center(
+                                              child: Container(
+                                            height: 10,
+                                            width: 10,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 3,
+                                            ),
+                                          ));
                                         } else {
-                                          name = snapshot.data.userName;
+                                          temp.entryUserProfile = snapshot.data;
+                                          String name;
+                                          if (snapshot.data.lastName != null) {
+                                            name = snapshot.data.userName +
+                                                " " +
+                                                snapshot.data.lastName;
+                                          } else {
+                                            name = snapshot.data.userName;
+                                          }
+                                          return Text(
+                                            name,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: textColor, fontSize: 13),
+                                          );
                                         }
-                                        return Text(
-                                          name,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: textColor, fontSize: 13),
-                                        );
                                       } else {
                                         return Center(
                                             child: Container(

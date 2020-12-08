@@ -1,4 +1,4 @@
-/*import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +10,7 @@ import 'package:lamanda_admin/src/library/language_library/easy_localization.dar
 import 'package:lamanda_admin/src/pages/home.dart';
 import 'package:lamanda_admin/src/routes/routes.dart';
 import 'package:lamanda_admin/src/theme/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //Debug Main
 
@@ -24,6 +25,7 @@ import 'package:lamanda_admin/src/theme/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
   await Firebase.initializeApp();
   runApp(EasyLocalization(
     child: MyApp(
@@ -106,7 +108,7 @@ class _AppViewState extends State<AppView> {
                 _navigator.pushReplacementNamed('admin_home');
                 break;
               case AuthenticationStatus.unauthenticated:
-                _navigator.pushReplacementNamed('choseLogOSig');
+                _navigator.pushReplacementNamed('login');
                 break;
               default:
                 break;
@@ -127,8 +129,8 @@ class _AppViewState extends State<AppView> {
       locale: widget.data.savedLocale,
     );
   }
-}*/
-
+}
+/*
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
@@ -266,3 +268,4 @@ class _AppViewState extends State<AppView> {
 //     return MaterialApp(title: 'Material App', home: ListProducts());
 //   }
 // }
+*/

@@ -11,11 +11,10 @@ class UserRepository{
   }
 
   Future<UserProfile> getUserProfile(String idUser) async{
-    UserProfile user;
     DocumentSnapshot snapshot;
     snapshot = await _ref.doc(idUser).get();
     if(snapshot.exists){
-      return user = UserProfile.fromJson(snapshot.data());
+      return UserProfile.fromJson(snapshot.data());
     }else{
       return null;
     }
