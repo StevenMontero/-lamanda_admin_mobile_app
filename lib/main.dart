@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+/*import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/services.dart';
@@ -129,8 +129,8 @@ class _AppViewState extends State<AppView> {
       locale: widget.data.savedLocale,
     );
   }
-}
-/*
+}*/
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
@@ -268,4 +268,4 @@ class _AppViewState extends State<AppView> {
 //     return MaterialApp(title: 'Material App', home: ListProducts());
 //   }
 // }
-*/
+
