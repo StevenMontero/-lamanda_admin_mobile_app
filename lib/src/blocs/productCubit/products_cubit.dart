@@ -20,27 +20,19 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   void modifyProduct(Product product) {
-    final currentState = state;
-    if (currentState is ProductsModified) {
-      currentState.product = product;
-      products.modifyProduct(product);
-      emit(new ProductsModified(product));
-    }
+    products.modifyProduct(product);
+    emit(new ProductsModified(product));
   }
 
   void deleteProduct(Product product) {
-    final currentState = state;
-    if (currentState is ProductsModified) {
-      currentState.product = product;
-      products.deleteProduct(product.code);
-      emit(new ProductsModified(product));
-    }
+    products.deleteProduct(product.code);
+    emit(new ProductsModified(product));
   }
 
   Future<List<Product>> getProducts() async {
     List<Product> list = await products.getProducts();
     if (list.isEmpty != true) {
-      emit(new ProductsModified(new Product()));
+      emit(new ProductsListed(new Product()));
     }
     _productsController.sink.add(list);
     return list;

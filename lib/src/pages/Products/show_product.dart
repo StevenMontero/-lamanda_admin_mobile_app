@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,8 +15,8 @@ class ShowProduct extends StatefulWidget {
 }
 
 class _ShowProductState extends State<ShowProduct> {
-  final formKey = GlobalKey<FormState>();
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final picker = ImagePicker();
   Product product = new Product();
   var productCubit;
@@ -30,13 +31,13 @@ class _ShowProductState extends State<ShowProduct> {
     }
 
     return Scaffold(
-      key: scaffoldKey,
+      key: _scaffoldKey,
       appBar: titlePage(context),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(25.0),
           child: Form(
-            key: formKey,
+            key: _formKey,
             child: Column(
               children: <Widget>[
                 _viewPhoto(),
@@ -67,7 +68,7 @@ class _ShowProductState extends State<ShowProduct> {
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
       floatingActionButton: FloatingActionButton(
         backgroundColor: ColorsApp.primaryColorBlue,
-        child: Icon(Icons.add_a_photo),
+        child: Icon(Icons.add_a_photo, color: Colors.white),
         onPressed: () => _selectImage(context),
       ),
     );
@@ -82,11 +83,11 @@ class _ShowProductState extends State<ShowProduct> {
           borderRadius: BorderRadius.circular(20.0),
         ),
       ),
-      onSaved: (value) => product.name = value,
       validator: (value) {
-        if (value.length < 3) {
+        if (value.length < 3 && value == null) {
           return 'Ingrese el nombre del producto';
         } else {
+          product.name = value;
           return null;
         }
       },
@@ -102,11 +103,11 @@ class _ShowProductState extends State<ShowProduct> {
           borderRadius: BorderRadius.circular(20.0),
         ),
       ),
-      onSaved: (value) => product.description = value,
       validator: (value) {
-        if (value.length < 1) {
+        if (value.length < 1 && value == null) {
           return 'Ingrese la descripción del producto';
         } else {
+          product.description = value;
           return null;
         }
       },
@@ -123,9 +124,9 @@ class _ShowProductState extends State<ShowProduct> {
           borderRadius: BorderRadius.circular(20.0),
         ),
       ),
-      onSaved: (value) => product.price = double.parse(value),
       validator: (value) {
         if (utils.isNumeric(value)) {
+          product.price = double.parse(value);
           return null;
         } else {
           return 'Solo valores númericos';
@@ -144,9 +145,9 @@ class _ShowProductState extends State<ShowProduct> {
           borderRadius: BorderRadius.circular(20.0),
         ),
       ),
-      onSaved: (value) => product.quantity = int.parse(value),
       validator: (value) {
         if (utils.isNumeric(value)) {
+          product.quantity = int.parse(value);
           return null;
         } else {
           return 'Solo valores númericos';
@@ -179,8 +180,8 @@ class _ShowProductState extends State<ShowProduct> {
       items: options,
       onChanged: (String value) {
         setState(() {
-          _selected = value;
           product.categories = value;
+          _selected = value;
         });
       },
     );
@@ -196,7 +197,10 @@ class _ShowProductState extends State<ShowProduct> {
         textColor: Colors.white,
         onPressed: () {
           productCubit.deleteProduct(product);
+          ScaffoldMessengerState()
+              .showSnackBar(_messageSnack('Producto eliminado'));
           Navigator.pop(context);
+          Navigator.popAndPushNamed(context, 'listProducts');
         },
         icon: Icon(Icons.delete_forever),
         label: Text('Eliminar'),
@@ -211,7 +215,11 @@ class _ShowProductState extends State<ShowProduct> {
       padding: EdgeInsets.all(15.0),
       color: ColorsApp.primaryColorBlue,
       textColor: Colors.white,
-      onPressed: () => _saveProduct(context),
+      onPressed: () {
+        _saveProduct(context);
+        Navigator.pop(context);
+        Navigator.popAndPushNamed(context, 'listProducts');
+      },
       icon: Icon(Icons.save),
       label: Text('Guardar'),
     );
@@ -288,6 +296,7 @@ class _ShowProductState extends State<ShowProduct> {
                     product.photoUrl = value.trim();
                   });
                 },
+                onSaved: (value) => product.photoUrl = value.trim(),
               ),
             ),
           );
@@ -296,7 +305,7 @@ class _ShowProductState extends State<ShowProduct> {
 
   _selectPhoto(ImageSource source) async {
     //TODO: Genera problemas el Image Picker (No implementation found for method pickImage on channel plugins.flutter.io/image_picker)
-    final pickedFile = await picker.getImage(source: source, imageQuality: 70);
+    final pickedFile = await picker.getImage(source: source);
 
     setState(() {
       if (pickedFile != null) {
@@ -310,31 +319,28 @@ class _ShowProductState extends State<ShowProduct> {
 
   _saveProduct(BuildContext context) async {
     //TODO: falta guardar foto a db
-    if (!formKey.currentState.validate()) return;
-    formKey.currentState.save();
-
+    if (!_formKey.currentState.validate()) {
+      return ScaffoldMessengerState()
+          .showSnackBar(_messageSnack('Verifique la información del producto'));
+    }
     if (_photo != null) {
       product.photoUrl = await productCubit.loadPhoto(_photo);
     }
 
-    setState(() {
-      if (product.code == null) {
-        productCubit.createProduct(product);
-      } else {
-        productCubit.modifyProduct(product);
-      }
-    });
-
-    _messageSnack('Producto Guardado');
-    Navigator.pop(context, () {
-      setState(() {});
-    });
+    if (product.code == null) {
+      productCubit.createProduct(product);
+      ScaffoldMessengerState()
+          .showSnackBar(_messageSnack('Producto creado exitosamente'));
+    } else {
+      productCubit.modifyProduct(product);
+      ScaffoldMessengerState().showSnackBar(
+          SnackBar(content: Text('Producto modificado exitosamente')));
+    }
   }
 
   Widget _messageSnack(String message) {
     return SnackBar(
       content: Text(message),
-      duration: Duration(milliseconds: 3000),
     );
   }
 }

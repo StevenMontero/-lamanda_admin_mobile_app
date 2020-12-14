@@ -12,6 +12,14 @@ class ProductsInitial extends ProductsState {
 }
 
 // ignore: must_be_immutable
+class ProductsListed extends ProductsState {
+  final listProducts = true;
+  Product product;
+
+  ProductsListed(this.product);
+}
+
+// ignore: must_be_immutable
 class ProductsModified extends ProductsState {
   final listProducts = true;
   Product product;

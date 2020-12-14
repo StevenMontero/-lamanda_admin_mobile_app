@@ -20,7 +20,7 @@ class Product {
     this.quantity = 0,
     this.photoUrl,
     this.code,
-    this.categories = '',
+    this.categories,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(

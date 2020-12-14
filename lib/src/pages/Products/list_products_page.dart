@@ -11,26 +11,13 @@ class ListProducts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    products.getProducts();
-
     return Scaffold(
       appBar: titlePage(context),
       body: BlocBuilder<ProductsCubit, ProductsState>(builder: (_, state) {
-        /*if (state is ProductsInitial) {
-          //TODO: verificar estados
-          return Center(
-            child: Text(
-              'Presione el boton \'+\' para agregar un producto',
-              style: TextStyle(color: ColorsApp.textPrimaryColor),
-            ),
-          );
-        } else {
-          return _body(context);
-        }*/
         return _body(context);
       }),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add, size: 40.0),
+        child: Icon(Icons.add, size: 40.0, color: Colors.white),
         backgroundColor: ColorsApp.primaryColorBlue,
         onPressed: () => Navigator.pushNamed(context, 'showProduct'),
       ),
@@ -85,8 +72,8 @@ class ListProducts extends StatelessWidget {
   }
 
   Widget _showProducts() {
-    return StreamBuilder(
-      stream: products.getProductsStream,
+    return FutureBuilder(
+      future: products.getProducts(),
       builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
         if (snapshot.hasData) {
           final _product = snapshot.data ?? [];
@@ -182,8 +169,9 @@ class ListProducts extends StatelessWidget {
 
     return GestureDetector(
       child: productCard,
-      onTap: () =>
-          Navigator.pushNamed(context, 'showProduct', arguments: product),
+      onTap: () {
+        Navigator.pushNamed(context, 'showProduct', arguments: product);
+      },
     );
   }
 
