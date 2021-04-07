@@ -10,8 +10,7 @@ import 'package:lamanda_admin/src/theme/theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp(
-      ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -49,7 +48,6 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -58,7 +56,11 @@ class _AppViewState extends State<AppView> {
       title: 'La Manada petShop',
       routes: getRoutesApp(),
       onGenerateRoute: (settings) =>
-          MaterialPageRoute(builder: (context) => AdminHome()),  
+          MaterialPageRoute(builder: (context) => AdminHome()),
+      supportedLocales: [
+        Locale('es', 'ES'),
+        Locale('en', 'US'),
+      ],
     );
   }
 }
