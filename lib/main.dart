@@ -16,7 +16,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
 
 class AppView extends StatefulWidget {
   const AppView({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

@@ -3,9 +3,9 @@ import 'package:lamanda_admin/models/appointment/appointment.dart';
 import 'package:lamanda_admin/models/userProfile.dart';
 
 class EstheticAppt extends Appointment {
-  String fur;
+  String? fur;
   
-  Timestamp entryHour;
+  Timestamp? entryHour;
 
   EstheticAppt(
       String id,
@@ -41,7 +41,7 @@ class EstheticAppt extends Appointment {
     return {
       'id': this.id,
       'entryDate': this.entryDate,
-      'entryUser': this.entryUser.toJson(),
+      'entryUser': this.entryUser!.toJson(),
       'isConfirmed': this.isConfirmed,
       'transfer': this.transfer,
       'direction': this.direction,

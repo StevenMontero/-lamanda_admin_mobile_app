@@ -1,9 +1,9 @@
 class AdminUser {
-  String id;
-  String userName;
-  String email;
-  String password;
-  String photoUri;
+  String? id;
+  String? userName;
+  String? email;
+  String? password;
+  String? photoUri;
 
   AdminUser({
     this.id,

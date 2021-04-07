@@ -4,12 +4,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 
 class AdminHome extends StatelessWidget {
-  const AdminHome({Key key}) : super(key: key);
+  const AdminHome({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _titlePage(context),
+      appBar: _titlePage(context) as PreferredSizeWidget?,
       body: _body(context),
     );
   }
@@ -56,8 +56,8 @@ class AdminHome extends StatelessWidget {
   Widget _optionCard(BuildContext context, int option) {
     double size = 160;
     String indicationText = "";
-    Icon icon;
-    String route;
+    Icon? icon;
+    late String route;
 
     switch (option) {
       case 1:
@@ -113,7 +113,7 @@ class AdminHome extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 20.0),
-                icon,
+                icon!,
                 SizedBox(height: 10.0),
                 RichText(
                   textAlign: TextAlign.center,

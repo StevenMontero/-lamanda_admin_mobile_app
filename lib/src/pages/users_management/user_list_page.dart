@@ -8,14 +8,14 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-  Size _screenSize;
+  late Size _screenSize;
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
     double titleSize = _screenSize.width * 0.045;
 
     return Scaffold(
-      appBar: titlePage(context),
+      appBar: titlePage(context) as PreferredSizeWidget?,
       body: Column(
         children: [
           SizedBox(height: 2),

@@ -20,19 +20,19 @@ class _ShowProductState extends State<ShowProduct> {
   final picker = ImagePicker();
   Product product = new Product();
   var productCubit;
-  File _photo;
+  File? _photo;
 
   @override
   Widget build(BuildContext context) {
-    productCubit = context.bloc<ProductsCubit>();
-    Product productData = ModalRoute.of(context).settings.arguments;
+    productCubit = context.read()<ProductsCubit>();
+    Product? productData = ModalRoute.of(context)!.settings.arguments as Product?;
     if (productData != null) {
       product = productData;
     }
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: titlePage(context),
+      appBar: titlePage(context) as PreferredSizeWidget?,
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(25.0),
@@ -84,7 +84,7 @@ class _ShowProductState extends State<ShowProduct> {
         ),
       ),
       validator: (value) {
-        if (value.length < 3 && value == null) {
+        if (value!.length < 3 && value == null) {
           return 'Ingrese el nombre del producto';
         } else {
           product.name = value;
@@ -104,7 +104,7 @@ class _ShowProductState extends State<ShowProduct> {
         ),
       ),
       validator: (value) {
-        if (value.length < 1 && value == null) {
+        if (value!.length < 1 && value == null) {
           return 'Ingrese la descripción del producto';
         } else {
           product.description = value;
@@ -125,7 +125,7 @@ class _ShowProductState extends State<ShowProduct> {
         ),
       ),
       validator: (value) {
-        if (utils.isNumeric(value)) {
+        if (utils.isNumeric(value!)) {
           product.price = double.parse(value);
           return null;
         } else {
@@ -146,7 +146,7 @@ class _ShowProductState extends State<ShowProduct> {
         ),
       ),
       validator: (value) {
-        if (utils.isNumeric(value)) {
+        if (utils.isNumeric(value!)) {
           product.quantity = int.parse(value);
           return null;
         } else {
@@ -166,7 +166,7 @@ class _ShowProductState extends State<ShowProduct> {
       ));
     });
 
-    String _selected;
+    String? _selected;
     return DropdownButtonFormField(
       decoration: InputDecoration(
         border: OutlineInputBorder(
@@ -178,7 +178,7 @@ class _ShowProductState extends State<ShowProduct> {
       hint: Text("Selecciona una categoria"),
       value: _selected,
       items: options,
-      onChanged: (String value) {
+      onChanged: (String? value) {
         setState(() {
           product.categories = value;
           _selected = value;
@@ -198,7 +198,7 @@ class _ShowProductState extends State<ShowProduct> {
         onPressed: () {
           productCubit.deleteProduct(product);
           ScaffoldMessengerState()
-              .showSnackBar(_messageSnack('Producto eliminado'));
+              .showSnackBar(_messageSnack('Producto eliminado') as SnackBar);
           Navigator.pop(context);
           Navigator.popAndPushNamed(context, 'listProducts');
         },
@@ -258,7 +258,7 @@ class _ShowProductState extends State<ShowProduct> {
   Widget _viewPhoto() {
     if (product.photoUrl != null) {
       return Image(
-        image: NetworkImage(product.photoUrl),
+        image: NetworkImage(product.photoUrl!),
         height: 300.0,
         fit: BoxFit.cover,
       );
@@ -296,7 +296,7 @@ class _ShowProductState extends State<ShowProduct> {
                     product.photoUrl = value.trim();
                   });
                 },
-                onSaved: (value) => product.photoUrl = value.trim(),
+                onSaved: (value) => product.photoUrl = value!.trim(),
               ),
             ),
           );
@@ -317,9 +317,9 @@ class _ShowProductState extends State<ShowProduct> {
   }
 
   _saveProduct(BuildContext context) async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return ScaffoldMessengerState()
-          .showSnackBar(_messageSnack('Verifique la información del producto'));
+          .showSnackBar(_messageSnack('Verifique la información del producto') as SnackBar);
     }
     if (_photo != null) {
       product.photoUrl = await productCubit.loadPhoto(_photo);
@@ -328,7 +328,7 @@ class _ShowProductState extends State<ShowProduct> {
     if (product.code == null) {
       productCubit.createProduct(product);
       ScaffoldMessengerState()
-          .showSnackBar(_messageSnack('Producto creado exitosamente'));
+          .showSnackBar(_messageSnack('Producto creado exitosamente') as SnackBar);
     } else {
       productCubit.modifyProduct(product);
       ScaffoldMessengerState().showSnackBar(

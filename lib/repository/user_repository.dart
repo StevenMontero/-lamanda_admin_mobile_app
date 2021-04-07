@@ -10,11 +10,11 @@ class UserRepository{
     .catchError((error) => print('Failed to add user: $error'));
   }
 
-  Future<UserProfile> getUserProfile(String idUser) async{
+  Future<UserProfile?> getUserProfile(String idUser) async{
     DocumentSnapshot snapshot;
     snapshot = await _ref.doc(idUser).get();
     if(snapshot.exists){
-      return UserProfile.fromJson(snapshot.data());
+      return UserProfile.fromJson(snapshot.data()!);
     }else{
       return null;
     }

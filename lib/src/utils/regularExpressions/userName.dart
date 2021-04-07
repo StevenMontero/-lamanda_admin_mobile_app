@@ -10,8 +10,8 @@ class UserName extends FormzInput<String, UserNameValidationError > {
       RegExp(r'^[a-zA-Z0-9]+$');
 
   @override
-  UserNameValidationError validator(String value) {
-    return _userNameRegExp.hasMatch(value)
+  UserNameValidationError? validator(String? value) {
+    return _userNameRegExp.hasMatch(value!)
         ? null
         : UserNameValidationError.invalid;
   }

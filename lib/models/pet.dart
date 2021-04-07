@@ -1,15 +1,15 @@
 class Pet {
-  String id;
-  String petName;
-  int size;
-  String breed;
-  int age;
-  String fur;
-  bool vaccine;
-  bool deworming;
-  bool pestProtection;
-  bool sociable;
-  bool castrated;
+  String? id;
+  String? petName;
+  int? size;
+  String? breed;
+  int? age;
+  String? fur;
+  bool? vaccine;
+  bool? deworming;
+  bool? pestProtection;
+  bool? sociable;
+  bool? castrated;
 
   Pet(
       {this.id,

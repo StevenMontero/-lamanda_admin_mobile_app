@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class TextFromField extends StatelessWidget {
   final bool password;
-  final String lavel;
-  final IconData icon;
-  final TextInputType inputType;
+  final String? lavel;
+  final IconData? icon;
+  final TextInputType? inputType;
   final errorOccurred;
   final erroMessage;
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onChanged;
 
   TextFromField(
       {this.lavel,

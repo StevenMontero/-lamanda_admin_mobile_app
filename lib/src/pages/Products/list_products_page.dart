@@ -12,7 +12,7 @@ class ListProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: titlePage(context),
+      appBar: titlePage(context) as PreferredSizeWidget?,
       body: BlocBuilder<ProductsCubit, ProductsState>(builder: (_, state) {
         return _body(context);
       }),

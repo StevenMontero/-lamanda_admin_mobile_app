@@ -1,15 +1,15 @@
 
 
 class UserProfile {
-  String id;
-  String userName;
-  String email;
-  String password;
-  String photoUri;
-  String lastName;
-  String address;
-  Map petList;
-  String phone;
+  String? id;
+  String? userName;
+  String? email;
+  String? password;
+  String? photoUri;
+  String? lastName;
+  String? address;
+  Map? petList;
+  String? phone;
 
   UserProfile(
       {this.id,

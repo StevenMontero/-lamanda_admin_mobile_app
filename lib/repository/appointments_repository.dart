@@ -21,10 +21,10 @@ class AppointmentsRepository {
         .catchError((error) => print('Failed to add daycare: $error'));
   }
 
-  Future<DaycareAppt> getDaycare(String id) async {
+  Future<DaycareAppt?> getDaycare(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refDaycare.doc(id).get();
-    DaycareAppt daycare = DaycareAppt.fromJson(snapshot.data());
+    DaycareAppt daycare = DaycareAppt.fromJson(snapshot.data()!);
     daycare.id = id;
     if (snapshot.exists) {
       return daycare;
@@ -33,7 +33,7 @@ class AppointmentsRepository {
     }
   }
 
-  void deleteDaycare(String id) {
+  void deleteDaycare(String? id) {
     _refDaycare.doc(id).delete();
   }
 
@@ -54,10 +54,10 @@ class AppointmentsRepository {
         .catchError((error) => print('Failed to add hotel: $error'));
   }
 
-  Future<HotelAppt> getHotel(String id) async {
+  Future<HotelAppt?> getHotel(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refHotel.doc(id).get();
-    HotelAppt hotel = HotelAppt.fromJson(snapshot.data());
+    HotelAppt hotel = HotelAppt.fromJson(snapshot.data()!);
     hotel.id = id;
     if (snapshot.exists) {
       return hotel;
@@ -66,7 +66,7 @@ class AppointmentsRepository {
     }
   }
 
-  void deleteHotel(String id) {
+  void deleteHotel(String? id) {
     _refHotel.doc(id).delete();
   }
 
@@ -87,10 +87,10 @@ class AppointmentsRepository {
         .catchError((error) => print('Failed to add sthetic: $error'));
   }
 
-  Future<EstheticAppt> getSthetic(String id) async {
+  Future<EstheticAppt?> getSthetic(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refSthetic.doc(id).get();
-    EstheticAppt sthetic = EstheticAppt.fromJson(snapshot.data());
+    EstheticAppt sthetic = EstheticAppt.fromJson(snapshot.data()!);
     sthetic.id = id;
     if (snapshot.exists) {
       return sthetic;
@@ -99,7 +99,7 @@ class AppointmentsRepository {
     }
   }
 
-  void deleteSthetic(String id) {
+  void deleteSthetic(String? id) {
     _refSthetic.doc(id).delete();
   }
 
@@ -120,10 +120,10 @@ class AppointmentsRepository {
         .catchError((error) => print('Failed to add sthetic: $error'));
   }
 
-  Future<VeterinaryAppt> getVeterinary(String id) async {
+  Future<VeterinaryAppt?> getVeterinary(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refVeterinary.doc(id).get();
-    VeterinaryAppt vet = VeterinaryAppt.fromJson(snapshot.data());
+    VeterinaryAppt vet = VeterinaryAppt.fromJson(snapshot.data()!);
     vet.id = id;
     if (snapshot.exists) {
       return vet;
@@ -132,7 +132,7 @@ class AppointmentsRepository {
     }
   }
 
-  void deleteVeterinary(String id) {
+  void deleteVeterinary(String? id) {
     _refVeterinary.doc(id).delete();
   }
 
@@ -149,7 +149,7 @@ class AppointmentsRepository {
   //GET THE LIST OF EACH APPOINTMENT
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  Future<List<DaycareAppt>> getDaycareApptList(int day) async {
+  Future<List<DaycareAppt>?> getDaycareApptList(int day) async {
     final List<DaycareAppt> daycareList = [];
 
     await _refDaycare.get().then((QuerySnapshot querySnapshot) {
@@ -172,7 +172,7 @@ class AppointmentsRepository {
     }
   }
 
-  Future<List<EstheticAppt>> getStheticApptList(int day) async {
+  Future<List<EstheticAppt>?> getStheticApptList(int day) async {
     final List<EstheticAppt> stheticList = [];
     QuerySnapshot snap = await _refSthetic.get();
     snap.docs.forEach((doc) {
@@ -192,7 +192,7 @@ class AppointmentsRepository {
     }
   }
 
-  Future<List<HotelAppt>> getHotelApptList(int day) async {
+  Future<List<HotelAppt>?> getHotelApptList(int day) async {
     final List<HotelAppt> hotelList = [];
     await _refHotel.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
@@ -214,7 +214,7 @@ class AppointmentsRepository {
     }
   }
 
-  Future<List<VeterinaryAppt>> getVeterinaryApptList(int day) async {
+  Future<List<VeterinaryAppt>?> getVeterinaryApptList(int day) async {
     final List<VeterinaryAppt> veterinaryList = [];
     await _refVeterinary.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {

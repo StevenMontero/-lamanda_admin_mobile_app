@@ -17,10 +17,10 @@ class AppointmentList extends StatefulWidget {
 
 class _AppointmentListState extends State<AppointmentList> {
   double heightCard = 40.0;
-  double widthCard;
-  Size _screenSize;
+  double? widthCard;
+  late Size _screenSize;
 
-  DateTime _selectedDate;
+  late DateTime _selectedDate;
 
   FilterAppts stheticFilter = new FilterAppts('Estét.',
       ColorsApp.primaryColorBlue, ColorsApp.primaryColorBlueDegraded, true, 2);
@@ -39,13 +39,13 @@ class _AppointmentListState extends State<AppointmentList> {
       true,
       3);
 
-  List<FilterAppts> _cast;
+  late List<FilterAppts> _cast;
   List<String> _filters = <String>[];
 
-  List<DaycareAppt> daycareApptList = [];
-  List<EstheticAppt> stheticApptList = [];
-  List<HotelAppt> hotelApptList = [];
-  List<VeterinaryAppt> veterinaryApptList = [];
+  List<DaycareAppt>? daycareApptList = [];
+  List<EstheticAppt>? stheticApptList = [];
+  List<HotelAppt>? hotelApptList = [];
+  List<VeterinaryAppt>? veterinaryApptList = [];
 
   final AppointmentsRepository appointmentsRepository =
       new AppointmentsRepository();
@@ -66,7 +66,7 @@ class _AppointmentListState extends State<AppointmentList> {
     double titleSize = _screenSize.width * 0.045;
 
     return Scaffold(
-      appBar: titlePage(context),
+      appBar: titlePage(context) as PreferredSizeWidget?,
       body: Column(
         children: [
           SizedBox(height: 2),
@@ -91,7 +91,7 @@ class _AppointmentListState extends State<AppointmentList> {
 
   Iterable<Widget> get actorWidgets sync* {
     widthCard = _screenSize.width * 0.25;
-    double textSize = widthCard * 0.14;
+    double textSize = widthCard! * 0.14;
     heightCard = _screenSize.height * 0.055;
 
     for (FilterAppts filter in _cast) {
@@ -161,7 +161,7 @@ class _AppointmentListState extends State<AppointmentList> {
                 hotelApptList = null;
                 veterinaryApptList = null;
                 stheticApptList = null;
-                _selectedDate = date;
+                _selectedDate = date!;
               });
             },
             leftMargin: 20,
@@ -216,7 +216,7 @@ class _AppointmentListState extends State<AppointmentList> {
           Expanded(
               child: FutureBuilder(
             future: _getAppoitments(),
-            builder: (BuildContext context, AsyncSnapshot<List<int>> snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<List<int>?> snapshot) {
               if (snapshot.hasData) {
                 return _createList(snapshot.data);
               } else {
@@ -241,14 +241,14 @@ class _AppointmentListState extends State<AppointmentList> {
     );
   }
 
-  Future<List<int>> _getAppoitments() async {
+  Future<List<int>?> _getAppoitments() async {
     List<int> list = [];
     if (daycareFilter.selected) {
       daycareApptList =
           await appointmentsRepository.getDaycareApptList(_selectedDate.day);
       if (daycareApptList != null) {
-        daycareApptList.sort((a, b) =>
-            a.entryDate.toDate().hour.compareTo(b.entryDate.toDate().hour));
+        daycareApptList!.sort((a, b) =>
+            a.entryDate!.toDate().hour.compareTo(b.entryDate!.toDate().hour));
         list.add(1);
       }
     }
@@ -257,8 +257,8 @@ class _AppointmentListState extends State<AppointmentList> {
       stheticApptList =
           await appointmentsRepository.getStheticApptList(_selectedDate.day);
       if (stheticApptList != null) {
-        stheticApptList.sort((a, b) =>
-            a.entryDate.toDate().hour.compareTo(b.entryDate.toDate().hour));
+        stheticApptList!.sort((a, b) =>
+            a.entryDate!.toDate().hour.compareTo(b.entryDate!.toDate().hour));
         list.add(1);
       }
     }
@@ -267,8 +267,8 @@ class _AppointmentListState extends State<AppointmentList> {
       hotelApptList =
           await appointmentsRepository.getHotelApptList(_selectedDate.day);
       if (hotelApptList != null) {
-        hotelApptList.sort((a, b) =>
-            a.entryDate.toDate().hour.compareTo(b.entryDate.toDate().hour));
+        hotelApptList!.sort((a, b) =>
+            a.entryDate!.toDate().hour.compareTo(b.entryDate!.toDate().hour));
         list.add(1);
       }
     }
@@ -277,8 +277,8 @@ class _AppointmentListState extends State<AppointmentList> {
       veterinaryApptList =
           await appointmentsRepository.getVeterinaryApptList(_selectedDate.day);
       if (veterinaryApptList != null) {
-        veterinaryApptList.sort((a, b) =>
-            a.entryDate.toDate().hour.compareTo(b.entryDate.toDate().hour));
+        veterinaryApptList!.sort((a, b) =>
+            a.entryDate!.toDate().hour.compareTo(b.entryDate!.toDate().hour));
         list.add(1);
       }
     }
@@ -296,29 +296,29 @@ class _AppointmentListState extends State<AppointmentList> {
     }
   }
 
-  Widget _createList(List<int> listReceived) {
+  Widget _createList(List<int>? listReceived) {
     listReceived = null;
 
     List<Widget> list = [];
     if (daycareApptList != null) {
-      if (daycareApptList.isNotEmpty) {
+      if (daycareApptList!.isNotEmpty) {
         list.add(_createApptsCategories(1));
       }
     }
 
     if (stheticApptList != null) {
-      if (stheticApptList.isNotEmpty) {
+      if (stheticApptList!.isNotEmpty) {
         list.add(_createApptsCategories(2));
       }
     }
 
     if (hotelApptList != null) {
-      if (hotelApptList.isNotEmpty) {
+      if (hotelApptList!.isNotEmpty) {
         list.add(_createApptsCategories(3));
       }
     }
     if (veterinaryApptList != null) {
-      if (veterinaryApptList.isNotEmpty) {
+      if (veterinaryApptList!.isNotEmpty) {
         list.add(_createApptsCategories(4));
       }
     }
@@ -366,18 +366,18 @@ class _AppointmentListState extends State<AppointmentList> {
   }
 
   Widget _createApptsCategories(int type) {
-    String title;
-    Color backgroundColor;
-    Color apptsColor;
+    late String title;
+    Color? backgroundColor;
+    Color? apptsColor;
     List<Appointment> appointmentsConfirmed = [];
     List<Appointment> appointmentsNonConfirmed = [];
     Appointment appointmentTemp;
 
     switch (type) {
       case 1:
-        daycareApptList.forEach((element) {
+        daycareApptList!.forEach((element) {
           appointmentTemp = element;
-          if (element.isConfirmed) {
+          if (element.isConfirmed!) {
             appointmentsConfirmed.add(appointmentTemp);
           } else {
             appointmentsNonConfirmed.add(appointmentTemp);
@@ -388,9 +388,9 @@ class _AppointmentListState extends State<AppointmentList> {
         apptsColor = ColorsApp.primaryColorPink;
         break;
       case 2:
-        stheticApptList.forEach((element) {
+        stheticApptList!.forEach((element) {
           appointmentTemp = element;
-          if (element.isConfirmed) {
+          if (element.isConfirmed!) {
             appointmentsConfirmed.add(appointmentTemp);
           } else {
             appointmentsNonConfirmed.add(appointmentTemp);
@@ -401,9 +401,9 @@ class _AppointmentListState extends State<AppointmentList> {
         apptsColor = ColorsApp.primaryColorBlue;
         break;
       case 3:
-        hotelApptList.forEach((element) {
+        hotelApptList!.forEach((element) {
           appointmentTemp = element;
-          if (element.isConfirmed) {
+          if (element.isConfirmed!) {
             appointmentsConfirmed.add(appointmentTemp);
           } else {
             appointmentsNonConfirmed.add(appointmentTemp);
@@ -414,9 +414,9 @@ class _AppointmentListState extends State<AppointmentList> {
         apptsColor = ColorsApp.primaryColorOrange;
         break;
       case 4:
-        veterinaryApptList.forEach((element) {
+        veterinaryApptList!.forEach((element) {
           appointmentTemp = element;
-          if (element.isConfirmed) {
+          if (element.isConfirmed!) {
             appointmentsConfirmed.add(appointmentTemp);
           } else {
             appointmentsNonConfirmed.add(appointmentTemp);
@@ -433,8 +433,8 @@ class _AppointmentListState extends State<AppointmentList> {
 
   Widget createIndividualCategory(
       String title,
-      Color backgroundColor,
-      Color apptColor,
+      Color? backgroundColor,
+      Color? apptColor,
       List<Appointment> confirmed,
       List<Appointment> nonConfirmed,
       int type) {
@@ -442,11 +442,11 @@ class _AppointmentListState extends State<AppointmentList> {
     Column nonConfirmedWidget = new Column();
     if (confirmed.isNotEmpty) {
       confirmedWidget = createApptsAccordingStatus(
-          "Citas confirmadas", confirmed, apptColor, Colors.white, type);
+          "Citas confirmadas", confirmed, apptColor, Colors.white, type) as Column;
     }
     if (nonConfirmed.isNotEmpty) {
       nonConfirmedWidget = createApptsAccordingStatus("Citas sin confirmar",
-          nonConfirmed, Colors.white, Colors.black, type);
+          nonConfirmed, Colors.white, Colors.black, type) as Column;
     }
     return Card(
         color: backgroundColor,
@@ -464,7 +464,7 @@ class _AppointmentListState extends State<AppointmentList> {
   }
 
   Widget createApptsAccordingStatus(String status, List<Appointment> list,
-      Color apptColorReceived, Color textColor, int type) {
+      Color? apptColorReceived, Color textColor, int type) {
     return Column(
       children: [
         Container(
@@ -482,12 +482,12 @@ class _AppointmentListState extends State<AppointmentList> {
             itemCount: list.length,
             itemBuilder: (BuildContext context, int index) {
               Appointment temp = list[index];
-              String name = temp.entryUser.userName;
-              if (temp.entryUser.lastName != null) {
-                name += " " + temp.entryUser.lastName;
+              String name = temp.entryUser!.userName!;
+              if (temp.entryUser!.lastName != null) {
+                name += " " + temp.entryUser!.lastName!;
               }
               if (type == 4) {
-                VeterinaryAppt vet = temp;
+                VeterinaryAppt vet = temp as VeterinaryAppt;
               }
               return GestureDetector(
                 onTap: () {
@@ -536,7 +536,7 @@ class _AppointmentListState extends State<AppointmentList> {
                               Container(
                                   width: _screenSize.width * 0.47,
                                   child: Text(
-                                    name,
+                                    name!,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: textColor, fontSize: 13),
@@ -560,7 +560,7 @@ class _AppointmentListState extends State<AppointmentList> {
   }
   
   String _getTime(DateTime date) {
-    int hour;
+    int? hour;
     String hourString;
     String minute;
     String ampm;

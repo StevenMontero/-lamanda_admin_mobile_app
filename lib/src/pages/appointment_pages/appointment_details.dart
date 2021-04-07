@@ -20,18 +20,18 @@ class ApptDetails extends StatefulWidget {
 }
 
 class _ApptDetailsState extends State<ApptDetails> {
-  Appointment appt;
-  UserProfile user;
-  Color backgroundColor;
-  Color apptColor;
-  Color degradedColor;
-  int type;
-  Size _screenSize;
-  String loadingGif;
+  Appointment? appt;
+  UserProfile? user;
+  Color? backgroundColor;
+  Color? apptColor;
+  Color? degradedColor;
+  int? type;
+  late Size _screenSize;
+  late String loadingGif;
   @override
   Widget build(BuildContext context) {
-    appt = ModalRoute.of(context).settings.arguments;
-    user = appt.entryUser;
+    appt = ModalRoute.of(context)!.settings.arguments as Appointment?;
+    user = appt!.entryUser;
     _screenSize = MediaQuery.of(context).size;
 
     switch (appt.runtimeType) {
@@ -64,9 +64,9 @@ class _ApptDetailsState extends State<ApptDetails> {
         degradedColor = ColorsApp.primaryColorTurquoiseDegraded2;
         break;
     }
-    print(appt.id);
+    print(appt!.id);
     return Scaffold(
-        appBar: titlePage(context),
+        appBar: titlePage(context) as PreferredSizeWidget?,
         body: Center(
           child: Container(
             decoration: BoxDecoration(
@@ -90,27 +90,27 @@ class _ApptDetailsState extends State<ApptDetails> {
   }
 
   Widget _createHeader() {
-    String name;
-    if (user.lastName != null) {
-      name = user.userName + " " + user.lastName;
+    String? name;
+    if (user!.lastName != null) {
+      name = user!.userName! + " " + user!.lastName!;
     } else {
-      name = user.userName;
+      name = user!.userName;
     }
-    String url;
-    if (user.photoUri != null) {
-      url = user.photoUri;
+    String? url;
+    if (user!.photoUri != null) {
+      url = user!.photoUri;
     } else {
       url = 'assets/img/no-image.png';
     }
     Widget hourContainer = Container();
     if (type == 2) {
-      EstheticAppt sthetic = appt;
-      hourContainer = _createInformation(_getTime(sthetic.entryHour.toDate()),
+      EstheticAppt sthetic = appt as EstheticAppt;
+      hourContainer = _createInformation(_getTime(sthetic.entryHour!.toDate()),
           0.018, Colors.grey[200], FontWeight.bold);
     }
     if (type == 1) {
-      DaycareAppt daycare = appt;
-      hourContainer = _createInformation(_getTime(daycare.entryHour.toDate()),
+      DaycareAppt daycare = appt as DaycareAppt;
+      hourContainer = _createInformation(_getTime(daycare.entryHour!.toDate()),
           0.018, Colors.grey[200], FontWeight.bold);
     }
 
@@ -133,7 +133,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(30.0),
                   child: FadeInImage(
-                    image: NetworkImage(url),
+                    image: NetworkImage(url!),
                     placeholder: AssetImage(loadingGif),
                     fit: BoxFit.cover,
                     height: 150.0,
@@ -150,14 +150,14 @@ class _ApptDetailsState extends State<ApptDetails> {
                     Container(
                       height: _screenSize.height * 0.052,
                       child: Text(
-                        name,
+                        name!,
                         style: TextStyle(fontSize: _screenSize.height * 0.018),
                       ),
                     ),
                     Container(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        user.email,
+                        user!.email!,
                         style: TextStyle(fontSize: _screenSize.height * 0.011),
                       ),
                     )
@@ -180,7 +180,7 @@ class _ApptDetailsState extends State<ApptDetails> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _createInformation(appt.entryDate.toDate().day.toString(), 0.043,
+              _createInformation(appt!.entryDate!.toDate().day.toString(), 0.043,
                   Colors.white, FontWeight.bold),
               _createInformation(
                   _getDayText(), 0.017, Colors.grey[200], FontWeight.bold),
@@ -193,7 +193,7 @@ class _ApptDetailsState extends State<ApptDetails> {
   }
 
   Widget _createInformation(
-      String inf, double size, Color textColor, FontWeight fontWeight) {
+      String inf, double size, Color? textColor, FontWeight fontWeight) {
     return Text(
       inf,
       style: TextStyle(
@@ -205,14 +205,14 @@ class _ApptDetailsState extends State<ApptDetails> {
 
   Widget _createDepartureInformation() {
     if (type == 1 || type == 3) {
-      ApptStay appts = appt;
+      ApptStay appts = appt as ApptStay;
 
       Widget hourContainer = Container();
       if (type == 1) {
-        DaycareAppt daycare = appt;
-        print(daycare.departureDate.toDate().hour);
+        DaycareAppt daycare = appt as DaycareAppt;
+        print(daycare.departureDate!.toDate().hour);
         hourContainer = _createInformation(
-            _getTime(daycare.departureDate.toDate()),
+            _getTime(daycare.departureDate!.toDate()),
             0.022,
             Colors.white,
             FontWeight.normal);
@@ -247,7 +247,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                   ),
                   Container(
                     width: _screenSize.width * 0.4,
-                    child: _createInformation(appts.departureUser, 0.018,
+                    child: _createInformation(appts.departureUser!, 0.018,
                         Colors.white, FontWeight.normal),
                   ),
                 ],
@@ -266,20 +266,20 @@ class _ApptDetailsState extends State<ApptDetails> {
     Container symptoms = new Container();
     if (type == 1 || type == 3) {
       principalContainerHeight = _screenSize.height * 0.55;
-      if (appt.transfer) {
+      if (appt!.transfer!) {
         petInformationHeight = _screenSize.height * 0.35;
       } else {
         petInformationHeight = _screenSize.height * 0.4;
       }
     } else {
       principalContainerHeight = _screenSize.height * 0.61;
-      if (appt.transfer) {
+      if (appt!.transfer!) {
         petInformationHeight = _screenSize.height * 0.415;
       } else {
         petInformationHeight = _screenSize.height * 0.515;
       }
       if (type == 4) {
-        VeterinaryAppt vet = appt;
+        VeterinaryAppt vet = appt as VeterinaryAppt;
         symptoms = new Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -296,7 +296,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                     width: _screenSize.width * 0.88,
                     margin: EdgeInsets.all(2),
                     child: Text(
-                      vet.symptoms + "asd asd dasdsad asdasd asdasd",
+                      vet.symptoms! + "asd asd dasdsad asdasd asdasd",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: _screenSize.width * 0.035),
@@ -342,7 +342,7 @@ class _ApptDetailsState extends State<ApptDetails> {
   Widget _showPetInformation() {
     switch (type) {
       case 2:
-        EstheticAppt sthetic = appt;
+        EstheticAppt sthetic = appt as EstheticAppt;
         return Container(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -357,7 +357,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                 width: _screenSize.width * 0.05,
               ),
               Text(
-                sthetic.fur,
+                sthetic.fur!,
                 style: TextStyle(fontSize: _screenSize.width * 0.05),
               ),
             ],
@@ -365,7 +365,7 @@ class _ApptDetailsState extends State<ApptDetails> {
         );
         break;
       case 3:
-        HotelAppt hotel = appt;
+        HotelAppt hotel = appt as HotelAppt;
         return Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -386,7 +386,7 @@ class _ApptDetailsState extends State<ApptDetails> {
         );
         break;
       case 1:
-        DaycareAppt daycare = appt;
+        DaycareAppt daycare = appt as DaycareAppt;
         return Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -408,7 +408,7 @@ class _ApptDetailsState extends State<ApptDetails> {
         break;
       case 4:
         if (type == 4) {
-          VeterinaryAppt vet = appt;
+          VeterinaryAppt vet = appt as VeterinaryAppt;
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -427,7 +427,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                   width: _screenSize.width * 0.88,
                   margin: EdgeInsets.all(2),
                   child: Text(
-                    vet.symptoms + "asd asd dasdsad asdasd asdasd",
+                    vet.symptoms! + "asd asd dasdsad asdasd asdasd",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: _screenSize.width * 0.035),
@@ -443,7 +443,7 @@ class _ApptDetailsState extends State<ApptDetails> {
     return Container();
   }
 
-  Widget _showSpecificInformationBool(String atribute, bool condition) {
+  Widget _showSpecificInformationBool(String atribute, bool? condition) {
     if (condition != null) {
       Icon icon;
       if (condition) {
@@ -476,7 +476,7 @@ class _ApptDetailsState extends State<ApptDetails> {
     }
   }
 
-  Widget _showSpecificInformationDate(String atribute, Timestamp date) {
+  Widget _showSpecificInformationDate(String atribute, Timestamp? date) {
     if (date != null) {
       return Container(
         width: _screenSize.width * 0.9,
@@ -720,7 +720,7 @@ class _ApptDetailsState extends State<ApptDetails> {
   }*/
 
   Widget _createDirectionInformation() {
-    if (appt.transfer) {
+    if (appt!.transfer!) {
       return Container(
         decoration: BoxDecoration(
             color: Colors.white,
@@ -736,7 +736,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                 child: Container(
                   margin: EdgeInsets.all(2),
                   child: Text(
-                    appt.direction,
+                    appt!.direction!,
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: _screenSize.width * 0.035),
@@ -761,15 +761,15 @@ class _ApptDetailsState extends State<ApptDetails> {
   }
 
   Widget _createApptCondition(BuildContext contextPage) {
-    Color color;
-    Color textColor;
+    Color? color;
+    Color? textColor;
     String confirmedCondition;
     Icon icon;
     double divider;
 
     Widget actionArea;
 
-    if (appt.isConfirmed) {
+    if (appt!.isConfirmed!) {
       divider = _screenSize.width * 0.26;
       color = apptColor;
       confirmedCondition = "Confirmada";
@@ -986,22 +986,22 @@ class _ApptDetailsState extends State<ApptDetails> {
   void _updateAppt(bool isConfirm, BuildContext contextPage) {
     setState(() {
       if (isConfirm) {
-        appt.isConfirmed = true;
+        appt!.isConfirmed = true;
         _update();
       } else {
-        appt.isDeclined = true;
+        appt!.isDeclined = true;
         switch (appt.runtimeType) {
           case DaycareAppt:
-            AppointmentsRepository().deleteDaycare(appt.id);
+            AppointmentsRepository().deleteDaycare(appt!.id);
             break;
           case EstheticAppt:
-            AppointmentsRepository().deleteSthetic(appt.id);
+            AppointmentsRepository().deleteSthetic(appt!.id);
             break;
           case HotelAppt:
-            AppointmentsRepository().deleteHotel(appt.id);
+            AppointmentsRepository().deleteHotel(appt!.id);
             break;
           case VeterinaryAppt:
-            AppointmentsRepository().deleteVeterinary(appt.id);
+            AppointmentsRepository().deleteVeterinary(appt!.id);
             break;
           default:
         }
@@ -1013,23 +1013,23 @@ class _ApptDetailsState extends State<ApptDetails> {
   void _update() {
     switch (appt.runtimeType) {
       case DaycareAppt:
-        AppointmentsRepository().updateDaycare(appt);
+        AppointmentsRepository().updateDaycare(appt as DaycareAppt);
         break;
       case EstheticAppt:
-        AppointmentsRepository().updateSthetic(appt);
+        AppointmentsRepository().updateSthetic(appt as EstheticAppt);
         break;
       case HotelAppt:
-        AppointmentsRepository().updateHotel(appt);
+        AppointmentsRepository().updateHotel(appt as HotelAppt);
         break;
       case VeterinaryAppt:
-        AppointmentsRepository().updateVeterinary(appt);
+        AppointmentsRepository().updateVeterinary(appt as VeterinaryAppt);
         break;
       default:
     }
   }
 
   String _getDayText() {
-    switch (appt.entryDate.toDate().weekday) {
+    switch (appt!.entryDate!.toDate().weekday) {
       case 1:
         return "Lunes";
         break;
@@ -1057,7 +1057,7 @@ class _ApptDetailsState extends State<ApptDetails> {
   }
 
   String _getTime(DateTime date) {
-    int hour;
+    int? hour;
     String hourString;
     String minute;
     String ampm;

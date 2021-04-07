@@ -3,7 +3,7 @@ import 'package:lamanda_admin/models/appointment/apptStay.dart';
 import 'package:lamanda_admin/models/userProfile.dart';
 
 class DaycareAppt extends ApptStay {
-  Timestamp entryHour;
+  Timestamp? entryHour;
   DaycareAppt(
       String id,
       Timestamp departureDate,
@@ -68,7 +68,7 @@ class DaycareAppt extends ApptStay {
       'departureHour': this.departureDate,
       'userPickup': this.departureUser,
       'date': this.entryDate,
-      'userDeliver': this.entryUser.toJson(),
+      'userDeliver': this.entryUser!.toJson(),
       'transfer': this.transfer,
       'isConfirmed': this.isConfirmed,
       'direction': this.direction,

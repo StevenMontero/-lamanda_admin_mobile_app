@@ -10,8 +10,8 @@ class NumberPhone extends FormzInput<String, NumberValidationError > {
       RegExp(r'^[0-9]{8,}$');
 
   @override
-  NumberValidationError validator(String value) {
-    return _numberRegExp.hasMatch(value)
+  NumberValidationError? validator(String? value) {
+    return _numberRegExp.hasMatch(value!)
         ? null
         : NumberValidationError.invalid;
   }

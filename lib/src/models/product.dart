@@ -5,13 +5,13 @@ Product productFromJson(String str) => Product.fromJson(json.decode(str));
 String productToJson(Product data) => json.encode(data.toJson());
 
 class Product {
-  String name;
-  String description;
-  double price;
-  int quantity;
-  String photoUrl;
-  String code;
-  String categories;
+  String? name;
+  String? description;
+  double? price;
+  int? quantity;
+  String? photoUrl;
+  String? code;
+  String? categories;
 
   Product({
     this.name = '',

@@ -63,7 +63,7 @@ class HotelAppt extends ApptStay {
       'departureDate': this.departureDate,
       'departureUser': this.departureUser,
       'entryDate': this.entryDate,
-      'entryUser': this.entryUser.toJson(),
+      'entryUser': this.entryUser!.toJson(),
       'transfer': this.transfer,
       'isConfirmed': this.isConfirmed,
       'direction': this.direction,

@@ -23,7 +23,7 @@ class ProductService {
     });
   }
 
-  Future<void> deleteProduct(String code) async {
+  Future<void> deleteProduct(String? code) async {
     products
         .doc(code)
         .delete()
@@ -34,7 +34,7 @@ class ProductService {
   }
 
   Future<List<Product>> getProducts() async {
-    final listProducts = [];
+    final listProducts = <Product>[];
     Product temp = Product();
     QuerySnapshot snap = await products.get();
     snap.docs.forEach((p) {
@@ -49,7 +49,7 @@ class ProductService {
     dynamic temp = Product();
     final snap = products.doc(code).snapshots();
     snap.forEach((p) {
-      temp = Product.fromJson(p.data());
+      temp = Product.fromJson(p.data()!);
       temp.code = p.id;
     });
     return temp;

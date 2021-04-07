@@ -18,7 +18,7 @@ class AdminUserCubit extends Cubit<AdminUserState> {
   }
 
   void modifyUser(AdminUser user) {
-    final currentState = state;
+    final AdminUserState currentState = state;
     if (currentState is UsersModified) {
       currentState.user = user;
       adminUsers.updateUser(user);
@@ -27,7 +27,7 @@ class AdminUserCubit extends Cubit<AdminUserState> {
   }
 
   void deleteUser(AdminUser user) {
-    final currentState = state;
+    final AdminUserState currentState = state;
     if (currentState is UsersModified) {
       currentState.user = user;
       adminUsers.deleteUser(user.id);
@@ -44,7 +44,7 @@ class AdminUserCubit extends Cubit<AdminUserState> {
     return list;
   }
 
-  Future<AdminUser> getProduct(String id) {
+  Future<AdminUser?> getProduct(String id) {
     return adminUsers.getUserProfile(id);
   }
 

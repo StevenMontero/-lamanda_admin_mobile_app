@@ -12,11 +12,11 @@ class AdminUserRepository {
         .catchError((error) => print('Failed to add user: $error'));
   }
 
-  Future<AdminUser> getUserProfile(String idUser) async {
+  Future<AdminUser?> getUserProfile(String idUser) async {
     DocumentSnapshot snapshot;
     snapshot = await _ref.doc(idUser).get();
     if (snapshot.exists) {
-      return AdminUser.fromJson(snapshot.data());
+      return AdminUser.fromJson(snapshot.data()!);
     } else {
       return null;
     }
@@ -32,7 +32,7 @@ class AdminUserRepository {
         .catchError((error) => print('Failure Update'));
   }
 
-  Future<void> deleteUser(String id) async {
+  Future<void> deleteUser(String? id) async {
     _ref
         .doc(id)
         .delete()
@@ -43,7 +43,7 @@ class AdminUserRepository {
   }
 
   Future<List<AdminUser>> getUsers() async {
-    final listAdminUsers = [];
+    final listAdminUsers = <AdminUser>[];
     AdminUser temp = AdminUser();
     QuerySnapshot snap = await _ref.get();
     snap.docs.forEach((p) {

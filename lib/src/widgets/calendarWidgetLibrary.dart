@@ -4,29 +4,29 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-typedef OnDateSelected = void Function(DateTime);
+typedef OnDateSelected = void Function(DateTime?);
 
 class CalendarTimeline extends StatefulWidget {
   final DateTime initialDate;
   final DateTime firstDate;
   final DateTime lastDate;
-  final SelectableDayPredicate selectableDayPredicate;
+  final SelectableDayPredicate? selectableDayPredicate;
   final OnDateSelected onDateSelected;
   final double leftMargin;
-  final Color dayColor;
-  final Color activeDayColor;
-  final Color activeBackgroundDayColor;
-  final Color monthColor;
-  final Color dotsColor;
-  final Color dayNameColor;
-  final String locale;
+  final Color? dayColor;
+  final Color? activeDayColor;
+  final Color? activeBackgroundDayColor;
+  final Color? monthColor;
+  final Color? dotsColor;
+  final Color? dayNameColor;
+  final String? locale;
 
   CalendarTimeline({
-    Key key,
-    @required this.initialDate,
-    @required this.firstDate,
-    @required this.lastDate,
-    @required this.onDateSelected,
+    Key? key,
+    required this.initialDate,
+    required this.firstDate,
+    required this.lastDate,
+    required this.onDateSelected,
     this.selectableDayPredicate,
     this.leftMargin = 0,
     this.dayColor,
@@ -69,13 +69,13 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
   final ItemScrollController _controllerMonth = ItemScrollController();
   final ItemScrollController _controllerDay = ItemScrollController();
 
-  int _monthSelectedIndex;
-  int _daySelectedIndex;
-  double _scrollAlignment;
+  int? _monthSelectedIndex;
+  int? _daySelectedIndex;
+  late double _scrollAlignment;
 
   List<DateTime> _months = [];
   List<DateTime> _days = [];
-  DateTime _selectedDate;
+  DateTime? _selectedDate;
 
   String get _locale =>
       widget.locale ?? Localizations.localeOf(context).languageCode;
@@ -85,7 +85,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
     super.initState();
     _initCalendar();
     _scrollAlignment = widget.leftMargin / 440;
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
       initializeDateFormatting(_locale);
     });
   }
@@ -94,8 +94,8 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
   void didUpdateWidget(CalendarTimeline oldWidget) {
     super.didUpdateWidget(oldWidget);
     _initCalendar();
-    _moveToMonthIndex(_monthSelectedIndex);
-    _moveToDayIndex(_daySelectedIndex);
+    _moveToMonthIndex(_monthSelectedIndex!);
+    _moveToDayIndex(_daySelectedIndex!);
   }
 
   @override
@@ -115,7 +115,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
       height: 60,
       child: ScrollablePositionedList.builder(
         itemScrollController: _controllerDay,
-        initialScrollIndex: _daySelectedIndex,
+        initialScrollIndex: _daySelectedIndex!,
         initialAlignment: _scrollAlignment,
         scrollDirection: Axis.horizontal,
         itemCount: _days.length,
@@ -135,7 +135,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                 onTap: () => _goToActualDay(index),
                 available: widget.selectableDayPredicate == null
                     ? true
-                    : widget.selectableDayPredicate(currentDay),
+                    : widget.selectableDayPredicate!(currentDay),
                 dayColor: widget.dayColor,
                 activeDayColor: widget.activeDayColor,
                 activeDayBackgroundColor: widget.activeBackgroundDayColor,
@@ -158,7 +158,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
     return Container(
       height: 25,
       child: ScrollablePositionedList.builder(
-        initialScrollIndex: _monthSelectedIndex,
+        initialScrollIndex: _monthSelectedIndex!,
         initialAlignment: _scrollAlignment,
         itemScrollController: _controllerMonth,
         padding: EdgeInsets.only(left: widget.leftMargin),
@@ -181,7 +181,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                     padding: const EdgeInsets.only(right: 10),
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: widget.monthColor, width: 1),
+                        border: Border.all(color: widget.monthColor!, width: 1),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Padding(
@@ -217,10 +217,10 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
     );
   }
 
-  _generateDays(DateTime selectedMonth) {
+  _generateDays(DateTime? selectedMonth) {
     _days.clear();
     for (var i = 1; i <= 31; i++) {
-      final day = DateTime(selectedMonth.year, selectedMonth.month, i);
+      final day = DateTime(selectedMonth!.year, selectedMonth.month, i);
       if (day.difference(widget.firstDate).inDays < 0) continue;
       if (day.month != selectedMonth.month || day.isAfter(widget.lastDate))
         break;
@@ -239,9 +239,9 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
 
   _resetCalendar(DateTime date) {
     _generateDays(date);
-    _daySelectedIndex = date.month == _selectedDate.month
+    _daySelectedIndex = date.month == _selectedDate!.month
         ? _days.indexOf(
-            _days.firstWhere((dayDate) => dayDate.day == _selectedDate.day))
+            _days.firstWhere((dayDate) => dayDate.day == _selectedDate!.day))
         : null;
     _controllerDay.scrollTo(
       index: _daySelectedIndex ?? 0,
@@ -297,23 +297,23 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
 }
 
 class MonthName extends StatelessWidget {
-  final String name;
-  final Function onTap;
-  final bool isSelected;
-  final Color color;
+  final String? name;
+  final Function? onTap;
+  final bool? isSelected;
+  final Color? color;
 
   MonthName({this.name, this.onTap, this.isSelected, this.color});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: this.onTap,
+      onTap: this.onTap as void Function()?,
       child: Text(
-        this.name.toUpperCase(),
+        this.name!.toUpperCase(),
         style: TextStyle(
           fontSize: 12,
           color: color ?? Colors.black87,
-          fontWeight: this.isSelected ? FontWeight.bold : FontWeight.w300,
+          fontWeight: this.isSelected! ? FontWeight.bold : FontWeight.w300,
         ),
       ),
     );
@@ -325,19 +325,19 @@ class _DayItem extends StatelessWidget {
   final String shortName;
   final bool isSelected;
   final Function onTap;
-  final Color dayColor;
-  final Color activeDayColor;
-  final Color activeDayBackgroundColor;
+  final Color? dayColor;
+  final Color? activeDayColor;
+  final Color? activeDayBackgroundColor;
   final bool available;
-  final Color dotsColor;
-  final Color dayNameColor;
+  final Color? dotsColor;
+  final Color? dayNameColor;
 
   const _DayItem({
-    Key key,
-    @required this.dayNumber,
-    @required this.shortName,
-    @required this.isSelected,
-    @required this.onTap,
+    Key? key,
+    required this.dayNumber,
+    required this.shortName,
+    required this.isSelected,
+    required this.onTap,
     this.dayColor,
     this.activeDayColor,
     this.activeDayBackgroundColor,
@@ -402,7 +402,7 @@ class _DayItem extends StatelessWidget {
 
   _buildDay(BuildContext context) {
     return GestureDetector(
-      onTap: available ? onTap : null,
+      onTap: available ? onTap as void Function()? : null,
       child: Container(
         height: height,
         width: width,

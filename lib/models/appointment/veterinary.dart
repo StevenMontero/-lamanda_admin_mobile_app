@@ -3,8 +3,8 @@ import 'package:lamanda_admin/models/appointment/appointment.dart';
 import 'package:lamanda_admin/models/userProfile.dart';
 
 class VeterinaryAppt extends Appointment {
-  String symptoms;
-  String race;
+  String? symptoms;
+  String? race;
 
   VeterinaryAppt(
       String id,
@@ -40,7 +40,7 @@ class VeterinaryAppt extends Appointment {
       'id': this.id,
       'entryDate': this.entryDate,
       'symptoms': this.symptoms,
-      'entryUser': this.entryUser.toJson(),
+      'entryUser': this.entryUser!.toJson(),
       'isConfirmed': this.isConfirmed,
       'direction': this.direction,
       'race': this.race
