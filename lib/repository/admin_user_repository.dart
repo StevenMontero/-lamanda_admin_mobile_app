@@ -43,7 +43,7 @@ class AdminUserRepository {
   }
 
   Future<List<AdminUser>> getUsers() async {
-    final listAdminUsers = new List<AdminUser>();
+    final listAdminUsers = [];
     AdminUser temp = AdminUser();
     QuerySnapshot snap = await _ref.get();
     snap.docs.forEach((p) {

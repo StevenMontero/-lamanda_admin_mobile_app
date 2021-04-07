@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lamanda_admin/models/adminUser.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
 

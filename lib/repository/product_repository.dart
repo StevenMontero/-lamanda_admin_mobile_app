@@ -34,7 +34,7 @@ class ProductService {
   }
 
   Future<List<Product>> getProducts() async {
-    final listProducts = new List<Product>();
+    final listProducts = [];
     Product temp = Product();
     QuerySnapshot snap = await products.get();
     snap.docs.forEach((p) {

@@ -158,7 +158,7 @@ class _ShowProductState extends State<ShowProduct> {
 
   Widget _categoryProduct() {
     List<Categories> categories = productCubit.getCategories();
-    List<DropdownMenuItem<String>> options = new List();
+    List<DropdownMenuItem<String>> options = [];
     categories.forEach((c) {
       options.add(new DropdownMenuItem(
         value: c.toString().substring(c.toString().indexOf('.') + 1),
@@ -278,7 +278,7 @@ class _ShowProductState extends State<ShowProduct> {
           return AlertDialog(
             title: Text("Ingrese la dirección de la imagen"),
             actions: [
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                   Navigator.pop(context);
@@ -303,8 +303,7 @@ class _ShowProductState extends State<ShowProduct> {
         });
   }
 
-  _selectPhoto(ImageSource source) async {
-    //TODO: Genera problemas el Image Picker (No implementation found for method pickImage on channel plugins.flutter.io/image_picker)
+  _selectPhoto(ImageSource source) async {   
     final pickedFile = await picker.getImage(source: source);
 
     setState(() {
@@ -318,7 +317,6 @@ class _ShowProductState extends State<ShowProduct> {
   }
 
   _saveProduct(BuildContext context) async {
-    //TODO: falta guardar foto a db
     if (!_formKey.currentState.validate()) {
       return ScaffoldMessengerState()
           .showSnackBar(_messageSnack('Verifique la información del producto'));

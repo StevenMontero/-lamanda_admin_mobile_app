@@ -7,10 +7,10 @@ import 'package:lamanda_admin/models/appointment/daycare.dart';
 import 'package:lamanda_admin/models/appointment/esthetic.dart';
 import 'package:lamanda_admin/models/appointment/hotel.dart';
 import 'package:lamanda_admin/models/appointment/veterinary.dart';
-import 'package:lamanda_admin/models/pet.dart';
+
 import 'package:lamanda_admin/models/userProfile.dart';
 import 'package:lamanda_admin/repository/appointments_repository.dart';
-import 'package:lamanda_admin/repository/pet_repository.dart';
+
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
 
@@ -918,7 +918,7 @@ class _ApptDetailsState extends State<ApptDetails> {
               style: TextStyle(fontSize: 22),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                   child: Text(
                     'Sí',
                     style: TextStyle(color: Colors.black),
@@ -927,7 +927,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                     Navigator.of(context).pop();
                     _updateAppt(isConfirm, contextPage);
                   }),
-              FlatButton(
+              TextButton(
                 child: Text(
                   'No',
                   style: TextStyle(color: Colors.black),

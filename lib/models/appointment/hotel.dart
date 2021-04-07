@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lamanda_admin/models/appointment/appointment.dart';
 import 'package:lamanda_admin/models/appointment/apptStay.dart';
 import 'package:lamanda_admin/models/userProfile.dart';
 

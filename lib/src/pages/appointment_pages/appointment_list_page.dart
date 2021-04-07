@@ -5,9 +5,7 @@ import 'package:lamanda_admin/models/appointment/daycare.dart';
 import 'package:lamanda_admin/models/appointment/esthetic.dart';
 import 'package:lamanda_admin/models/appointment/hotel.dart';
 import 'package:lamanda_admin/models/appointment/veterinary.dart';
-import 'package:lamanda_admin/models/userProfile.dart';
 import 'package:lamanda_admin/repository/appointments_repository.dart';
-import 'package:lamanda_admin/repository/user_repository.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
 import 'package:lamanda_admin/src/widgets/calendarWidgetLibrary.dart';
@@ -44,10 +42,10 @@ class _AppointmentListState extends State<AppointmentList> {
   List<FilterAppts> _cast;
   List<String> _filters = <String>[];
 
-  List<DaycareAppt> daycareApptList = new List();
-  List<EstheticAppt> stheticApptList = new List();
-  List<HotelAppt> hotelApptList = new List();
-  List<VeterinaryAppt> veterinaryApptList = new List();
+  List<DaycareAppt> daycareApptList = [];
+  List<EstheticAppt> stheticApptList = [];
+  List<HotelAppt> hotelApptList = [];
+  List<VeterinaryAppt> veterinaryApptList = [];
 
   final AppointmentsRepository appointmentsRepository =
       new AppointmentsRepository();
@@ -244,7 +242,7 @@ class _AppointmentListState extends State<AppointmentList> {
   }
 
   Future<List<int>> _getAppoitments() async {
-    List<int> list = new List();
+    List<int> list = [];
     if (daycareFilter.selected) {
       daycareApptList =
           await appointmentsRepository.getDaycareApptList(_selectedDate.day);
@@ -301,7 +299,7 @@ class _AppointmentListState extends State<AppointmentList> {
   Widget _createList(List<int> listReceived) {
     listReceived = null;
 
-    List<Widget> list = new List();
+    List<Widget> list = [];
     if (daycareApptList != null) {
       if (daycareApptList.isNotEmpty) {
         list.add(_createApptsCategories(1));
@@ -371,8 +369,8 @@ class _AppointmentListState extends State<AppointmentList> {
     String title;
     Color backgroundColor;
     Color apptsColor;
-    List<Appointment> appointmentsConfirmed = new List();
-    List<Appointment> appointmentsNonConfirmed = new List();
+    List<Appointment> appointmentsConfirmed = [];
+    List<Appointment> appointmentsNonConfirmed = [];
     Appointment appointmentTemp;
 
     switch (type) {

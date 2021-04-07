@@ -42,7 +42,6 @@ class ProductsCubit extends Cubit<ProductsState> {
     return products.getProduct(code);
   }
 
-  //TODO: Agregar endpoint donde se guardara la imagen
   Future<String> loadPhoto(File photo) async {
     return "";
   }

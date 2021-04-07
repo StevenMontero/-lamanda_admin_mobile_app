@@ -150,7 +150,7 @@ class AppointmentsRepository {
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   Future<List<DaycareAppt>> getDaycareApptList(int day) async {
-    final List<DaycareAppt> daycareList = new List();
+    final List<DaycareAppt> daycareList = [];
 
     await _refDaycare.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
@@ -173,7 +173,7 @@ class AppointmentsRepository {
   }
 
   Future<List<EstheticAppt>> getStheticApptList(int day) async {
-    final List<EstheticAppt> stheticList = new List();
+    final List<EstheticAppt> stheticList = [];
     QuerySnapshot snap = await _refSthetic.get();
     snap.docs.forEach((doc) {
       if (doc.exists) {
@@ -193,7 +193,7 @@ class AppointmentsRepository {
   }
 
   Future<List<HotelAppt>> getHotelApptList(int day) async {
-    final List<HotelAppt> hotelList = new List();
+    final List<HotelAppt> hotelList = [];
     await _refHotel.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
@@ -215,7 +215,7 @@ class AppointmentsRepository {
   }
 
   Future<List<VeterinaryAppt>> getVeterinaryApptList(int day) async {
-    final List<VeterinaryAppt> veterinaryList = new List();
+    final List<VeterinaryAppt> veterinaryList = [];
     await _refVeterinary.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {

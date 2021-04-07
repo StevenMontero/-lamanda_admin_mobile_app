@@ -43,7 +43,7 @@ class ListProducts extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () {},
             icon: Icon(
               Icons.tune,
