@@ -542,7 +542,7 @@ class _AppointmentListState extends State<AppointmentList> {
                               Container(
                                   width: _screenSize.width * 0.47,
                                   child: Text(
-                                    name!,
+                                    name,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: textColor, fontSize: 13),
