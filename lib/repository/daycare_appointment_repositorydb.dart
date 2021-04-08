@@ -1,0 +1,46 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lamanda_admin/models/daycare_appointment.dart';
+
+class DaycareAppointmentRepository {
+  final CollectionReference _ref =
+      FirebaseFirestore.instance.collection('daycareAppointment');
+
+  //Future<DaycareAppointment?> getUserAppointment(String appointmentId) async {
+  //  DocumentSnapshot snapshot;
+  //  snapshot = await _ref.doc(appointmentId).get();
+  //  if (snapshot.exists) {
+  //    return DaycareAppointment.fromJson(snapshot.data()!);
+  //  } else {
+  //    return null;
+  //  }
+  //}
+
+  Future<List<DaycareAppointment>> getListAppointmets(DateTime date) async {
+    List<DaycareAppointment> daycareAppointmentList = [];
+    QuerySnapshot snapshot = await _ref.get();
+    Timestamp timeStamp = Timestamp.fromDate(date);
+    final result = snapshot.docs.where((DocumentSnapshot document) =>
+        document.data()!['date'].contains(timeStamp));
+    result.forEach((element) {
+      daycareAppointmentList.add(DaycareAppointment.fromJson(element.data()));
+    });
+
+    return daycareAppointmentList;
+  }
+
+  Future<List<DaycareAppointment>?> getDaycareApptList(DateTime date) async {
+    final List<DaycareAppointment> daycareAppointmentList = [];
+    QuerySnapshot snapshot = await _ref.get();
+
+    if (snapshot.docs.isNotEmpty) {
+      snapshot.docs.forEach((element) {
+        Timestamp queryDate = element['date'];
+        if (date == queryDate.toDate()) {
+          daycareAppointmentList
+              .add(DaycareAppointment.fromJson(element.data()));
+        }
+      });
+      return daycareAppointmentList;
+    }
+  }
+}
