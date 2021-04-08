@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lamanda_admin/src/pages/home/home_page.dart';
 import 'package:lamanda_admin/src/routes/routes.dart';
 import 'package:lamanda_admin/src/theme/theme.dart';
 
@@ -49,9 +50,7 @@ class _AppViewState extends State<AppView> {
       debugShowCheckedModeBanner: false,
       title: 'La Manada petShop',
       routes: getRoutesApp(),
-      home: Scaffold(
-        body: Container(),
-      ),
+      home: HomePage(),
       // onGenerateRoute: (settings) =>
       //     MaterialPageRoute(builder: (context) => AdminHome()),
       supportedLocales: [
