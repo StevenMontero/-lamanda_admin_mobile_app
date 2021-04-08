@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
                 itemTextColor: Colors.white,
                 itemTitle: 'Estetica',
                 onPress: () {
-                 
+                 Navigator.of(context).pushNamed('esthetic');
                 },
               ),
               SizedBox(
