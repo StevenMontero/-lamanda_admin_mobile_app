@@ -115,7 +115,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
       height: 60,
       child: ScrollablePositionedList.builder(
         itemScrollController: _controllerDay,
-        initialScrollIndex: _daySelectedIndex!,
+        initialScrollIndex: _daySelectedIndex ?? 0,
         initialAlignment: _scrollAlignment,
         scrollDirection: Axis.horizontal,
         itemCount: _days.length,

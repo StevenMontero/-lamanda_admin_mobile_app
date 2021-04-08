@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lamanda_admin/models/appointment/appointment.dart';
-import 'package:lamanda_admin/models/appointment/apptStay.dart';
-import 'package:lamanda_admin/models/appointment/daycare.dart';
-import 'package:lamanda_admin/models/appointment/esthetic.dart';
-import 'package:lamanda_admin/models/appointment/hotel.dart';
-import 'package:lamanda_admin/models/appointment/veterinary.dart';
-
+import 'package:lamanda_admin/models/daycare_appointment.dart';
+import 'package:lamanda_admin/models/hotel_appointment.dart';
+import 'package:lamanda_admin/models/sthetic_appointment.dart';
 import 'package:lamanda_admin/models/userProfile.dart';
+import 'package:lamanda_admin/models/veterinary_appointment.dart';
 import 'package:lamanda_admin/repository/appointments_repository.dart';
 
 import 'package:lamanda_admin/src/theme/colors.dart';
@@ -20,8 +17,8 @@ class ApptDetails extends StatefulWidget {
 }
 
 class _ApptDetailsState extends State<ApptDetails> {
-  Appointment? appt;
   UserProfile? user;
+  var appt;
   Color? backgroundColor;
   Color? apptColor;
   Color? degradedColor;
@@ -30,33 +27,37 @@ class _ApptDetailsState extends State<ApptDetails> {
   late String loadingGif;
   @override
   Widget build(BuildContext context) {
-    appt = ModalRoute.of(context)!.settings.arguments as Appointment?;
-    user = appt!.entryUser;
+     appt = ModalRoute.of(context)!.settings.arguments;
     _screenSize = MediaQuery.of(context).size;
 
     switch (appt.runtimeType) {
-      case DaycareAppt:
+      case DaycareAppointment:
+        if (appt is DaycareAppointment) user = appt.client as UserProfile?;
+
         loadingGif = 'assets/gif/pinkCat.gif';
         type = 1;
         backgroundColor = ColorsApp.primaryColorPinkDegraded;
         apptColor = ColorsApp.primaryColorPink;
         degradedColor = ColorsApp.primaryColorPinkDegraded2;
         break;
-      case EstheticAppt:
+      case StheticAppointment:
+      if (appt is StheticAppointment) user = appt.client;
         loadingGif = 'assets/gif/blueCat.gif';
         type = 2;
         backgroundColor = ColorsApp.primaryColorBlueDegraded;
         apptColor = ColorsApp.primaryColorBlue;
         degradedColor = ColorsApp.primaryColorBlueDegraded2;
         break;
-      case HotelAppt:
+      case HotelAppointment:
+      if (appt is HotelAppointment) user = appt.client;
         loadingGif = 'assets/gif/orangeCat.gif';
         type = 3;
         backgroundColor = ColorsApp.primaryColorOrangeDegraded;
         apptColor = ColorsApp.primaryColorOrange;
         degradedColor = ColorsApp.primaryColorOrangeDegraded2;
         break;
-      case VeterinaryAppt:
+      case VeterinaryAppointment:
+       if (appt is VeterinaryAppointment) user = appt.client;
         loadingGif = 'assets/gif/turCat.gif';
         type = 4;
         backgroundColor = ColorsApp.primaryColorTurquoiseDegraded;
@@ -64,7 +65,6 @@ class _ApptDetailsState extends State<ApptDetails> {
         degradedColor = ColorsApp.primaryColorTurquoiseDegraded2;
         break;
     }
-    print(appt!.id);
     return Scaffold(
         appBar: titlePage(context) as PreferredSizeWidget?,
         body: Center(
@@ -104,13 +104,13 @@ class _ApptDetailsState extends State<ApptDetails> {
     }
     Widget hourContainer = Container();
     if (type == 2) {
-      EstheticAppt sthetic = appt as EstheticAppt;
-      hourContainer = _createInformation(_getTime(sthetic.entryHour!.toDate()),
+      StheticAppointment sthetic = appt as StheticAppointment;
+      hourContainer = _createInformation(_getTime(sthetic.entryHour!),
           0.018, Colors.grey[200], FontWeight.bold);
     }
     if (type == 1) {
-      DaycareAppt daycare = appt as DaycareAppt;
-      hourContainer = _createInformation(_getTime(daycare.entryHour!.toDate()),
+      DaycareAppointment daycare = appt as DaycareAppointment;
+      hourContainer = _createInformation(_getTime(daycare.entryHour!),
           0.018, Colors.grey[200], FontWeight.bold);
     }
 
@@ -180,8 +180,8 @@ class _ApptDetailsState extends State<ApptDetails> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _createInformation(appt!.entryDate!.toDate().day.toString(), 0.043,
-                  Colors.white, FontWeight.bold),
+              _createInformation(appt!.entryHour!.day.toString(),
+                  0.043, Colors.white, FontWeight.bold),
               _createInformation(
                   _getDayText(), 0.017, Colors.grey[200], FontWeight.bold),
               hourContainer
@@ -205,14 +205,13 @@ class _ApptDetailsState extends State<ApptDetails> {
 
   Widget _createDepartureInformation() {
     if (type == 1 || type == 3) {
-      ApptStay appts = appt as ApptStay;
+      DaycareAppointment appts = appt as DaycareAppointment;
 
       Widget hourContainer = Container();
       if (type == 1) {
-        DaycareAppt daycare = appt as DaycareAppt;
-        print(daycare.departureDate!.toDate().hour);
+        DaycareAppointment daycare = appt as DaycareAppointment;
         hourContainer = _createInformation(
-            _getTime(daycare.departureDate!.toDate()),
+            _getTime(daycare.departureHour!),
             0.022,
             Colors.white,
             FontWeight.normal);
@@ -247,7 +246,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                   ),
                   Container(
                     width: _screenSize.width * 0.4,
-                    child: _createInformation(appts.departureUser!, 0.018,
+                    child: _createInformation(appts.userPickup!, 0.018,
                         Colors.white, FontWeight.normal),
                   ),
                 ],
@@ -279,7 +278,7 @@ class _ApptDetailsState extends State<ApptDetails> {
         petInformationHeight = _screenSize.height * 0.515;
       }
       if (type == 4) {
-        VeterinaryAppt vet = appt as VeterinaryAppt;
+        VeterinaryAppointment vet = appt as VeterinaryAppointment;
         symptoms = new Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -333,7 +332,7 @@ class _ApptDetailsState extends State<ApptDetails> {
               width: _screenSize.width * 0.85,
               height: petInformationHeight,
               child: _showPetInformation()),
-          _createDirectionInformation()
+          Expanded(child: _createDirectionInformation())
         ],
       ),
     );
@@ -342,7 +341,7 @@ class _ApptDetailsState extends State<ApptDetails> {
   Widget _showPetInformation() {
     switch (type) {
       case 2:
-        EstheticAppt sthetic = appt as EstheticAppt;
+        StheticAppointment sthetic = appt as StheticAppointment;
         return Container(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -357,7 +356,7 @@ class _ApptDetailsState extends State<ApptDetails> {
                 width: _screenSize.width * 0.05,
               ),
               Text(
-                sthetic.fur!,
+                sthetic.pet!.fur!,
                 style: TextStyle(fontSize: _screenSize.width * 0.05),
               ),
             ],
@@ -365,50 +364,48 @@ class _ApptDetailsState extends State<ApptDetails> {
         );
         break;
       case 3:
-        HotelAppt hotel = appt as HotelAppt;
+        HotelAppointment hotel = appt as HotelAppointment;
         return Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _showSpecificInformationBool("Castrado", hotel.isCastrated),
-              _showSpecificInformationBool("Sociable", hotel.isSociable),
+              _showSpecificInformationBool("Castrado", hotel.pet!.castrated),
+              _showSpecificInformationBool("Sociable",  hotel.pet!.sociable),
               _showSpecificInformationBool(
-                  "Vacunado", hotel.isVaccinationUpDate),
-              _showSpecificInformationBool("Castrado", hotel.isCastrated),
+                  "Vacunado",  hotel.pet!.isVaccinationUpDate),
               _showSpecificInformationDate(
-                  "Desparacitado el:", hotel.lastDeworming),
+                  "Desparacitado el:", hotel.lastdeworming!),
               _showSpecificInformationDate(
-                  "Protección de plagas el:", hotel.lastProtectionFleas),
-              _showSpecificInformationText("Raza:", hotel.race.toString()),
-              _showSpecificInformationText("Edad:", hotel.age.toString()),
+                  "Protección de plagas el:", hotel.pestProtection),
+              _showSpecificInformationText("Raza:", hotel.pet!.kindPet!),
+              _showSpecificInformationText("Edad:", hotel.pet!.age.toString()),
             ],
           ),
         );
         break;
       case 1:
-        DaycareAppt daycare = appt as DaycareAppt;
+        DaycareAppointment daycare = appt as DaycareAppointment;
         return Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _showSpecificInformationBool("Castrado", daycare.isCastrated),
-              _showSpecificInformationBool("Sociable", daycare.isSociable),
+              _showSpecificInformationBool("Castrado", daycare.pet!.castrated),
+              _showSpecificInformationBool("Sociable", daycare.pet!.sociable),
               _showSpecificInformationBool(
-                  "Vacunado", daycare.isVaccinationUpDate),
-              _showSpecificInformationBool("Castrado", daycare.isCastrated),
+                  "Vacunado", daycare.pet!.isVaccinationUpDate),
               _showSpecificInformationDate(
                   "Desparacitado el:", daycare.lastDeworming),
               _showSpecificInformationDate(
                   "Protección de plagas el:", daycare.lastProtectionFleas),
-              _showSpecificInformationText("Raza:", daycare.race.toString()),
-              _showSpecificInformationText("Edad:", daycare.age.toString()),
+              _showSpecificInformationText("Raza:", daycare.pet!.kindPet!),
+              _showSpecificInformationText("Edad:", daycare.pet!.age!.toString()),
             ],
           ),
         );
         break;
       case 4:
         if (type == 4) {
-          VeterinaryAppt vet = appt as VeterinaryAppt;
+          VeterinaryAppointment vet = appt as VeterinaryAppointment;
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -418,7 +415,7 @@ class _ApptDetailsState extends State<ApptDetails> {
             width: _screenSize.width * 0.83,
             child: Column(
               children: [
-                _showSpecificInformationText("Raza:", vet.race.toString()),
+                _showSpecificInformationText("Raza:", vet.pet!.kindPet!),
                 SizedBox(
                   height: _screenSize.height * 0.05,
                 ),
@@ -476,7 +473,7 @@ class _ApptDetailsState extends State<ApptDetails> {
     }
   }
 
-  Widget _showSpecificInformationDate(String atribute, Timestamp? date) {
+  Widget _showSpecificInformationDate(String atribute, DateTime? date) {
     if (date != null) {
       return Container(
         width: _screenSize.width * 0.9,
@@ -493,11 +490,11 @@ class _ApptDetailsState extends State<ApptDetails> {
               width: _screenSize.width * 0.05,
             ),
             Text(
-              date.toDate().day.toString() +
+              date.day.toString() +
                   "-" +
-                  date.toDate().month.toString() +
+                  date.month.toString() +
                   "-" +
-                  date.toDate().year.toString(),
+                  date.year.toString(),
               style: TextStyle(
                   fontSize: _screenSize.width * 0.04,
                   fontWeight: FontWeight.bold),
@@ -991,16 +988,16 @@ class _ApptDetailsState extends State<ApptDetails> {
       } else {
         appt!.isDeclined = true;
         switch (appt.runtimeType) {
-          case DaycareAppt:
+          case DaycareAppointment:
             AppointmentsRepository().deleteDaycare(appt!.id);
             break;
-          case EstheticAppt:
+          case StheticAppointment:
             AppointmentsRepository().deleteSthetic(appt!.id);
             break;
-          case HotelAppt:
+          case HotelAppointment:
             AppointmentsRepository().deleteHotel(appt!.id);
             break;
-          case VeterinaryAppt:
+          case VeterinaryAppointment:
             AppointmentsRepository().deleteVeterinary(appt!.id);
             break;
           default:
@@ -1012,24 +1009,24 @@ class _ApptDetailsState extends State<ApptDetails> {
 
   void _update() {
     switch (appt.runtimeType) {
-      case DaycareAppt:
-        AppointmentsRepository().updateDaycare(appt as DaycareAppt);
+      case DaycareAppointment:
+        AppointmentsRepository().updateDaycare(appt as DaycareAppointment);
         break;
-      case EstheticAppt:
-        AppointmentsRepository().updateSthetic(appt as EstheticAppt);
+      case StheticAppointment:
+        AppointmentsRepository().updateSthetic(appt as StheticAppointment);
         break;
-      case HotelAppt:
-        AppointmentsRepository().updateHotel(appt as HotelAppt);
+      case HotelAppointment:
+        AppointmentsRepository().updateHotel(appt as HotelAppointment);
         break;
-      case VeterinaryAppt:
-        AppointmentsRepository().updateVeterinary(appt as VeterinaryAppt);
+      case VeterinaryAppointment:
+        AppointmentsRepository().updateVeterinary(appt as VeterinaryAppointment);
         break;
       default:
     }
   }
 
   String _getDayText() {
-    switch (appt!.entryDate!.toDate().weekday) {
+    switch (appt!.entryDate!.weekday) {
       case 1:
         return "Lunes";
         break;

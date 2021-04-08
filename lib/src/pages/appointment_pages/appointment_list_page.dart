@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lamanda_admin/models/appointment/appointment.dart';
-import 'package:lamanda_admin/models/appointment/daycare.dart';
-import 'package:lamanda_admin/models/appointment/esthetic.dart';
-import 'package:lamanda_admin/models/appointment/hotel.dart';
-import 'package:lamanda_admin/models/appointment/veterinary.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:lamanda_admin/models/daycare_appointment.dart';
+import 'package:lamanda_admin/models/hotel_appointment.dart';
+import 'package:lamanda_admin/models/sthetic_appoiments_list.dart';
+import 'package:lamanda_admin/models/sthetic_appointment.dart';
+import 'package:lamanda_admin/models/veterinary_appoiment_list.dart';
+import 'package:lamanda_admin/models/veterinary_appointment.dart';
 import 'package:lamanda_admin/repository/appointments_repository.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:lamanda_admin/src/widgets/appBar.dart';
@@ -42,10 +44,10 @@ class _AppointmentListState extends State<AppointmentList> {
   late List<FilterAppts> _cast;
   List<String> _filters = <String>[];
 
-  List<DaycareAppt>? daycareApptList = [];
-  List<EstheticAppt>? stheticApptList = [];
-  List<HotelAppt>? hotelApptList = [];
-  List<VeterinaryAppt>? veterinaryApptList = [];
+  List<DaycareAppointment>? daycareApptList = [];
+  EstheticAppointmentsList? stheticApptList;
+  List<HotelAppointment>? hotelApptList = [];
+  VeterinaryAppointmenList? veterinaryApptList;
 
   final AppointmentsRepository appointmentsRepository =
       new AppointmentsRepository();
@@ -69,7 +71,6 @@ class _AppointmentListState extends State<AppointmentList> {
       appBar: titlePage(context) as PreferredSizeWidget?,
       body: Column(
         children: [
-          SizedBox(height: 2),
           Text("Administración de Citas",
               style: TextStyle(
                   color: ColorsApp.primaryColorBlue,
@@ -140,41 +141,44 @@ class _AppointmentListState extends State<AppointmentList> {
   }
 
   Widget _listAppointments() {
-    return Container(
-      margin: EdgeInsets.only(top: 5),
-      width: _screenSize.width * 0.95,
-      height: _screenSize.height * 0.765,
-      decoration: BoxDecoration(
-        color: Color(0xFF6C78EB),
-        borderRadius: new BorderRadius.circular(15.0),
-      ),
-      child: Column(
-        children: [
-          SizedBox(height: 2),
-          CalendarTimeline(
-            initialDate: _selectedDate,
-            firstDate: DateTime.now().subtract(Duration(days: 30)),
-            lastDate: DateTime.now().add(Duration(days: 60)),
-            onDateSelected: (date) {
-              setState(() {
-                daycareApptList = null;
-                hotelApptList = null;
-                veterinaryApptList = null;
-                stheticApptList = null;
-                _selectedDate = date!;
-              });
-            },
-            leftMargin: 20,
-            monthColor: Colors.white70,
-            dayColor: Colors.teal[200],
-            dayNameColor: Color(0xFF333A47),
-            activeDayColor: Colors.white,
-            activeBackgroundDayColor: Colors.redAccent[100],
-            dotsColor: Color(0xFF333A47),
-            locale: 'es',
-          ),
-          _createApptContainer()
-        ],
+    initializeDateFormatting();
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.only(top: 5),
+        width: _screenSize.width * 0.95,
+        height: _screenSize.height * 0.765,
+        decoration: BoxDecoration(
+          color: Color(0xFF6C78EB),
+          borderRadius: new BorderRadius.circular(15.0),
+        ),
+        child: Column(
+          children: [
+            SizedBox(height: 2),
+            CalendarTimeline(
+              initialDate: _selectedDate,
+              firstDate: DateTime.now().subtract(Duration(days: 2000)),
+              lastDate: DateTime.now().add(Duration(days: 60)),
+              onDateSelected: (date) {
+                setState(() {
+                  daycareApptList = null;
+                  hotelApptList = null;
+                  veterinaryApptList = null;
+                  stheticApptList = null;
+                  _selectedDate = date ?? DateTime.now();
+                });
+              },
+              leftMargin: 20,
+              monthColor: Colors.white70,
+              dayColor: Colors.teal[200],
+              dayNameColor: Color(0xFF333A47),
+              activeDayColor: Colors.white,
+              activeBackgroundDayColor: Colors.redAccent[100],
+              dotsColor: Color(0xFF333A47),
+              locale: 'es',
+            ),
+            Expanded(child: _createApptContainer())
+          ],
+        ),
       ),
     );
   }
@@ -216,7 +220,8 @@ class _AppointmentListState extends State<AppointmentList> {
           Expanded(
               child: FutureBuilder(
             future: _getAppoitments(),
-            builder: (BuildContext context, AsyncSnapshot<List<int>?> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<List<int>?> snapshot) {
               if (snapshot.hasData) {
                 return _createList(snapshot.data);
               } else {
@@ -242,23 +247,24 @@ class _AppointmentListState extends State<AppointmentList> {
   }
 
   Future<List<int>?> _getAppoitments() async {
+    final id =
+        '${_selectedDate.day}-${_selectedDate.month}-${_selectedDate.year}';
     List<int> list = [];
     if (daycareFilter.selected) {
       daycareApptList =
           await appointmentsRepository.getDaycareApptList(_selectedDate.day);
       if (daycareApptList != null) {
-        daycareApptList!.sort((a, b) =>
-            a.entryDate!.toDate().hour.compareTo(b.entryDate!.toDate().hour));
+        daycareApptList!
+            .sort((a, b) => a.entryHour!.hour.compareTo(b.entryHour!.hour));
         list.add(1);
       }
     }
 
     if (stheticFilter.selected) {
-      stheticApptList =
-          await appointmentsRepository.getStheticApptList(_selectedDate.day);
+      stheticApptList = await appointmentsRepository.getEstheticAppomint(id);
       if (stheticApptList != null) {
-        stheticApptList!.sort((a, b) =>
-            a.entryDate!.toDate().hour.compareTo(b.entryDate!.toDate().hour));
+        stheticApptList!.appointments
+            .sort((a, b) => a.entryDate!.hour.compareTo(b.entryDate!.hour));
         list.add(1);
       }
     }
@@ -267,18 +273,17 @@ class _AppointmentListState extends State<AppointmentList> {
       hotelApptList =
           await appointmentsRepository.getHotelApptList(_selectedDate.day);
       if (hotelApptList != null) {
-        hotelApptList!.sort((a, b) =>
-            a.entryDate!.toDate().hour.compareTo(b.entryDate!.toDate().hour));
+        hotelApptList!.sort((a, b) => a.startDate!.compareTo(b.startDate!));
         list.add(1);
       }
     }
 
     if (veterinaryFilter.selected) {
       veterinaryApptList =
-          await appointmentsRepository.getVeterinaryApptList(_selectedDate.day);
+          await appointmentsRepository.getVeterinaryAppointments(id);
       if (veterinaryApptList != null) {
-        veterinaryApptList!.sort((a, b) =>
-            a.entryDate!.toDate().hour.compareTo(b.entryDate!.toDate().hour));
+        veterinaryApptList!.appointments
+            .sort((a, b) => a.hour!.hour.compareTo(b.hour!.hour));
         list.add(1);
       }
     }
@@ -307,7 +312,7 @@ class _AppointmentListState extends State<AppointmentList> {
     }
 
     if (stheticApptList != null) {
-      if (stheticApptList!.isNotEmpty) {
+      if (stheticApptList!.appointments.isNotEmpty) {
         list.add(_createApptsCategories(2));
       }
     }
@@ -318,7 +323,7 @@ class _AppointmentListState extends State<AppointmentList> {
       }
     }
     if (veterinaryApptList != null) {
-      if (veterinaryApptList!.isNotEmpty) {
+      if (veterinaryApptList!.appointments.isNotEmpty) {
         list.add(_createApptsCategories(4));
       }
     }
@@ -369,9 +374,9 @@ class _AppointmentListState extends State<AppointmentList> {
     late String title;
     Color? backgroundColor;
     Color? apptsColor;
-    List<Appointment> appointmentsConfirmed = [];
-    List<Appointment> appointmentsNonConfirmed = [];
-    Appointment appointmentTemp;
+    List<dynamic> appointmentsConfirmed = [];
+    List<dynamic> appointmentsNonConfirmed = [];
+    var appointmentTemp;
 
     switch (type) {
       case 1:
@@ -388,7 +393,7 @@ class _AppointmentListState extends State<AppointmentList> {
         apptsColor = ColorsApp.primaryColorPink;
         break;
       case 2:
-        stheticApptList!.forEach((element) {
+        stheticApptList!.appointments.forEach((element) {
           appointmentTemp = element;
           if (element.isConfirmed!) {
             appointmentsConfirmed.add(appointmentTemp);
@@ -414,7 +419,7 @@ class _AppointmentListState extends State<AppointmentList> {
         apptsColor = ColorsApp.primaryColorOrange;
         break;
       case 4:
-        veterinaryApptList!.forEach((element) {
+        veterinaryApptList!.appointments.forEach((element) {
           appointmentTemp = element;
           if (element.isConfirmed!) {
             appointmentsConfirmed.add(appointmentTemp);
@@ -435,14 +440,15 @@ class _AppointmentListState extends State<AppointmentList> {
       String title,
       Color? backgroundColor,
       Color? apptColor,
-      List<Appointment> confirmed,
-      List<Appointment> nonConfirmed,
+      List<dynamic> confirmed,
+      List<dynamic> nonConfirmed,
       int type) {
     Column confirmedWidget = new Column();
     Column nonConfirmedWidget = new Column();
     if (confirmed.isNotEmpty) {
       confirmedWidget = createApptsAccordingStatus(
-          "Citas confirmadas", confirmed, apptColor, Colors.white, type) as Column;
+              "Citas confirmadas", confirmed, apptColor, Colors.white, type)
+          as Column;
     }
     if (nonConfirmed.isNotEmpty) {
       nonConfirmedWidget = createApptsAccordingStatus("Citas sin confirmar",
@@ -463,7 +469,7 @@ class _AppointmentListState extends State<AppointmentList> {
         ));
   }
 
-  Widget createApptsAccordingStatus(String status, List<Appointment> list,
+  Widget createApptsAccordingStatus(String status, List<dynamic> list,
       Color? apptColorReceived, Color textColor, int type) {
     return Column(
       children: [
@@ -481,13 +487,13 @@ class _AppointmentListState extends State<AppointmentList> {
             controller: null,
             itemCount: list.length,
             itemBuilder: (BuildContext context, int index) {
-              Appointment temp = list[index];
-              String name = temp.entryUser!.userName!;
-              if (temp.entryUser!.lastName != null) {
-                name += " " + temp.entryUser!.lastName!;
+              var temp = list[index];
+              String name = temp.client.userName;
+              if (temp.client!.lastName != null) {
+                name += " " + temp.client!.lastName!;
               }
               if (type == 4) {
-                VeterinaryAppt vet = temp as VeterinaryAppt;
+                VeterinaryAppointment vet = temp as VeterinaryAppointment;
               }
               return GestureDetector(
                 onTap: () {
@@ -558,7 +564,7 @@ class _AppointmentListState extends State<AppointmentList> {
       ],
     );
   }
-  
+
   String _getTime(DateTime date) {
     int? hour;
     String hourString;

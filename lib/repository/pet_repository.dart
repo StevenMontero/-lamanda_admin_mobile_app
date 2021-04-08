@@ -25,7 +25,7 @@ class PetRepository {
     Pet pet,
   ) {
     return _ref
-        .doc(pet.id)
+        .doc(pet.petId)
         .update(pet.toJson())
         .then((value) => print('Success Update'))
         .catchError((error) => print('Failure Update'));

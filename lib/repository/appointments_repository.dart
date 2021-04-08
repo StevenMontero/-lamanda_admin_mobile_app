@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lamanda_admin/models/appointment/daycare.dart';
-import 'package:lamanda_admin/models/appointment/esthetic.dart';
-import 'package:lamanda_admin/models/appointment/hotel.dart';
-import 'package:lamanda_admin/models/appointment/veterinary.dart';
+import 'package:lamanda_admin/models/daycare_appointment.dart';
+import 'package:lamanda_admin/models/hotel_appointment.dart';
+import 'package:lamanda_admin/models/sthetic_appoiments_list.dart';
+import 'package:lamanda_admin/models/sthetic_appointment.dart';
+import 'package:lamanda_admin/models/veterinary_appoiment_list.dart';
+import 'package:lamanda_admin/models/veterinary_appointment.dart';
 
 class AppointmentsRepository {
   final CollectionReference _refDaycare =
@@ -14,18 +16,18 @@ class AppointmentsRepository {
   final CollectionReference _refVeterinary =
       FirebaseFirestore.instance.collection('veterinaryAppointment');
 
-  Future<void> addNewDaycare(DaycareAppt daycare) {
+  Future<void> addNewDaycare(DaycareAppointment daycare) {
     return _refDaycare
         .add(daycare.toJson())
         .then((value) => print('Daycare Added'))
         .catchError((error) => print('Failed to add daycare: $error'));
   }
 
-  Future<DaycareAppt?> getDaycare(String id) async {
+  Future<DaycareAppointment?> getDaycare(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refDaycare.doc(id).get();
-    DaycareAppt daycare = DaycareAppt.fromJson(snapshot.data()!);
-    daycare.id = id;
+    DaycareAppointment daycare = DaycareAppointment.fromJson(snapshot.data()!);
+    daycare.appointmentId = id;
     if (snapshot.exists) {
       return daycare;
     } else {
@@ -38,27 +40,27 @@ class AppointmentsRepository {
   }
 
   Future<void> updateDaycare(
-    DaycareAppt daycare,
+    DaycareAppointment daycare,
   ) {
     return _refDaycare
-        .doc(daycare.id)
+        .doc(daycare.appointmentId)
         .update(daycare.toJson())
         .then((value) => print('Success Update'))
         .catchError((error) => print('Failure Update'));
   }
 
-  Future<void> addNewHotel(HotelAppt hotel) {
+  Future<void> addNewHotel(HotelAppointment hotel) {
     return _refHotel
         .add(hotel.toJson())
         .then((value) => print('Hotel Added'))
         .catchError((error) => print('Failed to add hotel: $error'));
   }
 
-  Future<HotelAppt?> getHotel(String id) async {
+  Future<HotelAppointment?> getHotel(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refHotel.doc(id).get();
-    HotelAppt hotel = HotelAppt.fromJson(snapshot.data()!);
-    hotel.id = id;
+    HotelAppointment hotel = HotelAppointment.fromJson(snapshot.data()!);
+    hotel.appointmentId = id;
     if (snapshot.exists) {
       return hotel;
     } else {
@@ -71,27 +73,27 @@ class AppointmentsRepository {
   }
 
   Future<void> updateHotel(
-    HotelAppt hotel,
+    HotelAppointment hotel,
   ) {
     return _refHotel
-        .doc(hotel.id)
+        .doc(hotel.appointmentId)
         .update(hotel.toJson())
         .then((value) => print('Success Update'))
         .catchError((error) => print('Failure Update'));
   }
 
-  Future<void> addNewSthetic(EstheticAppt sthetic) {
+  Future<void> addNewSthetic(StheticAppointment sthetic) {
     return _refSthetic
         .add(sthetic.toJson())
         .then((value) => print('Sthetic Added'))
         .catchError((error) => print('Failed to add sthetic: $error'));
   }
 
-  Future<EstheticAppt?> getSthetic(String id) async {
+  Future<StheticAppointment?> getSthetic(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refSthetic.doc(id).get();
-    EstheticAppt sthetic = EstheticAppt.fromJson(snapshot.data()!);
-    sthetic.id = id;
+    StheticAppointment sthetic = StheticAppointment.fromJson(snapshot.data()!);
+    sthetic.appointmentId = id;
     if (snapshot.exists) {
       return sthetic;
     } else {
@@ -104,27 +106,27 @@ class AppointmentsRepository {
   }
 
   Future<void> updateSthetic(
-    EstheticAppt sthetic,
+    StheticAppointment sthetic,
   ) {
     return _refSthetic
-        .doc(sthetic.id)
+        .doc(sthetic.appointmentId)
         .update(sthetic.toJson())
         .then((value) => print('Success Update'))
         .catchError((error) => print('Failure Update'));
   }
 
-  Future<void> addNewVeterinary(VeterinaryAppt veterinary) {
+  Future<void> addNewVeterinary(VeterinaryAppointment veterinary) {
     return _refVeterinary
         .add(veterinary.toJson())
         .then((value) => print('Sthetic Added'))
         .catchError((error) => print('Failed to add sthetic: $error'));
   }
 
-  Future<VeterinaryAppt?> getVeterinary(String id) async {
+  Future<VeterinaryAppointment?> getVeterinary(String id) async {
     DocumentSnapshot snapshot;
     snapshot = await _refVeterinary.doc(id).get();
-    VeterinaryAppt vet = VeterinaryAppt.fromJson(snapshot.data()!);
-    vet.id = id;
+    VeterinaryAppointment vet = VeterinaryAppointment.fromJson(snapshot.data()!);
+    vet.appointmentId = id;
     if (snapshot.exists) {
       return vet;
     } else {
@@ -137,10 +139,10 @@ class AppointmentsRepository {
   }
 
   Future<void> updateVeterinary(
-    VeterinaryAppt veterinary,
+    VeterinaryAppointment veterinary,
   ) {
     return _refVeterinary
-        .doc(veterinary.id)
+        .doc(veterinary.appointmentId)
         .update(veterinary.toJson())
         .then((value) => print('Success Update'))
         .catchError((error) => print('Failure Update'));
@@ -149,16 +151,16 @@ class AppointmentsRepository {
   //GET THE LIST OF EACH APPOINTMENT
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  Future<List<DaycareAppt>?> getDaycareApptList(int day) async {
-    final List<DaycareAppt> daycareList = [];
+  Future<List<DaycareAppointment>?> getDaycareApptList(int day) async {
+    final List<DaycareAppointment> daycareList = [];
 
     await _refDaycare.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
           Timestamp entryDate = doc['date'];
           if (entryDate.toDate().day == day) {
-            DaycareAppt temp = new DaycareAppt.fromJson(doc.data());
-            temp.id = doc.id;
+            DaycareAppointment temp = new DaycareAppointment.fromJson(doc.data());
+            temp.appointmentId = doc.id;
             daycareList.add(temp);
           }
         }
@@ -172,35 +174,26 @@ class AppointmentsRepository {
     }
   }
 
-  Future<List<EstheticAppt>?> getStheticApptList(int day) async {
-    final List<EstheticAppt> stheticList = [];
-    QuerySnapshot snap = await _refSthetic.get();
-    snap.docs.forEach((doc) {
-      if (doc.exists) {
-        Timestamp entryDate = doc['entryDate'];
-        if (entryDate.toDate().day == day) {
-          EstheticAppt temp = new EstheticAppt.fromJson(doc.data());
-          temp.id = doc.id;
-          stheticList.add(temp);
-        }
-      }
-    });
-    if (stheticList.isNotEmpty) {
-      return stheticList;
+  Future<EstheticAppointmentsList?> getEstheticAppomint(
+      String appointmentId) async {
+    DocumentSnapshot snapshot;
+    snapshot = await _refSthetic.doc(appointmentId).get();
+    if (snapshot.exists) {
+      return EstheticAppointmentsList.fromJson(snapshot.data()!);
     } else {
       return null;
     }
   }
 
-  Future<List<HotelAppt>?> getHotelApptList(int day) async {
-    final List<HotelAppt> hotelList = [];
+  Future<List<HotelAppointment>?> getHotelApptList(int day) async {
+    final List<HotelAppointment> hotelList = [];
     await _refHotel.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
         if (doc.exists) {
           Timestamp entryDate = doc['entryDate'];
           if (entryDate.toDate().day == day) {
-            HotelAppt temp = new HotelAppt.fromJson(doc.data());
-            temp.id = doc.id;
+            HotelAppointment temp = new HotelAppointment.fromJson(doc.data());
+            temp.appointmentId = doc.id;
             hotelList.add(temp);
           }
         }
@@ -214,23 +207,12 @@ class AppointmentsRepository {
     }
   }
 
-  Future<List<VeterinaryAppt>?> getVeterinaryApptList(int day) async {
-    final List<VeterinaryAppt> veterinaryList = [];
-    await _refVeterinary.get().then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) async {
-        if (doc.exists) {
-          Timestamp entryDate = doc['entryDate'];
-          if (entryDate.toDate().day == day) {
-            VeterinaryAppt temp = new VeterinaryAppt.fromJson(doc.data());
-            temp.id = doc.id;
-            veterinaryList.add(temp);
-          }
-        }
-      });
-    });
-
-    if (veterinaryList.isNotEmpty) {
-      return veterinaryList;
+   Future<VeterinaryAppointmenList?> getVeterinaryAppointments(
+      String appointmentId) async {
+    DocumentSnapshot snapshot;
+    snapshot = await _refVeterinary.doc(appointmentId).get();
+    if (snapshot.exists) {
+      return VeterinaryAppointmenList.fromJson(snapshot.data()!);
     } else {
       return null;
     }
