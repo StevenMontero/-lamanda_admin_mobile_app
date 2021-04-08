@@ -1,9 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lamanda_admin/src/blocs/productCubit/products_cubit.dart';
-import 'package:lamanda_admin/src/pages/home.dart';
 import 'package:lamanda_admin/src/routes/routes.dart';
 import 'package:lamanda_admin/src/theme/theme.dart';
 
@@ -31,10 +28,7 @@ class MyApp extends StatelessWidget {
       statusBarColor: Colors.transparent, //or set color with: Color(0xFF0000FF)
     ));
 
-    return BlocProvider(
-      create: (_) => new ProductsCubit(),
-      child: AppView(),
-    );
+    return AppView();
   }
 }
 
@@ -55,8 +49,11 @@ class _AppViewState extends State<AppView> {
       debugShowCheckedModeBanner: false,
       title: 'La Manada petShop',
       routes: getRoutesApp(),
-      onGenerateRoute: (settings) =>
-          MaterialPageRoute(builder: (context) => AdminHome()),
+      home: Scaffold(
+        body: Container(),
+      ),
+      // onGenerateRoute: (settings) =>
+      //     MaterialPageRoute(builder: (context) => AdminHome()),
       supportedLocales: [
         Locale('es', 'ES'),
         Locale('en', 'US'),
