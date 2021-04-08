@@ -49,6 +49,6 @@ class AdminUserCubit extends Cubit<AdminUserState> {
   }
 
   dispose() {
-    _usersController?.close();
+    _usersController.close();
   }
 }

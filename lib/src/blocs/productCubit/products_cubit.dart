@@ -51,6 +51,6 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   dispose() {
-    _productsController?.close();
+    _productsController.close();
   }
 }
