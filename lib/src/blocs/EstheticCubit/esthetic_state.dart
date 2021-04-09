@@ -1,4 +1,4 @@
-part of 'selectschedule_cubit.dart';
+part of 'esthetic_cubit.dart';
 
 class EstheticState extends Equatable {
   const EstheticState(
@@ -14,12 +14,12 @@ class EstheticState extends Equatable {
 
   EstheticState copyWith({
     DateTime? date,
-    List<StheticAppointment>? schedule,
+    List<StheticAppointment>? appoimentsList,
     int? index,
     FormzStatus? status,
   }) {
     return EstheticState(
-        stheticAppoimentList: schedule ?? this.stheticAppoimentList,
+        stheticAppoimentList: appoimentsList ?? this.stheticAppoimentList,
         date: date ?? this.date,
         index: index ?? this.index,
         status: status ?? this.status);

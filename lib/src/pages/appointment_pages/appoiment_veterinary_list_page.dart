@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lamanda_admin/src/blocs/EstheticCubit/selectschedule_cubit.dart';
+import 'package:intl/intl.dart';
+import 'package:lamanda_admin/repository/daycare_appointment_repositorydb.dart';
+import 'package:lamanda_admin/src/blocs/HotelCubit/hotel_cubit.dart';
+import 'package:lamanda_admin/src/blocs/VeterinaryCubit/veterinary_cubit.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class GroomingScreen extends StatefulWidget {
+class VeterinaryScreen extends StatefulWidget {
   @override
-  _GroomingScreenState createState() => _GroomingScreenState();
+  _VeterinaryScreenState createState() => _VeterinaryScreenState();
 }
 
-class _GroomingScreenState extends State<GroomingScreen> {
+class _VeterinaryScreenState extends State<VeterinaryScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EstheticCubit(),
+      create: (context) => VeterinaryCubit(DaycareAppointmentRepository())
+        ..scheduleLoad(DateTime.now()),
       child: Scaffold(
           backgroundColor: ColorsApp.primaryColorBlue,
           appBar: AppBar(
@@ -28,7 +32,7 @@ class _GroomingScreenState extends State<GroomingScreen> {
             elevation: 0,
             backgroundColor: ColorsApp.primaryColorDark,
             title: Text(
-              "Reservaciones para Estética",
+              "Reservaciones para veterinaria",
               style: TextStyle(color: Colors.white70),
             ),
           ),
@@ -64,7 +68,7 @@ class _BodyState extends State<Body> {
   }
 
   Widget buildTableCalendar(BuildContext context) {
-    return BlocBuilder<EstheticCubit, EstheticState>(
+    return BlocBuilder<VeterinaryCubit, VeterinaryState>(
       buildWhen: (previous, current) => previous.date != current.date,
       builder: (context, state) {
         return TableCalendar(
@@ -93,7 +97,7 @@ class _BodyState extends State<Body> {
             weekendStyle: TextStyle(color: Colors.orangeAccent),
           ),
           availableCalendarFormats: {CalendarFormat.week: 'Week'},
-          firstDay:DateTime(2021, 1),
+          firstDay: DateTime(2021, 1),
           lastDay: DateTime(3000, 12),
           focusedDay: state.date,
           calendarFormat: CalendarFormat.week,
@@ -104,12 +108,12 @@ class _BodyState extends State<Body> {
             if (!isSameDay(state.date, selectedDay)) {
               // Call `setState()` when updating the selected day
 
-              context.read<EstheticCubit>().dateInCalendarChanged(selectedDay);
+              context.read<VeterinaryCubit>().dateInCalendarChanged(selectedDay);
             }
           },
           onPageChanged: (focusedDay) {
             // No need to call `setState()` here
-            context.read<EstheticCubit>().dateInCalendarChanged(focusedDay);
+            context.read<VeterinaryCubit>().dateInCalendarChanged(focusedDay);
           },
         );
       },
@@ -125,23 +129,30 @@ class _BodyState extends State<Body> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(17), topRight: Radius.circular(17)),
             color: ColorsApp.backgroundColor),
-        child: BlocBuilder<EstheticCubit, EstheticState>(
+        child: BlocBuilder<VeterinaryCubit, VeterinaryState>(
           builder: (context, state) {
             return ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: 10,
-                itemBuilder: (context, index) => ListTile(
-                    onTap: () {
-                      print('hola');
-                    },
-                    title: Text('Nana'),
-                    subtitle: Text('Steven Montero\n10:00 A.M'),
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'https://i.pinimg.com/originals/5b/fd/37/5bfd379ca788a0f32aeb3b3f88c12f97.jpg'),
-                    ),
-                    trailing: Icon(Icons.navigate_next)));
+                itemCount: state.veterinaryAppoimentList.length,
+                itemBuilder: (context, index) => Column(
+                      children: [
+                        ListTile(
+                            onTap: () {
+                              print('hola');
+                            },
+                            title: Text(
+                                state.veterinaryAppoimentList[index].pet!.name!),
+                            subtitle: Text(
+                                '${state.veterinaryAppoimentList[index].client!.userName}\n${DateFormat.jm().format(state.veterinaryAppoimentList[index].hour!)}'),
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(state
+                                  .veterinaryAppoimentList[index].pet!.photoUrl!),
+                            ),
+                            trailing: Icon(Icons.navigate_next)),
+                        Divider()
+                      ],
+                    ));
           },
         ),
       ),

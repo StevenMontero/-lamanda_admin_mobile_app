@@ -38,15 +38,15 @@ class HotelAppointment {
   });
 
   HotelAppointment.fromJson(Map<String, dynamic> json) {
-    this.endDate = json['departureDate'];
+    this.endDate = json['departureDate'].toDate();
     this.personPicksUp = json['departureUser'];
     this.addres = json['direction'];
-    this.startDate = json['entryDate'];
-    this.client = json['entryUser'];
+    this.startDate = json['entryDate'].toDate();
+    this.client = UserProfile.fromJson(json['entryUser']);
     this.appointmentId = json['id'];
     this.isConfirmed = json['isConfirmed'];
-    this.lastdeworming = json['lastDeworing'];
-    this.pestProtection = json['lastProtectionFleas'];
+    this.lastdeworming = json['lastDeworing'].toDate();
+    this.pestProtection = json['lastProtectionFleas'].toDate();
     this.transfer = json['transfer'];
     this.pet = Pet.fromJson(json['pet']);
     this.priceTotal = json['priceTotal'];

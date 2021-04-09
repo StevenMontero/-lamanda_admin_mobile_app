@@ -45,7 +45,7 @@ class DaycareAppointment {
     this.entryHour = json['entryHour'].toDate();
     this.proofPhotoUrl = json['proofPhotoUrl'];
     this.departureHour = json['departureHour'].toDate();
-    this.client = json['userDeliver'];
+    this.client = UserProfile.fromJson(json['userDeliver']);
     this.priceTotal = json['priceTotal'];
     this.userPickup = json['userPickup'];
     this.direccion = json['direction'];

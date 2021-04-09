@@ -35,7 +35,7 @@ class DaycareAppointmentRepository {
     if (snapshot.docs.isNotEmpty) {
       snapshot.docs.forEach((element) {
         Timestamp queryDate = element['date'];
-        if (date == queryDate.toDate()) {
+        if (date.day == queryDate.toDate().day) {
           daycareAppointmentList
               .add(DaycareAppointment.fromJson(element.data()));
         }

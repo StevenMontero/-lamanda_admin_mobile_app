@@ -4,33 +4,30 @@ import 'package:lamanda_admin/src/theme/colors.dart';
 
 import 'components/quotes_card.dart';
 
-
 class HomePage extends StatelessWidget {
   const HomePage() : super();
 
   @override
   Widget build(BuildContext context) {
-     MediaQueryData mediaQueryData = MediaQuery.of(context);
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
-      body: Stack(
-      alignment: AlignmentDirectional.topCenter,
-      children: [
-        backgraund(),
-         optionsQuotes(context),
-         Padding(
-          padding: const EdgeInsets.only(top:30.0),
-          child: Container(
-            height: mediaQueryData.size.height * 0.2,
-            width: mediaQueryData.size.width * 0.55,
-            child: SvgPicture.asset(
-              'assets/images/Logo_COLOR.svg',
-              fit: BoxFit.cover,
-            ),
+        body: Stack(alignment: AlignmentDirectional.topCenter, children: [
+      backgraund(),
+      optionsQuotes(context),
+      Padding(
+        padding: const EdgeInsets.only(top: 30.0),
+        child: Container(
+          height: mediaQueryData.size.height * 0.2,
+          width: mediaQueryData.size.width * 0.55,
+          child: SvgPicture.asset(
+            'assets/images/Logo_COLOR.svg',
+            fit: BoxFit.cover,
           ),
         ),
-      ])
-    );
+      ),
+    ]));
   }
+
   Widget optionsQuotes(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -49,7 +46,7 @@ class HomePage extends StatelessWidget {
                 itemTextColor: Colors.white,
                 itemTitle: 'Estetica',
                 onPress: () {
-                 Navigator.of(context).pushNamed('esthetic');
+                  Navigator.of(context).pushNamed('esthetic');
                 },
               ),
               SizedBox(
@@ -61,7 +58,7 @@ class HomePage extends StatelessWidget {
                 itemTextColor: Colors.white,
                 itemTitle: 'Hotel',
                 onPress: () {
-                   
+                  Navigator.of(context).pushNamed('hotel');
                 },
               )
             ],
@@ -77,7 +74,7 @@ class HomePage extends StatelessWidget {
                 itemTextColor: Colors.white,
                 itemTitle: 'Veterinaria',
                 onPress: () {
-                 
+                  Navigator.of(context).pushNamed('veterinary');
                 },
               ),
               SizedBox(
@@ -89,7 +86,7 @@ class HomePage extends StatelessWidget {
                 itemTextColor: Colors.white,
                 itemTitle: 'Guardería',
                 onPress: () {
-                   
+                  Navigator.of(context).pushNamed('daycare');
                 },
               )
             ],
@@ -99,7 +96,8 @@ class HomePage extends StatelessWidget {
       ],
     );
   }
-   Widget backgraund() {
+
+  Widget backgraund() {
     return Stack(
       children: [
         Positioned(
