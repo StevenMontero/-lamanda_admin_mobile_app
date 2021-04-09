@@ -15,19 +15,6 @@ class DaycareAppointmentRepository {
   //  }
   //}
 
-  Future<List<DaycareAppointment>> getListAppointmets(DateTime date) async {
-    List<DaycareAppointment> daycareAppointmentList = [];
-    QuerySnapshot snapshot = await _ref.get();
-    Timestamp timeStamp = Timestamp.fromDate(date);
-    final result = snapshot.docs.where((DocumentSnapshot document) =>
-        document.data()!['date'].contains(timeStamp));
-    result.forEach((element) {
-      daycareAppointmentList.add(DaycareAppointment.fromJson(element.data()));
-    });
-
-    return daycareAppointmentList;
-  }
-
   Future<List<DaycareAppointment>?> getDaycareApptList(DateTime date) async {
     final List<DaycareAppointment> daycareAppointmentList = [];
     QuerySnapshot snapshot = await _ref.get();
