@@ -71,6 +71,7 @@ class _BodyState extends State<Body> {
       buildWhen: (previous, current) => previous.date != current.date,
       builder: (context, state) {
         return TableCalendar(
+          daysOfWeekHeight: 40,
           locale: 'es_Es',
           headerStyle: HeaderStyle(
               titleCentered: true,
@@ -138,18 +139,22 @@ class _BodyState extends State<Body> {
                       children: [
                         ListTile(
                             onTap: () {
-                               Navigator.of(context).pushNamed('detail',arguments:state.hotelAppoimentList[index]);
+                              Navigator.of(context).pushNamed('detail',
+                                  arguments: state.hotelAppoimentList[index]);
                             },
                             title: Text(
                                 state.hotelAppoimentList[index].pet!.name!),
                             subtitle: Text(
-                                '${state.hotelAppoimentList[index].client!.userName}\n${ DateFormat.yMMMd().format(state.hotelAppoimentList[index].startDate!)} - ${ DateFormat.yMMMd().format(state.hotelAppoimentList[index].endDate!)}'),
+                                '${state.hotelAppoimentList[index].client!.userName}\n${DateFormat.yMMMd().format(state.hotelAppoimentList[index].startDate!)} - ${DateFormat.yMMMd().format(state.hotelAppoimentList[index].endDate!)}'),
                             leading: CircleAvatar(
                               backgroundImage: NetworkImage(state
                                   .hotelAppoimentList[index].pet!.photoUrl!),
                             ),
                             trailing: Icon(Icons.navigate_next)),
-                        Divider(height: 1.0,color: Colors.grey,)
+                        Divider(
+                          height: 1.0,
+                          color: Colors.grey,
+                        )
                       ],
                     ));
           },

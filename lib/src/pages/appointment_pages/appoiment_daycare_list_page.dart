@@ -71,6 +71,7 @@ class _BodyState extends State<Body> {
       buildWhen: (previous, current) => previous.date != current.date,
       builder: (context, state) {
         return TableCalendar(
+          daysOfWeekHeight: 40,
           locale: 'es_Es',
           headerStyle: HeaderStyle(
               titleCentered: true,
@@ -138,7 +139,8 @@ class _BodyState extends State<Body> {
                       children: [
                         ListTile(
                             onTap: () {
-                             Navigator.of(context).pushNamed('detail',arguments:state.dayCareAppoimentList[index]);
+                              Navigator.of(context).pushNamed('detail',
+                                  arguments: state.dayCareAppoimentList[index]);
                             },
                             title: Text(
                                 state.dayCareAppoimentList[index].pet!.name!),
@@ -149,7 +151,10 @@ class _BodyState extends State<Body> {
                                   .dayCareAppoimentList[index].pet!.photoUrl!),
                             ),
                             trailing: Icon(Icons.navigate_next)),
-                         Divider(height: 1.0,color: Colors.grey,)
+                        Divider(
+                          height: 1.0,
+                          color: Colors.grey,
+                        )
                       ],
                     ));
           },
