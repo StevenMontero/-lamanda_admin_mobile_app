@@ -15,7 +15,8 @@ class _GroomingScreenState extends State<GroomingScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EstheticCubit(StheticAppointmentRepository())..scheduleLoad(DateTime.now()),
+      create: (context) => EstheticCubit(StheticAppointmentRepository())
+        ..scheduleLoad(DateTime.now()),
       child: Scaffold(
           backgroundColor: ColorsApp.primaryColorBlue,
           appBar: AppBar(
@@ -134,22 +135,26 @@ class _BodyState extends State<Body> {
                 shrinkWrap: true,
                 itemCount: state.stheticAppoimentList.length,
                 itemBuilder: (context, index) => Column(
-                  children: [
-                    ListTile(
-                        onTap: () {
-                          print('hola');
-                        },
-                        title: Text(state.stheticAppoimentList[index].pet!.name!),
-                        subtitle: Text(
-                            '${state.stheticAppoimentList[index].client!.userName}\n${DateFormat.jm().format(state.stheticAppoimentList[index].entryHour!)}'),
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              state.stheticAppoimentList[index].pet!.photoUrl!),
-                        ),
-                        trailing: Icon(Icons.navigate_next)),
-                        Divider()
-                  ],
-                ));
+                      children: [
+                        ListTile(
+                            onTap: () {
+                               Navigator.of(context).pushNamed('detail',arguments:state.stheticAppoimentList[index]);
+                            },
+                            title: Text(
+                                state.stheticAppoimentList[index].pet!.name!),
+                            subtitle: Text(
+                                '${state.stheticAppoimentList[index].client!.userName}\n${DateFormat.jm().format(state.stheticAppoimentList[index].entryHour!)}'),
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(state
+                                  .stheticAppoimentList[index].pet!.photoUrl!),
+                            ),
+                            trailing: Icon(Icons.navigate_next)),
+                        Divider(
+                          height: 1.0,
+                          color: Colors.grey,
+                        )
+                      ],
+                    ));
           },
         ),
       ),

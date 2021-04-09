@@ -12,7 +12,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
   Color? backgroundColor;
   @override
   Widget build(BuildContext context) {
-    final appoiment = ModalRoute.of(context)!.settings.arguments;
+    final dynamic appoiment = ModalRoute.of(context)!.settings.arguments;
     if(appoiment is DaycareAppointment){
       backgroundColor = ColorsApp.primaryColorPinkDegraded;
     }
@@ -29,7 +29,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              
+              Center(child: Text(appoiment!.client!.userName),)
             ],
           ),
           

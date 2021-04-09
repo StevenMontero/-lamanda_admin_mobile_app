@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:lamanda_admin/repository/daycare_appointment_repositorydb.dart';
+import 'package:lamanda_admin/repository/veterinary_appointment_repositorydb.dart';
 import 'package:lamanda_admin/src/blocs/HotelCubit/hotel_cubit.dart';
 import 'package:lamanda_admin/src/blocs/VeterinaryCubit/veterinary_cubit.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
@@ -16,7 +17,7 @@ class _VeterinaryScreenState extends State<VeterinaryScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => VeterinaryCubit(DaycareAppointmentRepository())
+      create: (context) => VeterinaryCubit(VeterinaryAppointmentRepository())
         ..scheduleLoad(DateTime.now()),
       child: Scaffold(
           backgroundColor: ColorsApp.primaryColorBlue,
@@ -108,7 +109,9 @@ class _BodyState extends State<Body> {
             if (!isSameDay(state.date, selectedDay)) {
               // Call `setState()` when updating the selected day
 
-              context.read<VeterinaryCubit>().dateInCalendarChanged(selectedDay);
+              context
+                  .read<VeterinaryCubit>()
+                  .dateInCalendarChanged(selectedDay);
             }
           },
           onPageChanged: (focusedDay) {
@@ -139,18 +142,25 @@ class _BodyState extends State<Body> {
                       children: [
                         ListTile(
                             onTap: () {
-                              print('hola');
+                              Navigator.of(context).pushNamed('detail',
+                                  arguments:
+                                      state.veterinaryAppoimentList[index]);
                             },
-                            title: Text(
-                                state.veterinaryAppoimentList[index].pet!.name!),
+                            title: Text(state
+                                .veterinaryAppoimentList[index].pet!.name!),
                             subtitle: Text(
                                 '${state.veterinaryAppoimentList[index].client!.userName}\n${DateFormat.jm().format(state.veterinaryAppoimentList[index].hour!)}'),
                             leading: CircleAvatar(
                               backgroundImage: NetworkImage(state
-                                  .veterinaryAppoimentList[index].pet!.photoUrl!),
+                                  .veterinaryAppoimentList[index]
+                                  .pet!
+                                  .photoUrl!),
                             ),
                             trailing: Icon(Icons.navigate_next)),
-                        Divider()
+                        Divider(
+                          height: 1.0,
+                          color: Colors.grey,
+                        )
                       ],
                     ));
           },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:lamanda_admin/repository/daycare_appointment_repositorydb.dart';
+import 'package:lamanda_admin/repository/hotel_appointment_repositorydb.dart';
 import 'package:lamanda_admin/src/blocs/HotelCubit/hotel_cubit.dart';
 import 'package:lamanda_admin/src/theme/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -15,7 +15,7 @@ class _HotelScreenState extends State<HotelScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HotelCubit(DaycareAppointmentRepository())
+      create: (context) => HotelCubit(HotelAppointmentRepository())
         ..scheduleLoad(DateTime.now()),
       child: Scaffold(
           backgroundColor: ColorsApp.primaryColorBlue,
@@ -138,7 +138,7 @@ class _BodyState extends State<Body> {
                       children: [
                         ListTile(
                             onTap: () {
-                              print('hola');
+                               Navigator.of(context).pushNamed('detail',arguments:state.hotelAppoimentList[index]);
                             },
                             title: Text(
                                 state.hotelAppoimentList[index].pet!.name!),
@@ -149,7 +149,7 @@ class _BodyState extends State<Body> {
                                   .hotelAppoimentList[index].pet!.photoUrl!),
                             ),
                             trailing: Icon(Icons.navigate_next)),
-                        Divider()
+                        Divider(height: 1.0,color: Colors.grey,)
                       ],
                     ));
           },

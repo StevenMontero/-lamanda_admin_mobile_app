@@ -138,7 +138,7 @@ class _BodyState extends State<Body> {
                       children: [
                         ListTile(
                             onTap: () {
-                              print('hola');
+                             Navigator.of(context).pushNamed('detail',arguments:state.dayCareAppoimentList[index]);
                             },
                             title: Text(
                                 state.dayCareAppoimentList[index].pet!.name!),
@@ -149,7 +149,7 @@ class _BodyState extends State<Body> {
                                   .dayCareAppoimentList[index].pet!.photoUrl!),
                             ),
                             trailing: Icon(Icons.navigate_next)),
-                        Divider()
+                         Divider(height: 1.0,color: Colors.grey,)
                       ],
                     ));
           },

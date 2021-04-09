@@ -11,7 +11,7 @@ class HotelAppointmentRepository {
 
     if (snapshot.docs.isNotEmpty) {
       snapshot.docs.forEach((element) {
-        Timestamp queryDate = element['date'];
+        Timestamp queryDate = element['entryDate'];
         if (date.day == queryDate.toDate().day) {
           daycareAppointmentList
               .add(HotelAppointment.fromJson(element.data()));
