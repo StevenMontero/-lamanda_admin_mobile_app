@@ -1,6 +1,6 @@
 //import 'package:lamanda_petshopcr/src/models/pet.dart';
 //import 'package:lamanda_petshopcr/src/models/pet_list.dart';
-import 'package:lamanda_admin/models//userProfile.dart';
+import 'package:lamanda_admin/models/userProfile.dart';
 import 'package:lamanda_admin/models/pet.dart';
 
 class DaycareAppointment {
