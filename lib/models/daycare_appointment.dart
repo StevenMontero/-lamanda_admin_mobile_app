@@ -49,8 +49,8 @@ class DaycareAppointment {
     this.priceTotal = json['priceTotal'];
     this.userPickup = json['userPickup'];
     this.direccion = json['direction'];
-    this.lastDeworming = json['lastDeworing'].toDate();
-    this.lastProtectionFleas = json['lastProtectionFleas'].toDate();
+    this.lastDeworming = json['lastDeworing'] != null ? json['lastDeworing'].toDate() : null;
+    this.lastProtectionFleas = json['lastProtectionFleas'] != null ? json['lastProtectionFleas'].toDate() : null;
     this.transfer = json['transfer'];
     this.isConfirmed = json['isConfirmed'];
   }

@@ -45,8 +45,8 @@ class HotelAppointment {
     this.client = UserProfile.fromJson(json['entryUser']);
     this.appointmentId = json['id'];
     this.isConfirmed = json['isConfirmed'];
-    this.lastdeworming = json['lastDeworing'].toDate();
-    this.pestProtection = json['lastProtectionFleas'].toDate();
+    this.lastdeworming = json['lastDeworing'] != null ? json['lastDeworing'].toDate() : null;
+    this.pestProtection = json['lastProtectionFleas'] != null ? json['lastProtectionFleas'].toDate() : null;
     this.transfer = json['transfer'];
     this.pet = Pet.fromJson(json['pet']);
     this.priceTotal = json['priceTotal'];

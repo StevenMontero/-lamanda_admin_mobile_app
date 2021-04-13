@@ -56,7 +56,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
           borderRadius: new BorderRadius.circular(8.0),
         ),
         margin: EdgeInsets.all(14),
-        height: MediaQuery.of(context).size.height * 0.90,
+        height: MediaQuery.of(context).size.height * 1,
         width: MediaQuery.of(context).size.width * 0.96,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -64,7 +64,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                headerInfo('assets/gif/pinkCat.gif' , appoiment.client!),
+                headerInfo('assets/gif/pinkCat.gif', appoiment.client!),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.02,
                 ),
@@ -73,18 +73,18 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                     color: ColorsApp.primaryColorPink,
                     borderRadius: new BorderRadius.circular(10.0),
                   ),
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  height: MediaQuery.of(context).size.height * 0.12,
+                  width: MediaQuery.of(context).size.width * 0.21,
+                  height: MediaQuery.of(context).size.height * 0.13,
                   margin: EdgeInsets.only(top: 8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      _formatInfo(appoiment.entryHour!.day.toString(), 0.043,
+                      _formatInfo(appoiment.entryHour!.day.toString(), 0.040,
                           Colors.white, FontWeight.bold),
                       _formatInfo(DayText.getDayText(appoiment.date!.weekday),
-                          0.020, Colors.grey[200], FontWeight.bold),
+                          0.018, Colors.grey[200], FontWeight.normal),
                       _formatInfo(DateHour.getTime(appoiment.entryHour!), 0.018,
-                          Colors.grey[200], FontWeight.bold),
+                          Colors.grey[200], FontWeight.normal),
                     ],
                   ),
                 )
@@ -138,9 +138,9 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                 borderRadius: new BorderRadius.circular(8.0),
               ),
               margin: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.01),
+                  vertical: MediaQuery.of(context).size.height * 0.03),
               width: MediaQuery.of(context).size.width * 0.89,
-              height: MediaQuery.of(context).size.height * 0.55,
+              height: MediaQuery.of(context).size.height * 0.60,
               child: Column(
                 children: [
                   Container(
@@ -204,7 +204,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
           borderRadius: new BorderRadius.circular(8.0),
         ),
         margin: EdgeInsets.all(14),
-        height: MediaQuery.of(context).size.height * 0.87,
+        height: MediaQuery.of(context).size.height * 1,
         width: MediaQuery.of(context).size.width * 0.96,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -212,7 +212,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                headerInfo('assets/gif/blueCat.gif' , appoiment.client!),
+                headerInfo('assets/gif/blueCat.gif', appoiment.client!),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.02,
                 ),
@@ -221,17 +221,17 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                     color: ColorsApp.primaryColorBlue,
                     borderRadius: new BorderRadius.circular(10.0),
                   ),
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  height: MediaQuery.of(context).size.height * 0.12,
+                  width: MediaQuery.of(context).size.width * 0.21,
+                  height: MediaQuery.of(context).size.height * 0.13,
                   margin: EdgeInsets.only(top: 8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      _formatInfo(appoiment.entryDate!.day.toString(), 0.043,
+                      _formatInfo(appoiment.entryDate!.day.toString(), 0.040,
                           Colors.white, FontWeight.bold),
                       _formatInfo(
                           DayText.getDayText(appoiment.entryDate!.weekday),
-                          0.020,
+                          0.018,
                           Colors.grey[200],
                           FontWeight.bold),
                       _formatInfo(DateHour.getTime(appoiment.entryHour!), 0.018,
@@ -247,9 +247,9 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                 borderRadius: new BorderRadius.circular(8.0),
               ),
               margin: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.01),
+                  vertical: MediaQuery.of(context).size.height * 0.03),
               width: MediaQuery.of(context).size.width * 0.89,
-              height: MediaQuery.of(context).size.height * 0.55,
+              height: MediaQuery.of(context).size.height * 0.60,
               child: Column(
                 children: [
                   Container(
@@ -320,7 +320,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                headerInfo('assets/gif/orangeCat.gif' , appoiment.client!),
+                headerInfo('assets/gif/orangeCat.gif', appoiment.client!),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.02,
                 ),
@@ -329,21 +329,19 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                     color: ColorsApp.primaryColorOrange,
                     borderRadius: new BorderRadius.circular(10.0),
                   ),
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  height: MediaQuery.of(context).size.height * 0.12,
+                  width: MediaQuery.of(context).size.width * 0.21,
+                  height: MediaQuery.of(context).size.height * 0.13,
                   margin: EdgeInsets.only(top: 8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      _formatInfo(appoiment.startDate!.day.toString(), 0.043,
+                      _formatInfo(appoiment.startDate!.day.toString(), 0.040,
                           Colors.white, FontWeight.bold),
                       _formatInfo(
                           DayText.getDayText(appoiment.startDate!.weekday),
-                          0.020,
+                          0.018,
                           Colors.grey[200],
                           FontWeight.bold),
-                      _formatInfo(DateHour.getTime(appoiment.startDate!), 0.018,
-                          Colors.grey[200], FontWeight.bold),
                     ],
                   ),
                 )
@@ -357,7 +355,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                   Text(
                     "Entrada",
                     style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.06),
+                        fontSize: MediaQuery.of(context).size.width * 0.05),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.02,
@@ -367,23 +365,32 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                       color: ColorsApp.primaryColorOrange,
                       borderRadius: new BorderRadius.circular(8.0),
                     ),
-                    width: MediaQuery.of(context).size.width * 0.66,
-                    height: MediaQuery.of(context).size.height * 0.06,
+                    width: MediaQuery.of(context).size.width * 0.64,
+                    height: MediaQuery.of(context).size.height * 0.05,
                     child: Row(
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.01,
                         ),
-                        _formatInfo(DateHour.getTime(appoiment.startDate!),
-                            0.022, Colors.white, FontWeight.normal),
+                        Text(
+                          DayText.getDayText(appoiment.startDate!.weekday) +
+                              ' ' +
+                              appoiment.startDate!.day.toString(),
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.022,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white),
+                        ),
+
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.02,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: _formatInfo(appoiment.personPicksUp!, 0.018,
-                              Colors.white, FontWeight.normal),
-                        ),
+                        //Container(
+                        //  width: MediaQuery.of(context).size.width * 0.4,
+                        //  child: _formatInfo(appoiment.personPicksUp!, 0.018,
+                        //      Colors.white, FontWeight.normal),
+                        //),
                       ],
                     ),
                   ),
@@ -396,7 +403,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                   Text(
                     "Salida   ",
                     style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.06),
+                        fontSize: MediaQuery.of(context).size.width * 0.05),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.02,
@@ -406,23 +413,31 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                       color: ColorsApp.primaryColorOrange,
                       borderRadius: new BorderRadius.circular(8.0),
                     ),
-                    width: MediaQuery.of(context).size.width * 0.66,
-                    height: MediaQuery.of(context).size.height * 0.06,
+                    width: MediaQuery.of(context).size.width * 0.64,
+                    height: MediaQuery.of(context).size.height * 0.05,
                     child: Row(
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.01,
                         ),
-                        _formatInfo(DateHour.getTime(appoiment.endDate!), 0.022,
-                            Colors.white, FontWeight.normal),
+                        Text(
+                          DayText.getDayText(appoiment.endDate!.weekday) +
+                              ' ' +
+                              appoiment.endDate!.day.toString(),
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.022,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white),
+                        ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.02,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: _formatInfo(appoiment.personPicksUp!, 0.018,
-                              Colors.white, FontWeight.normal),
-                        ),
+                        // Container(
+                        //   width: MediaQuery.of(context).size.width * 0.4,
+                        //   child: _formatInfo(appoiment.personPicksUp!, 0.018,
+                        //       Colors.white, FontWeight.normal),
+                        // ),
                       ],
                     ),
                   ),
@@ -433,9 +448,9 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                 borderRadius: new BorderRadius.circular(8.0),
               ),
               margin: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.01),
+                  vertical: MediaQuery.of(context).size.height * 0.03),
               width: MediaQuery.of(context).size.width * 0.89,
-              height: MediaQuery.of(context).size.height * 0.55,
+              height: MediaQuery.of(context).size.height * 0.60,
               child: Column(
                 children: [
                   Container(
@@ -499,7 +514,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
           borderRadius: new BorderRadius.circular(8.0),
         ),
         margin: EdgeInsets.all(14),
-        height: MediaQuery.of(context).size.height * 0.87,
+        height: MediaQuery.of(context).size.height * 1,
         width: MediaQuery.of(context).size.width * 0.96,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -507,7 +522,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                headerInfo('assets/gif/turCat.gif' , appoiment.client!),
+                headerInfo('assets/gif/turCat.gif', appoiment.client!),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.02,
                 ),
@@ -516,16 +531,16 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                     color: ColorsApp.primaryColorTurquoise,
                     borderRadius: new BorderRadius.circular(10.0),
                   ),
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  height: MediaQuery.of(context).size.height * 0.12,
+                  width: MediaQuery.of(context).size.width * 0.21,
+                  height: MediaQuery.of(context).size.height * 0.13,
                   margin: EdgeInsets.only(top: 8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      _formatInfo(appoiment.date!.day.toString(), 0.043,
+                      _formatInfo(appoiment.date!.day.toString(), 0.040,
                           Colors.white, FontWeight.bold),
                       _formatInfo(DayText.getDayText(appoiment.date!.weekday),
-                          0.020, Colors.grey[200], FontWeight.bold),
+                          0.018, Colors.grey[200], FontWeight.bold),
                       _formatInfo(DateHour.getTime(appoiment.hour!), 0.018,
                           Colors.grey[200], FontWeight.bold),
                     ],
@@ -539,9 +554,9 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                 borderRadius: new BorderRadius.circular(8.0),
               ),
               margin: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.01),
+                  vertical: MediaQuery.of(context).size.height * 0.03),
               width: MediaQuery.of(context).size.width * 0.89,
-              height: MediaQuery.of(context).size.height * 0.55,
+              height: MediaQuery.of(context).size.height * 0.60,
               child: Column(
                 children: [
                   Container(
@@ -719,36 +734,68 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
   }
 
   Widget _showSpecificInformationDate(String atribute, DateTime? date) {
-    String formatedDate = DateFormat('dd-MM-yyyy').format(date!);
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(width: 2.0, color: Colors.black26),
-        borderRadius: new BorderRadius.circular(8.0),
-      ),
-      width: MediaQuery.of(context).size.width * 0.9,
-      margin: EdgeInsets.all(2.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            atribute,
-            style: TextStyle(
-                color: Colors.black87,
-                fontSize: MediaQuery.of(context).size.width * 0.04,
-                fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.05,
-          ),
-          Text(
-            formatedDate,
-            style: TextStyle(
-                fontSize: MediaQuery.of(context).size.width * 0.04,
-                fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
+    if (date != null) {
+      String formatedDate = DateFormat('dd-MM-yyyy').format(date);
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 2.0, color: Colors.black26),
+          borderRadius: new BorderRadius.circular(8.0),
+        ),
+        width: MediaQuery.of(context).size.width * 0.9,
+        margin: EdgeInsets.all(2.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              atribute,
+              style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.05,
+            ),
+            Text(
+              formatedDate,
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 2.0, color: Colors.black26),
+          borderRadius: new BorderRadius.circular(8.0),
+        ),
+        width: MediaQuery.of(context).size.width * 0.9,
+        margin: EdgeInsets.all(2.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              atribute,
+              style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.05,
+            ),
+            Text(
+              'No Aplica',
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Widget _showSpecificInformationText(String atribute, String? value) {
@@ -786,31 +833,28 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
       return Container();
     }
   }
-  // muestra la direccion de domicilio de la persona 
+
+  // muestra la direccion de domicilio de la persona
   Widget _createDirectionInformation(bool transfer, String addres) {
     if (transfer) {
       return Container(
-        margin: EdgeInsets.only(bottom: 25),
+        //margin: EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: new BorderRadius.circular(8.0),
             border: Border.all(color: Colors.grey)),
-        height: MediaQuery.of(context).size.height * 0.14,
+        height: MediaQuery.of(context).size.height * 0.11,
         width: MediaQuery.of(context).size.width * 0.83,
         child: Column(
           children: [
             Text("Dirección domicilio"),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                  margin: EdgeInsets.all(2),
-                  child: Text(
-                    addres,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: MediaQuery.of(context).size.width * 0.035),
-                  ),
-                ),
+            Container(
+              margin: EdgeInsets.all(0.2),
+              child: Text(
+                addres,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: MediaQuery.of(context).size.width * 0.035),
               ),
             ),
           ],
@@ -836,7 +880,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
         color: Colors.white,
         borderRadius: new BorderRadius.circular(8.0),
       ),
-      height: MediaQuery.of(context).size.height * 0.12,
+      height: MediaQuery.of(context).size.height * 0.13,
       width: MediaQuery.of(context).size.width * 0.67,
       margin: EdgeInsets.only(top: 8),
       child: Row(
@@ -849,7 +893,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
               borderRadius: BorderRadius.circular(30.0),
               child: FadeInImage(
                 image: NetworkImage(client.photoUri!),
-                placeholder: AssetImage('assets/gif/turCat.gif'),
+                placeholder: AssetImage(catImage),
                 fit: BoxFit.cover,
                 height: 150.0,
               ),
@@ -863,27 +907,29 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
             child: Column(
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.042,
+                  height: MediaQuery.of(context).size.height * 0.035,
                   child: Text(
                     client.userName!,
                     style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.025),
+                        fontSize: MediaQuery.of(context).size.height * 0.022),
                   ),
                 ),
                 Container(
+                  height: MediaQuery.of(context).size.height * 0.050,
                   alignment: Alignment.topLeft,
                   child: Text(
                     client.email!,
                     style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.018),
+                        fontSize: MediaQuery.of(context).size.height * 0.016),
                   ),
                 ),
                 Container(
+                  height: MediaQuery.of(context).size.height * 0.035,
                   alignment: Alignment.topLeft,
                   child: Text(
                     client.phone!,
                     style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.018),
+                        fontSize: MediaQuery.of(context).size.height * 0.016),
                   ),
                 )
               ],
