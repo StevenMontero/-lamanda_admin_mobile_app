@@ -204,7 +204,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
           borderRadius: new BorderRadius.circular(8.0),
         ),
         margin: EdgeInsets.all(14),
-        height: MediaQuery.of(context).size.height * 1,
+        height: MediaQuery.of(context).size.height * 0.90,
         width: MediaQuery.of(context).size.width * 0.96,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -249,7 +249,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
               margin: EdgeInsets.symmetric(
                   vertical: MediaQuery.of(context).size.height * 0.03),
               width: MediaQuery.of(context).size.width * 0.89,
-              height: MediaQuery.of(context).size.height * 0.60,
+              height: MediaQuery.of(context).size.height * 0.55,
               child: Column(
                 children: [
                   Container(
@@ -269,12 +269,12 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _showSpecificInformationBool(
-                              "Castrado", appoiment.pet!.castrated),
+                         // _showSpecificInformationBool(
+                         //     "Castrado", appoiment.pet!.castrated),
                           _showSpecificInformationBool(
                               "Sociable", appoiment.pet!.sociable),
-                          _showSpecificInformationBool(
-                              "Vacunado", appoiment.pet!.isVaccinationUpDate),
+                         // _showSpecificInformationBool(
+                         //     "Vacunado", appoiment.pet!.isVaccinationUpDate),
                           _showSpecificInformationText(
                               "Tipo de pelo:", appoiment.pet!.fur!),
                           _showSpecificInformationText(
@@ -283,6 +283,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                               appoiment.pet!.age!.toString() + ' años'),
                           _showSpecificInformationText("Peso:",
                               appoiment.pet!.weight!.toString() + ' kg'),
+                          _getListService(appoiment),
                         ],
                       ),
                     ),
@@ -301,6 +302,37 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
         ),
       ),
     );
+  }
+
+  Widget _getListService(StheticAppointment appoiment) {
+    return Container(
+        margin: EdgeInsets.all(2.0),
+        width: MediaQuery.of(context).size.width * 0.95,
+        decoration: BoxDecoration(
+          border: Border.all(width: 2.0, color: Colors.black26),
+          borderRadius: new BorderRadius.circular(8.0),
+        ),
+        child: Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Lista de servicios: ',
+                style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          for (var service in appoiment.listService!)
+            Text(
+              service.name,
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                  fontWeight: FontWeight.bold),
+            ),
+        ]));
   }
 
   //Detalle de las citas del hotel
