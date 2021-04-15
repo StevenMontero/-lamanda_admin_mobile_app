@@ -121,11 +121,11 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.02,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: _formatInfo(appoiment.userPickup!, 0.018,
-                              Colors.white, FontWeight.normal),
-                        ),
+                        //Container(
+                        //  width: MediaQuery.of(context).size.width * 0.4,
+                        //  child: _formatInfo(appoiment.userPickup!, 0.018,
+                        //      Colors.white, FontWeight.normal),
+                        //),
                       ],
                     ),
                   )
@@ -204,7 +204,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
           borderRadius: new BorderRadius.circular(8.0),
         ),
         margin: EdgeInsets.all(14),
-        height: MediaQuery.of(context).size.height * 0.90,
+        height: MediaQuery.of(context).size.height * 0.96,
         width: MediaQuery.of(context).size.width * 0.96,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -249,7 +249,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
               margin: EdgeInsets.symmetric(
                   vertical: MediaQuery.of(context).size.height * 0.03),
               width: MediaQuery.of(context).size.width * 0.89,
-              height: MediaQuery.of(context).size.height * 0.55,
+              height: MediaQuery.of(context).size.height * 0.60,
               child: Column(
                 children: [
                   Container(
@@ -344,7 +344,7 @@ class _AppoimentDetailState extends State<AppoimentDetail> {
           borderRadius: new BorderRadius.circular(8.0),
         ),
         margin: EdgeInsets.all(14),
-        height: MediaQuery.of(context).size.height * 1,
+        height: MediaQuery.of(context).size.height * 1.1,
         width: MediaQuery.of(context).size.width * 0.96,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
