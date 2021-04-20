@@ -1,9 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
-import 'package:lamanda_admin/models/daycare_appointment.dart';
 import 'package:lamanda_admin/models/hotel_appointment.dart';
-import 'package:lamanda_admin/repository/daycare_appointment_repositorydb.dart';
 import 'package:lamanda_admin/repository/hotel_appointment_repositorydb.dart';
 
 part 'hotel_state.dart';
